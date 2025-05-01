@@ -2,6 +2,7 @@ package io.github.imecuadorian.vitalmed;
 
 import io.github.imecuadorian.vitalmed.controller.*;
 import io.github.imecuadorian.vitalmed.factory.*;
+import io.github.imecuadorian.vitalmed.view.*;
 
 import javax.swing.*;
 import javax.swing.border.*;
@@ -9,6 +10,8 @@ import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 import java.util.*;
 import java.util.logging.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class Vitalmed {
 
@@ -153,6 +156,12 @@ public class Vitalmed {
         rightPanel.add(btnLogin, gbcBtnLogin);
 
         JLabel lblRegister = new JLabel("¿No tienes cuenta? Regístrate");
+        lblRegister.addMouseListener(new MouseAdapter() {
+        	@Override
+        	public void mouseClicked(MouseEvent e) {
+                new RegisterWindow().setVisible(true);
+        	}
+        });
         lblRegister.setFont(new Font(DEFAULT_FONT, Font.PLAIN, 13));
         lblRegister.setForeground(new Color(0, 102, 204));
         lblRegister.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
