@@ -30,8 +30,26 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:$junitPlatformVersion")
+
+    compileOnly("org.projectlombok:lombok:1.18.38")
+    annotationProcessor("org.projectlombok:lombok:1.18.38")
+
+    testCompileOnly("org.projectlombok:lombok:1.18.38")
+    testAnnotationProcessor("org.projectlombok:lombok:1.18.38")
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDir("src/main/resources")
+        }
+    }
 }
 
 tasks.test {
     useJUnitPlatform()
+}
+
+tasks.processResources {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
