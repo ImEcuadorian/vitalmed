@@ -21,7 +21,6 @@ public class LoginController {
 
     public void login(String email, String password, JFrame currentView) {
         if (email.equals(Constants.ADMIN_EMAIL) && password.equals(Constants.ADMIN_PASSWORD)) {
-            JOptionPane.showMessageDialog(currentView, "Bienvenido Administrador");
             currentView.dispose();
             return;
         }

@@ -1,3 +1,4 @@
+
 package io.github.imecuadorian.vitalmed.view;
 
 import io.github.imecuadorian.vitalmed.util.RegexValidator;
@@ -8,7 +9,8 @@ import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.*;
+import java.awt.geom.RoundRectangle2D;
+import java.util.Objects;
 
 public class RegisterWindow extends JFrame {
 
@@ -26,9 +28,11 @@ public class RegisterWindow extends JFrame {
     public RegisterWindow() {
         setTitle("Registro de Usuario");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(1000, 560);
+        setSize(1000, 800);
         setLocationRelativeTo(null);
         setUndecorated(true);
+        setBackground(Color.WHITE);
+        setShape(new RoundRectangle2D.Double(0, 0, getWidth(), getHeight(), 25, 25));
         getContentPane().setLayout(new BorderLayout());
 
         fields = new JTextField[labels.length];
@@ -143,14 +147,14 @@ public class RegisterWindow extends JFrame {
         }
 
         field.setFont(new Font(DEFAULT_FONT, Font.PLAIN, 14));
-        field.setBorder(new CompoundBorder(new LineBorder(Color.LIGHT_GRAY, 1, true), new EmptyBorder(5, 10, 5, 10)));
+        field.setBorder(BorderFactory.createCompoundBorder(new RoundedBorder(12), new EmptyBorder(5, 14, 5, 14)));
+        field.setBackground(new Color(245, 245, 245));
         field.setToolTipText("Ingrese su " + label.toLowerCase());
         new TextPrompt("Ingrese " + label.toLowerCase(), field, Show.FOCUS_LOST);
 
         if (label.equals("Cédula") || label.equals("Teléfono") || label.equals("Celular")) {
             final int max = 10;
             field.addKeyListener(new KeyAdapter() {
-                @Override
                 public void keyTyped(KeyEvent e) {
                     char c = e.getKeyChar();
                     if (!Character.isDigit(c) || field.getText().length() >= max) {
@@ -181,18 +185,31 @@ public class RegisterWindow extends JFrame {
         });
         formPanel.add(showPasswordCheck, gbcCheck);
 
-        JButton registerBtn = new JButton("Registrar");
+        JButton registerBtn = new JButton("Registrar") {
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(getBackground());
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 18, 18);
+                super.paintComponent(g2);
+                g2.dispose();
+            }
+
+            protected void paintBorder(Graphics g) {}
+        };
         registerBtn.setFont(new Font(DEFAULT_FONT, Font.BOLD, 14));
         registerBtn.setBackground(new Color(33, 150, 243));
         registerBtn.setForeground(Color.WHITE);
         registerBtn.setFocusPainted(false);
+        registerBtn.setContentAreaFilled(false);
+        registerBtn.setOpaque(false);
+
         GridBagConstraints gbcBtn = new GridBagConstraints();
         gbcBtn.gridwidth = 2;
         gbcBtn.gridx = 0;
         gbcBtn.gridy = row++;
         gbcBtn.insets = new Insets(5, 0, 10, 0);
         formPanel.add(registerBtn, gbcBtn);
-
         registerBtn.addActionListener(e -> handleRegistration());
 
         JButton backBtn = new JButton("← Volver al login");
@@ -234,6 +251,28 @@ public class RegisterWindow extends JFrame {
         } else {
             JOptionPane.showMessageDialog(this, "¡Usuario registrado con éxito!", "Éxito", JOptionPane.INFORMATION_MESSAGE);
             dispose();
+        }
+    }
+
+    static class RoundedBorder extends AbstractBorder {
+        private final int radius;
+
+        public RoundedBorder(int radius) {
+            this.radius = radius;
+        }
+
+        public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
+            g.setColor(Color.LIGHT_GRAY);
+            g.drawRoundRect(x, y, width - 1, height - 1, radius, radius);
+        }
+
+        public Insets getBorderInsets(Component c) {
+            return new Insets(radius + 2, radius + 2, radius + 2, radius + 2);
+        }
+
+        public Insets getBorderInsets(Component c, Insets insets) {
+            insets.set(radius + 2, radius + 2, radius + 2, radius + 2);
+            return insets;
         }
     }
 }
