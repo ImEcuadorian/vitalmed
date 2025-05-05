@@ -25,19 +25,6 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public Optional<Doctor> login(String email, String password) {
-        Optional<Doctor> doctorOpt = doctorRepository.findAll().stream()
-                .filter(d -> d.validateLogin(email, password))
-                .findFirst();
-        if (logger.isLoggable(Level.INFO)) {
-            logger.info(doctorOpt.isPresent()
-                    ? String.format("Login successful for doctor: %s", email)
-                    : String.format("Login failed for doctor: %s", email));
-        }
-        return doctorOpt;
-    }
-
-    @Override
     public List<Appointment> getAppointments(String doctorId) {
         List<Appointment> list = appointmentRepository.findAll().stream()
                 .filter(app -> app.getDoctorId().equals(doctorId))

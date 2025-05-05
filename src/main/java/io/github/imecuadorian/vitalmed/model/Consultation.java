@@ -3,7 +3,6 @@ package io.github.imecuadorian.vitalmed.model;
 import io.github.imecuadorian.library.*;
 
 public class Consultation {
-
     private final Generic<String, String> information;
 
     public Consultation(String speciality, String diagnosis, String treatment, String medication) {

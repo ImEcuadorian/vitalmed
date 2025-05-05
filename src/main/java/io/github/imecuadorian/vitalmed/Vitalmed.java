@@ -1,23 +1,19 @@
 
 package io.github.imecuadorian.vitalmed;
 
-import io.github.imecuadorian.vitalmed.controller.LoginController;
-import io.github.imecuadorian.vitalmed.factory.ServiceFactory;
-import io.github.imecuadorian.vitalmed.util.RegexValidator;
-import io.github.imecuadorian.vitalmed.util.TextPrompt;
-import io.github.imecuadorian.vitalmed.util.TextPrompt.Show;
+import io.github.imecuadorian.vitalmed.controller.*;
+import io.github.imecuadorian.vitalmed.factory.*;
+import io.github.imecuadorian.vitalmed.util.*;
+import io.github.imecuadorian.vitalmed.util.TextPrompt.*;
 import io.github.imecuadorian.vitalmed.view.*;
 
 import javax.swing.*;
-import javax.swing.border.AbstractBorder;
-import javax.swing.border.EmptyBorder;
+import javax.swing.border.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.geom.RoundRectangle2D;
-import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.awt.event.*;
+import java.awt.geom.*;
+import java.util.*;
+import java.util.logging.*;
 
 public class Vitalmed {
 
@@ -27,6 +23,12 @@ public class Vitalmed {
     private JTextField txtUser;
     private JPasswordField txtPassword;
     private JFrame frame;
+
+    private final LoginController loginController = new LoginController(
+            ServiceFactory.getAdminService(),
+            ServiceFactory.getDoctorAuth(),
+            ServiceFactory.getPatientAuth()
+    );
 
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
@@ -40,12 +42,6 @@ public class Vitalmed {
         });
     }
 
-    LoginController loginController = new LoginController(
-            ServiceFactory.getAdminService(),
-            ServiceFactory.getDoctorAuth(),
-            ServiceFactory.getPatientAuth()
-    );
-
     public Vitalmed() {
         initialize();
     }
@@ -58,6 +54,7 @@ public class Vitalmed {
         frame.setLocationRelativeTo(null);
         frame.setShape(new RoundRectangle2D.Double(0, 0, frame.getWidth(), frame.getHeight(), 25, 25));
         frame.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/io/github/imecuadorian/images/vitalmed-main-icon.png")));
+        assert frame != null;
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.getContentPane().setLayout(new BorderLayout());
 
@@ -85,7 +82,7 @@ public class Vitalmed {
         GridBagConstraints gbc;
 
         JLabel lblTitle = new JLabel("Bienvenido a Vitalmed");
-        ImageIcon mainIcon = new ImageIcon(getClass().getResource("/io/github/imecuadorian/images/vitalmed-main-icon.png"));
+        ImageIcon mainIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("/io/github/imecuadorian/images/vitalmed-main-icon.png")));
         lblTitle.setIcon(new ImageIcon(mainIcon.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH)));
         lblTitle.setFont(new Font(DEFAULT_FONT, Font.BOLD, 22));
         gbc = new GridBagConstraints();
@@ -96,7 +93,7 @@ public class Vitalmed {
         rightPanel.add(lblTitle, gbc);
 
         JLabel lblUser = new JLabel("Email:");
-        lblUser.setIcon(new ImageIcon(getClass().getResource("/io/github/imecuadorian/images/email-icon-16px.png")));
+        lblUser.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/io/github/imecuadorian/images/email-icon-16px.png"))));
         lblUser.setFont(new Font(DEFAULT_FONT, Font.PLAIN, 16));
         gbc = new GridBagConstraints();
         gbc.anchor = GridBagConstraints.EAST;
@@ -115,7 +112,7 @@ public class Vitalmed {
         rightPanel.add(txtUser, gbc);
 
         JLabel lblPassword = new JLabel("Contraseña:");
-        lblPassword.setIcon(new ImageIcon(getClass().getResource("/io/github/imecuadorian/images/password-icon-16px.png")));
+        lblPassword.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/io/github/imecuadorian/images/password-icon-16px.png"))));
         lblPassword.setFont(new Font(DEFAULT_FONT, Font.PLAIN, 16));
         gbc = new GridBagConstraints();
         gbc.anchor = GridBagConstraints.EAST;
@@ -160,6 +157,7 @@ public class Vitalmed {
 
         JLabel lblRegister = new JLabel("¿No tienes cuenta? Regístrate");
         lblRegister.addMouseListener(new MouseAdapter() {
+            @Override
             public void mouseClicked(MouseEvent e) {
                 new RegisterWindow().setVisible(true);
             }
@@ -188,26 +186,7 @@ public class Vitalmed {
     }
 
     private JButton createRoundedButton() {
-        JButton button = new JButton("Iniciar Sesión") {
-            protected void paintComponent(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g.create();
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(getBackground());
-                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 20, 20);
-                super.paintComponent(g2);
-                g2.dispose();
-            }
-
-            protected void paintBorder(Graphics g) {}
-        };
-        button.setFont(new Font(DEFAULT_FONT, Font.BOLD, 16));
-        button.setBackground(new Color(33, 150, 243));
-        button.setForeground(Color.WHITE);
-        button.setFocusPainted(false);
-        button.setContentAreaFilled(false);
-        button.setOpaque(false);
-        button.setPreferredSize(new Dimension(180, 40));
-        button.setToolTipText("Presione para acceder al sistema");
+        JButton button = getButton();
         button.addActionListener(e -> {
             String email = txtUser.getText();
             String password = new String(txtPassword.getPassword());
@@ -223,6 +202,32 @@ public class Vitalmed {
         return button;
     }
 
+    private static JButton getButton() {
+        JButton button = new JButton("Iniciar Sesión") {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(getBackground());
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 20, 20);
+                super.paintComponent(g2);
+                g2.dispose();
+            }
+
+            @Override
+            protected void paintBorder(Graphics g) {}
+        };
+        button.setFont(new Font(DEFAULT_FONT, Font.BOLD, 16));
+        button.setBackground(new Color(33, 150, 243));
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setContentAreaFilled(false);
+        button.setOpaque(false);
+        button.setPreferredSize(new Dimension(180, 40));
+        button.setToolTipText("Presione para acceder al sistema");
+        return button;
+    }
+
     static class RoundedBorder extends AbstractBorder {
         private final int radius;
 
@@ -230,6 +235,7 @@ public class Vitalmed {
             this.radius = radius;
         }
 
+        @Override
         public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
             g.setColor(Color.LIGHT_GRAY);
             g.drawRoundRect(x, y, width - 1, height - 1, radius, radius);

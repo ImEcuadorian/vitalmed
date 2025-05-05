@@ -1,16 +1,19 @@
 
 package io.github.imecuadorian.vitalmed.view;
 
-import io.github.imecuadorian.vitalmed.util.RegexValidator;
-import io.github.imecuadorian.vitalmed.util.TextPrompt;
-import io.github.imecuadorian.vitalmed.util.TextPrompt.Show;
+import io.github.imecuadorian.vitalmed.controller.*;
+import io.github.imecuadorian.vitalmed.factory.*;
+import io.github.imecuadorian.vitalmed.model.*;
+import io.github.imecuadorian.vitalmed.util.*;
+import io.github.imecuadorian.vitalmed.util.TextPrompt.*;
+import org.jetbrains.annotations.*;
 
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.geom.RoundRectangle2D;
-import java.util.Objects;
+import java.awt.geom.*;
+import java.util.*;
 
 public class RegisterWindow extends JFrame {
 
@@ -24,6 +27,10 @@ public class RegisterWindow extends JFrame {
             "Cédula", "Nombre completo", "Email", "Contraseña",
             "Confirmar contraseña", "Teléfono", "Celular", "Dirección"
     };
+
+    private final RegistrationController registrationController = new RegistrationController(
+            ServiceFactory.getPatientService()
+    );
 
     public RegisterWindow() {
         setTitle("Registro de Usuario");
@@ -185,24 +192,7 @@ public class RegisterWindow extends JFrame {
         });
         formPanel.add(showPasswordCheck, gbcCheck);
 
-        JButton registerBtn = new JButton("Registrar") {
-            protected void paintComponent(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g.create();
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(getBackground());
-                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 18, 18);
-                super.paintComponent(g2);
-                g2.dispose();
-            }
-
-            protected void paintBorder(Graphics g) {}
-        };
-        registerBtn.setFont(new Font(DEFAULT_FONT, Font.BOLD, 14));
-        registerBtn.setBackground(new Color(33, 150, 243));
-        registerBtn.setForeground(Color.WHITE);
-        registerBtn.setFocusPainted(false);
-        registerBtn.setContentAreaFilled(false);
-        registerBtn.setOpaque(false);
+        JButton registerBtn = getButton();
 
         GridBagConstraints gbcBtn = new GridBagConstraints();
         gbcBtn.gridwidth = 2;
@@ -227,6 +217,29 @@ public class RegisterWindow extends JFrame {
         formPanel.add(backBtn, gbcBack);
     }
 
+    private @NotNull JButton getButton() {
+        JButton registerBtn = new JButton("Registrar") {
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(getBackground());
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 18, 18);
+                super.paintComponent(g2);
+                g2.dispose();
+            }
+
+            protected void paintBorder(Graphics g) {
+            }
+        };
+        registerBtn.setFont(new Font(DEFAULT_FONT, Font.BOLD, 14));
+        registerBtn.setBackground(new Color(33, 150, 243));
+        registerBtn.setForeground(Color.WHITE);
+        registerBtn.setFocusPainted(false);
+        registerBtn.setContentAreaFilled(false);
+        registerBtn.setOpaque(false);
+        return registerBtn;
+    }
+
     private void handleRegistration() {
         for (JTextField field : fields) {
             if (field.getText().trim().isEmpty()) {
@@ -236,6 +249,7 @@ public class RegisterWindow extends JFrame {
         }
 
         String cedula = fields[0].getText();
+        String name = fields[1].getText();
         String email = fields[2].getText();
         String password = new String(passwordField.getPassword());
         String confirm = new String(confirmPasswordField.getPassword());
@@ -248,9 +262,24 @@ public class RegisterWindow extends JFrame {
             JOptionPane.showMessageDialog(this, "Contraseña inválida. Debe tener al menos 8 caracteres, 1 mayúscula y 1 símbolo.", "Error", JOptionPane.ERROR_MESSAGE);
         } else if (!password.equals(confirm)) {
             JOptionPane.showMessageDialog(this, "Las contraseñas no coinciden.", "Error", JOptionPane.ERROR_MESSAGE);
+        } else if (!RegexValidator.isValidNamesOrSurnames(name)) {
+            JOptionPane.showMessageDialog(this, "Nombre completo no válido", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
-            JOptionPane.showMessageDialog(this, "¡Usuario registrado con éxito!", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-            dispose();
+            Patient patient = new Patient(
+                    cedula,
+                    name,
+                    email,
+                    password,
+                    fields[5].getText(),
+                    fields[6].getText(),
+                    fields[7].getText()
+            );
+            if (registrationController.register(patient)) {
+                JOptionPane.showMessageDialog(this, "Registro exitoso. Ahora puede iniciar sesión.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al registrar el usuario. Intente nuevamente.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
@@ -261,6 +290,7 @@ public class RegisterWindow extends JFrame {
             this.radius = radius;
         }
 
+        @Override
         public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
             g.setColor(Color.LIGHT_GRAY);
             g.drawRoundRect(x, y, width - 1, height - 1, radius, radius);

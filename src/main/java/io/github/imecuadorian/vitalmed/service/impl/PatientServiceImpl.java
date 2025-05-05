@@ -25,20 +25,6 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public Optional<Patient> login(String email, String password) {
-        Optional<Patient> patientOpt = patientRepository.findAll().stream()
-                .filter(p -> p.validateLogin(email, password))
-                .findFirst();
-
-        if (logger.isLoggable(Level.INFO)) {
-            logger.info(patientOpt.isPresent()
-                    ? String.format("Patient login successful: %s", email)
-                    : String.format("Patient login failed: %s", email));
-        }
-        return patientOpt;
-    }
-
-    @Override
     public boolean register(Patient patient) {
         boolean exists = patientRepository.findById(patient.getId()).isPresent();
         if (exists) {
