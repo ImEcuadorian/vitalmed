@@ -22,6 +22,10 @@ java {
 val jetbrainsAnnotationsVersion = "26.0.2"
 val junitVersion = "5.12.1"
 val junitPlatformVersion = "1.12.1"
+val jasperReportsVersion = "7.0.3"
+val commonCollectionsVersion = "4.5.0"
+val itextPdfVersion = "5.5.13.4"
+val slf4jVersion = "2.0.17"
 
 dependencies {
     implementation(files("libs/generic-library-1.0.0.jar"))
@@ -31,11 +35,15 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:$junitPlatformVersion")
 
-    compileOnly("org.projectlombok:lombok:1.18.38")
-    annotationProcessor("org.projectlombok:lombok:1.18.38")
-
-    testCompileOnly("org.projectlombok:lombok:1.18.38")
-    testAnnotationProcessor("org.projectlombok:lombok:1.18.38")
+    implementation("net.sf.jasperreports:jasperreports:$jasperReportsVersion")
+    implementation("net.sf.jasperreports:jasperreports-fonts:$jasperReportsVersion")
+    implementation("net.sf.jasperreports:jasperreports-functions:$jasperReportsVersion")
+    implementation("net.sf.jasperreports:jasperreports-metadata:$jasperReportsVersion")
+    implementation("net.sf.jasperreports:jasperreports-javaflow:$jasperReportsVersion")
+    implementation("net.sf.jasperreports:jasperreports-pdf:$jasperReportsVersion")
+    implementation("org.apache.commons:commons-collections4:$commonCollectionsVersion")
+    implementation("com.itextpdf:itextpdf:$itextPdfVersion")
+    implementation("org.slf4j:slf4j-simple:$slf4jVersion")
 }
 
 sourceSets {

@@ -53,7 +53,7 @@ public class Vitalmed {
         frame.setSize(900, 360);
         frame.setLocationRelativeTo(null);
         frame.setShape(new RoundRectangle2D.Double(0, 0, frame.getWidth(), frame.getHeight(), 25, 25));
-        frame.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/io/github/imecuadorian/images/vitalmed-main-icon.png")));
+        frame.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/io/github/imecuadorian/vitalmed/images/vitalmed-main-icon.png")));
         assert frame != null;
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.getContentPane().setLayout(new BorderLayout());
@@ -69,7 +69,7 @@ public class Vitalmed {
         leftPanel.setBackground(Color.WHITE);
         splitPane.setLeftComponent(leftPanel);
 
-        ImageIcon icon = new ImageIcon(Objects.requireNonNull(getClass().getResource("/io/github/imecuadorian/images/vitalmed-main-logo.png")));
+        ImageIcon icon = new ImageIcon(Objects.requireNonNull(getClass().getResource("/io/github/imecuadorian/vitalmed/images/vitalmed-main-logo.png")));
         Image scaledImage = icon.getImage().getScaledInstance(220, 220, Image.SCALE_SMOOTH);
         JLabel lblLogo = new JLabel(new ImageIcon(scaledImage));
         leftPanel.add(lblLogo);
@@ -82,7 +82,7 @@ public class Vitalmed {
         GridBagConstraints gbc;
 
         JLabel lblTitle = new JLabel("Bienvenido a Vitalmed");
-        ImageIcon mainIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("/io/github/imecuadorian/images/vitalmed-main-icon.png")));
+        ImageIcon mainIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("/io/github/imecuadorian/vitalmed/images/vitalmed-main-icon.png")));
         lblTitle.setIcon(new ImageIcon(mainIcon.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH)));
         lblTitle.setFont(new Font(DEFAULT_FONT, Font.BOLD, 22));
         gbc = new GridBagConstraints();
@@ -93,7 +93,7 @@ public class Vitalmed {
         rightPanel.add(lblTitle, gbc);
 
         JLabel lblUser = new JLabel("Email:");
-        lblUser.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/io/github/imecuadorian/images/email-icon-16px.png"))));
+        lblUser.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/io/github/imecuadorian/vitalmed/images/email-icon-16px.png"))));
         lblUser.setFont(new Font(DEFAULT_FONT, Font.PLAIN, 16));
         gbc = new GridBagConstraints();
         gbc.anchor = GridBagConstraints.EAST;
@@ -112,7 +112,7 @@ public class Vitalmed {
         rightPanel.add(txtUser, gbc);
 
         JLabel lblPassword = new JLabel("Contraseña:");
-        lblPassword.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/io/github/imecuadorian/images/password-icon-16px.png"))));
+        lblPassword.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/io/github/imecuadorian/vitalmed/images/password-icon-16px.png"))));
         lblPassword.setFont(new Font(DEFAULT_FONT, Font.PLAIN, 16));
         gbc = new GridBagConstraints();
         gbc.anchor = GridBagConstraints.EAST;

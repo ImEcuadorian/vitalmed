@@ -7,13 +7,15 @@ import io.github.imecuadorian.vitalmed.service.*;
 import io.github.imecuadorian.vitalmed.service.impl.*;
 import lombok.*;
 
-import java.util.logging.Logger;
+import java.util.logging.*;
 
 public class ServiceFactory {
     private static final Logger VITALMED_LOGGER = Logger.getLogger("VitalmedLogger");
     private static final String DOCTOR_FILE = "doctores.txt";
     private static final String PATIENT_FILE = "pacientes.txt";
     private static final String APPOINTMENT_FILE = "citas.txt";
+
+    private static final String ROOM_FILE = "salas.txt";
     private static final Repository<String, Doctor> doctorRepository =
             new DoctorRepository(DOCTOR_FILE, VITALMED_LOGGER);
 
@@ -22,6 +24,9 @@ public class ServiceFactory {
 
     private static final Repository<String, Appointment> appointmentRepository =
             new AppointmentRepository(APPOINTMENT_FILE, VITALMED_LOGGER);
+
+    private static final Repository<String, Room> roomRepository =
+            new RoomRepository(ROOM_FILE, VITALMED_LOGGER);
 
     @Getter
     private static final DoctorService doctorService =
@@ -33,7 +38,7 @@ public class ServiceFactory {
 
     @Getter
     private static final AdminService adminService =
-            new AdminServiceImpl(doctorRepository, patientRepository, VITALMED_LOGGER);
+            new AdminServiceImpl(doctorRepository, patientRepository, roomRepository, VITALMED_LOGGER);
 
     @Getter
     private static final AuthService<Doctor> doctorAuth = new GenericAuthService<>(doctorRepository, VITALMED_LOGGER);
