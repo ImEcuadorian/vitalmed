@@ -1,6 +1,7 @@
 package io.github.imecuadorian.vitalmed.repository;
 
 import io.github.imecuadorian.library.*;
+import io.github.imecuadorian.vitalmed.model.*;
 
 import java.io.*;
 import java.util.*;
@@ -65,6 +66,30 @@ public abstract class FileRepository<K, V> implements Repository<K, V> {
     public Optional<V> findById(K id) {
         return findAll().stream()
                 .filter(entity -> getId(entity).equals(id))
+                .findFirst();
+    }
+
+    @Override
+    public Optional<V> findByEmail(String email) {
+        return findAll().stream()
+                .filter(entity -> {
+                    if (entity instanceof User user) {
+                        return user.getEmail().equals(email);
+                    }
+                    return false;
+                })
+                .findFirst();
+    }
+
+    @Override
+    public Optional<V> findByCellphone(String cellphone) {
+        return findAll().stream()
+                .filter(entity -> {
+                    if (entity instanceof User user) {
+                        return user.getMobile().equals(cellphone);
+                    }
+                    return false;
+                })
                 .findFirst();
     }
 

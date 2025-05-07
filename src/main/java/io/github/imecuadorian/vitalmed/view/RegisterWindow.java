@@ -25,7 +25,7 @@ public class RegisterWindow extends JFrame {
     private final JPanel formPanel;
     private final String[] labels = {
             "Cédula", "Nombre completo", "Email", "Contraseña",
-            "Confirmar contraseña", "Teléfono", "Celular", "Dirección"
+            "Confirmar contraseña", "Teléfono(Opcional)", "Celular", "Dirección"
     };
 
     private final RegistrationController registrationController = new RegistrationController(
@@ -83,7 +83,7 @@ public class RegisterWindow extends JFrame {
 
         JPanel imagePanel = new JPanel(new GridBagLayout());
         imagePanel.setBackground(Color.WHITE);
-        ImageIcon logo = new ImageIcon(Objects.requireNonNull(getClass().getResource("/io/github/imecuadorian/images/vitalmed-main-logo.png")));
+        ImageIcon logo = new ImageIcon(Objects.requireNonNull(getClass().getResource("/io/github/imecuadorian/vitalmed/images/vitalmed-main-logo.png")));
         Image scaled = logo.getImage().getScaledInstance(280, 280, Image.SCALE_SMOOTH);
         imagePanel.add(new JLabel(new ImageIcon(scaled)));
         splitPane.setRightComponent(imagePanel);
@@ -133,12 +133,12 @@ public class RegisterWindow extends JFrame {
             case "Nombre completo" -> "user-icon-16px.png";
             case "Email" -> "email-icon-16px.png";
             case "Contraseña", "Confirmar contraseña" -> "password-icon-16px.png";
-            case "Teléfono", "Celular" -> "phone-icon-16px.png";
+            case "Teléfono(Opcional)", "Celular" -> "phone-icon-16px.png";
             case "Dirección" -> "address-icon-16px.png";
             default -> null;
         };
         if (filename == null) return null;
-        return new ImageIcon(Objects.requireNonNull(getClass().getResource("/io/github/imecuadorian/images/" + filename)));
+        return new ImageIcon(Objects.requireNonNull(getClass().getResource("/io/github/imecuadorian/vitalmed/images/" + filename)));
     }
 
     private JTextField createField(String label) {
@@ -241,13 +241,15 @@ public class RegisterWindow extends JFrame {
     }
 
     private void handleRegistration() {
-        for (JTextField field : fields) {
-            if (field.getText().trim().isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Todos los campos deben estar llenos.", "Campos vacíos", JOptionPane.WARNING_MESSAGE);
+        for (int i = 0; i < fields.length; i++) {
+            if (i == 5) {
+                continue;
+            }
+            if (fields[i].getText().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Por favor complete todos los campos.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
         }
-
         String cedula = fields[0].getText();
         String name = fields[1].getText();
         String email = fields[2].getText();
@@ -265,15 +267,28 @@ public class RegisterWindow extends JFrame {
         } else if (!RegexValidator.isValidNamesOrSurnames(name)) {
             JOptionPane.showMessageDialog(this, "Nombre completo no válido", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
-            Patient patient = new Patient(
-                    cedula,
-                    name,
-                    email,
-                    password,
-                    fields[5].getText(),
-                    fields[6].getText(),
-                    fields[7].getText()
-            );
+            Patient patient;
+            if (fields[5].getText().isEmpty()) {
+                patient = new Patient(
+                        cedula,
+                        name,
+                        email,
+                        password,
+                        "000000000",
+                        fields[6].getText(),
+                        fields[7].getText()
+                );
+            } else {
+                patient = new Patient(
+                        cedula,
+                        name,
+                        email,
+                        password,
+                        fields[5].getText(),
+                        fields[6].getText(),
+                        fields[7].getText()
+                );
+            }
             if (registrationController.register(patient)) {
                 JOptionPane.showMessageDialog(this, "Registro exitoso. Ahora puede iniciar sesión.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                 dispose();

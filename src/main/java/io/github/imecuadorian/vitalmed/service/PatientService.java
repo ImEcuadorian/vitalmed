@@ -4,7 +4,6 @@ import io.github.imecuadorian.vitalmed.model.Appointment;
 import io.github.imecuadorian.vitalmed.model.Patient;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface PatientService {
     boolean register(Patient patient);

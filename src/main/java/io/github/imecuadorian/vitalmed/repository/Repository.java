@@ -8,6 +8,9 @@ public interface Repository<K, V> {
 
     Optional<V> findById(K id);
 
+    Optional<V> findByEmail(String email);
+
+    Optional<V> findByCellphone(String cellphone);
     List<V> findAll();
 
     void update(K id, V value);

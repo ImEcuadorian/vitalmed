@@ -6,11 +6,11 @@ import java.time.*;
 
 public class Schedule {
     private final Generic<LocalTime, LocalTime> time;
-    private final Generic<DayOfWeek, String> information;
+    private final Generic<DayOfWeek, Room> information;
 
-    public Schedule(DayOfWeek day, LocalTime startTime, LocalTime endTime, String roomId) {
+    public Schedule(DayOfWeek day, LocalTime startTime, LocalTime endTime, Room room) {
         this.time = new Generic<>(startTime, endTime);
-        this.information = new Generic<>(day, roomId);
+        this.information = new Generic<>(day, room);
     }
 
     public LocalTime getStartTime() {
@@ -25,7 +25,7 @@ public class Schedule {
         return information.getT1();
     }
 
-    public String getRoomId() {
+    public Room getRoom() {
         return information.getS1();
     }
 }
