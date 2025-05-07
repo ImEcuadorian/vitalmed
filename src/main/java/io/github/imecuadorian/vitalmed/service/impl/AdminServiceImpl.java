@@ -1,8 +1,6 @@
 package io.github.imecuadorian.vitalmed.service.impl;
 
-import io.github.imecuadorian.vitalmed.model.Doctor;
-import io.github.imecuadorian.vitalmed.model.Patient;
-import io.github.imecuadorian.vitalmed.model.Schedule;
+import io.github.imecuadorian.vitalmed.model.*;
 import io.github.imecuadorian.vitalmed.repository.Repository;
 import io.github.imecuadorian.vitalmed.service.*;
 
@@ -15,13 +13,17 @@ public class AdminServiceImpl implements AdminService {
 
     private final Repository<String, Doctor> doctorRepository;
     private final Repository<String, Patient> patientRepository;
+
+    private final Repository<String, Room> roomRepository;
     private final Logger logger;
 
     public AdminServiceImpl(Repository<String, Doctor> doctorRepository,
                             Repository<String, Patient> patientRepository,
+                            Repository<String, Room> roomRepository,
                             Logger logger) {
         this.doctorRepository = doctorRepository;
         this.patientRepository = patientRepository;
+        this.roomRepository = roomRepository;
         this.logger = logger;
     }
 
@@ -84,4 +86,43 @@ public class AdminServiceImpl implements AdminService {
     public List<Patient> getAllPatients() {
         return patientRepository.findAll();
     }
+
+    @Override
+    public boolean registerRoom(Room room) {
+        if (roomRepository.findById(room.getId()).isPresent()) {
+            logger.warning(String.format("Room with ID %s already exists.", room.getId()));
+            return false;
+        }
+        roomRepository.save(room);
+        logger.info("Room registered: " + room.getId());
+        return true;
+    }
+
+    @Override
+    public boolean updateRoom(String roomId, Room updatedRoom) {
+        if (roomRepository.findById(roomId).isEmpty()) {
+            logger.warning(String.format("Room not found for update: %s", roomId));
+            return false;
+        }
+        roomRepository.update(roomId, updatedRoom);
+        logger.info("Room updated: " + roomId);
+        return true;
+    }
+
+    @Override
+    public boolean deleteRoom(String roomId) {
+        if (roomRepository.findById(roomId).isEmpty()) {
+            logger.warning("Room not found for deletion: " + roomId);
+            return false;
+        }
+        logger.info(String.format("Room deleted: %s", roomId));
+        roomRepository.delete(roomId);
+        return true;
+    }
+
+    @Override
+    public List<Room> getAllRooms() {
+        return roomRepository.findAll();
+    }
+
 }
