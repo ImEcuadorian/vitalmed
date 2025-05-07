@@ -33,6 +33,20 @@ public class PatientServiceImpl implements PatientService {
             }
             return false;
         }
+        boolean emailExists = patientRepository.findByEmail(patient.getEmail()).isPresent();
+        if (emailExists) {
+            if (logger.isLoggable(Level.WARNING)) {
+                logger.warning(String.format("Email %s already registered", patient.getEmail()));
+            }
+            return false;
+        }
+        boolean cellphoneExists = patientRepository.findByCellphone(patient.getMobile()).isPresent();
+        if (cellphoneExists) {
+            if (logger.isLoggable(Level.WARNING)) {
+                logger.warning(String.format("Cellphone %s already registered", patient.getMobile()));
+            }
+            return false;
+        }
         patientRepository.save(patient);
         if (logger.isLoggable(Level.INFO)) {
             logger.info(String.format("Patient registered: %s", patient.getId()));

@@ -1,8 +1,6 @@
 package io.github.imecuadorian.vitalmed.service;
 
-import io.github.imecuadorian.vitalmed.model.Doctor;
-import io.github.imecuadorian.vitalmed.model.Patient;
-import io.github.imecuadorian.vitalmed.model.Schedule;
+import io.github.imecuadorian.vitalmed.model.*;
 
 import java.util.List;
 
@@ -11,4 +9,9 @@ public interface AdminService {
     boolean assignSchedules(String doctorId, List<Schedule> schedules);
     boolean resetPatientPassword(String patientId, String newPassword);
     List<Patient> getAllPatients();
+
+    boolean registerRoom(Room room);
+    boolean updateRoom(String roomId, Room updatedRoom);
+    boolean deleteRoom(String roomId);
+    List<Room> getAllRooms();
 }
