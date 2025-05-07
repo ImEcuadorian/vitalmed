@@ -83,7 +83,7 @@ public class RegisterWindow extends JFrame {
 
         JPanel imagePanel = new JPanel(new GridBagLayout());
         imagePanel.setBackground(Color.WHITE);
-        ImageIcon logo = new ImageIcon(Objects.requireNonNull(getClass().getResource("/io/github/imecuadorian/images/vitalmed-main-logo.png")));
+        ImageIcon logo = new ImageIcon(Objects.requireNonNull(getClass().getResource("/io/github/imecuadorian/vitalmed/images/vitalmed-main-logo.png")));
         Image scaled = logo.getImage().getScaledInstance(280, 280, Image.SCALE_SMOOTH);
         imagePanel.add(new JLabel(new ImageIcon(scaled)));
         splitPane.setRightComponent(imagePanel);
@@ -138,7 +138,7 @@ public class RegisterWindow extends JFrame {
             default -> null;
         };
         if (filename == null) return null;
-        return new ImageIcon(Objects.requireNonNull(getClass().getResource("/io/github/imecuadorian/images/" + filename)));
+        return new ImageIcon(Objects.requireNonNull(getClass().getResource("/io/github/imecuadorian/vitalmed/images/" + filename)));
     }
 
     private JTextField createField(String label) {
