@@ -21,7 +21,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public boolean createAppointment(Appointment appointment) {
-        if (!isAvailable(appointment.getDoctorId(), appointment.getRoom(), appointment.getDateTime())) {
+        if (!isAvailable(appointment.getDoctorId(), appointment.getRoom().getId() , appointment.getDateTime())) {
             if (logger.isLoggable(Level.WARNING)) {
                 logger.warning("Conflict: Doctor already has an appointment at " + appointment.getDateTime());
             }
