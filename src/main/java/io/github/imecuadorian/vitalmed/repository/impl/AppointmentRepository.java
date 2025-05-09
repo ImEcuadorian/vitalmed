@@ -19,7 +19,7 @@ public class AppointmentRepository extends FileRepository<String, Appointment> {
                 entity.getPatientId(),
                 entity.getDoctorId(),
                 entity.getSpeciality(),
-                entity.getRoom(),
+                entity.getRoom().toString(),
                 entity.getDateTime().toString()
         );
     }
@@ -29,7 +29,7 @@ public class AppointmentRepository extends FileRepository<String, Appointment> {
         String[] parts = line.split(";");
         return new Appointment(
                 parts[0], parts[1], parts[2], parts[3],
-                parts[4], LocalDateTime.parse(parts[5])
+                new Room("1","2",3), LocalDateTime.parse(parts[5])
         );
     }
 
