@@ -40,13 +40,22 @@ public class FormRegister extends JPanel {
         add(new JLabel(I18n.t("auth.formRegister.id*")), "span 2");
         JTextField txtId = new JTextField();
         txtId.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.id"));
+        String toolTipId =
+                I18n.t("auth.formRegister.idTooltip"); //Key for the tooltip text
+        txtId.setToolTipText(toolTipId); // Set the tooltip text for the ID field
         add(txtId, "span 2, growx");
 
         add(new JLabel(I18n.t("auth.formRegister.names*")));
+        String toolTipName =
+                I18n.t("auth.formRegister.nameTooltip"); //Key for the tooltip text
         add(new JLabel(I18n.t("auth.formRegister.surnames*")));
+        String toolTipSurname =
+                I18n.t("auth.formRegister.surnameTooltip"); //Key for the tooltip text
 
         JTextField txtName = new JTextField();
+        txtName.setToolTipText(toolTipName); // Set the tooltip text for the name field
         JTextField txtSurname = new JTextField();
+        txtSurname.setToolTipText(toolTipSurname); // Set the tooltip text for the surname field
         txtName.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.name"));
         txtSurname.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.surname"));
         add(txtName);
@@ -54,7 +63,10 @@ public class FormRegister extends JPanel {
 
 
         add(new JLabel(I18n.t("auth.formRegister.email")),"span 2");
+        String toolTipEmail =
+                I18n.t("auth.formRegister.emailTooltip"); //Key for the tooltip text
         JTextField txtEmail = new JTextField();
+        txtEmail.setToolTipText(toolTipEmail); // Set the tooltip text for the email field
         txtEmail.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.email"));
         add(txtEmail, "span 2, growx");
 
@@ -62,6 +74,8 @@ public class FormRegister extends JPanel {
         add(new JLabel(I18n.t("auth.formRegister.confirmPassword*")));
         String toolTipPassword =
                 I18n.t("auth.formRegister.passwordTooltip");
+        String toolTipConfirmPassword =
+                I18n.t("auth.formRegister.confirmPasswordTooltip");
 
         JPasswordField txtPassword = new JPasswordField();
         JPasswordField txtConfirmPassword = new JPasswordField();
@@ -70,26 +84,33 @@ public class FormRegister extends JPanel {
         txtPassword.putClientProperty(FlatClientProperties.STYLE, "iconTextGap:10;" +
                 "showRevealButton:true;");
         txtPassword.setToolTipText(toolTipPassword);
+        txtConfirmPassword.setToolTipText(toolTipConfirmPassword); // Set the tooltip text for the confirm password field
         txtConfirmPassword.putClientProperty(FlatClientProperties.STYLE, "iconTextGap:10;" +
                 "showRevealButton:true;");
         add(txtPassword);
         add(txtConfirmPassword);
 
-        add(new JLabel("Celular*"));
-        add(new JLabel("Teléfono"));
+        add(new JLabel(I18n.t("auth.formRegister.CellphoneNumber")));
+        String toolTipCellphone =
+                I18n.t("auth.formRegister.cellphoneTooltip"); //Key for the tooltip text
+        add(new JLabel(I18n.t("auth.formRegister.PhoneNumber")));
+        String toolTipPhone =
+                I18n.t("auth.formRegister.phoneTooltip"); //Key for the tooltip text
         JTextField txtPhone = new JTextField();
+        txtPhone.setToolTipText(toolTipPhone); // Set the tooltip text for the phone field
         JTextField txtCellphone = new JTextField();
-        txtPhone.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Teléfono");
-        txtCellphone.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Celular");
+        txtCellphone.setToolTipText(toolTipCellphone); // Set the tooltip text for the cellphone field
+        txtPhone.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.phoneNumber"));
+        txtCellphone.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.cellphoneNumber"));
         add(txtCellphone);
         add(txtPhone);
 
-        add(new JLabel("Provincia*"), "split 2, span 2");
-        add(new JLabel("Cantón*"), "wrap");
+        add(new JLabel(I18n.t("auth.formRegister.province*")), "split 2, span 2");
+        add(new JLabel(I18n.t("auth.formRegister.canton*")), "wrap");
         JComboBox<Province> cbProvince = new JComboBox<>(Province.values());
         JComboBox<String> cbCanton = new JComboBox<>();
-        cbProvince.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Provincia");
-        cbCanton.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Cantón");
+        cbProvince.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.province"));
+        cbCanton.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.canton"));
         add(cbProvince, "split 2, span 2, w ::300");
         add(cbCanton, "wrap");
 
@@ -109,9 +130,12 @@ public class FormRegister extends JPanel {
 
         cbProvince.setSelectedItem(Province.PICHINCHA);
 
-        add(new JLabel("Dirección*"), "span 2");
+        add(new JLabel(I18n.t("auth.formRegister.address*")), "span 2");
+        String toolTipAddress =
+                I18n.t("auth.formRegister.addressTooltip"); //Key for the tooltip text
         JTextField txtAddress = new JTextField();
-        txtAddress.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Dirección");
+        txtAddress.setToolTipText(toolTipAddress); // Set the tooltip text for the address field
+        txtAddress.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.address"));
         add(txtAddress, "span 2, growx");
 
         JTextArea textArea = new JTextArea();
