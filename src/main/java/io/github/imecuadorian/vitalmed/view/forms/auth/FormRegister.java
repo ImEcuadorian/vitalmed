@@ -39,7 +39,7 @@ public class FormRegister extends JPanel {
 
         add(new JLabel(I18n.t("auth.formRegister.id*")), "span 2");
         JTextField txtId = new JTextField();
-        txtId.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Cédula");
+        txtId.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.id"));
         add(txtId, "span 2, growx");
 
         add(new JLabel(I18n.t("auth.formRegister.names*")));
