@@ -3,6 +3,7 @@ package io.github.imecuadorian.vitalmed.view.forms.auth;
 import com.formdev.flatlaf.*;
 import io.github.imecuadorian.vitalmed.controller.*;
 import io.github.imecuadorian.vitalmed.factory.*;
+import io.github.imecuadorian.vitalmed.i18n.I18n;
 import io.github.imecuadorian.vitalmed.model.*;
 import io.github.imecuadorian.vitalmed.model.country.*;
 import io.github.imecuadorian.vitalmed.util.*;
@@ -30,49 +31,42 @@ public class FormRegister extends JPanel {
         ImageIcon logo = new ImageIcon(Objects.requireNonNull(getClass().getResource("/io/github/imecuadorian/vitalmed/images/vitalmed-main-icon.png")));
         Image scaled = logo.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
 
-        JLabel lbContactDetail = new JLabel("Datos de historia clínica del paciente", new ImageIcon(scaled), JLabel.LEFT);
+        JLabel lbContactDetail = new JLabel(I18n.t("auth.formRegister.patientsMedicalHistoryData"), new ImageIcon(scaled), JLabel.LEFT);
         lbContactDetail.putClientProperty(FlatClientProperties.STYLE, "font:bold +2;");
         lbContactDetail.setIconTextGap(10); // espacio entre ícono y texto
         add(lbContactDetail, "span 2, gapy 10 10, wrap");
 
 
-        add(new JLabel("Cédula*"), "span 2");
+        add(new JLabel(I18n.t("auth.formRegister.id*")), "span 2");
         JTextField txtId = new JTextField();
-        txtId.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Cédula");
+        txtId.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.id"));
         add(txtId, "span 2, growx");
 
-
-        add(new JLabel("Nombre(s)*"));
-        add(new JLabel("Apellido(s)*"));
+        add(new JLabel(I18n.t("auth.formRegister.names*")));
+        add(new JLabel(I18n.t("auth.formRegister.surnames*")));
 
         JTextField txtName = new JTextField();
         JTextField txtSurname = new JTextField();
-        txtName.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Nombre(s)");
-        txtSurname.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Apellido(s)");
+        txtName.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.name"));
+        txtSurname.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.surname"));
         add(txtName);
         add(txtSurname);
 
 
-        add(new JLabel("Email*"),"span 2");
+        add(new JLabel(I18n.t("auth.formRegister.email")),"span 2");
         JTextField txtEmail = new JTextField();
-        txtEmail.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "example@mail.com");
+        txtEmail.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.email"));
         add(txtEmail, "span 2, growx");
 
-        add(new JLabel("Contraseña*"));
-        add(new JLabel("Confirmar contraseña*"));
-        String toolTipPassword = """
-                <html>
-                La contraseña debe:<br>
-                • Tener al menos 8 caracteres<br>
-                • Contener al menos una mayúscula<br>
-                • Incluir al menos uno de los siguientes símbolos: @, -, /
-                </html>
-                """;
+        add(new JLabel(I18n.t("auth.formRegister.password*")));
+        add(new JLabel(I18n.t("auth.formRegister.confirmPassword*")));
+        String toolTipPassword =
+                I18n.t("auth.formRegister.passwordTooltip");
 
         JPasswordField txtPassword = new JPasswordField();
         JPasswordField txtConfirmPassword = new JPasswordField();
-        txtPassword.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Contraseña");
-        txtConfirmPassword.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Confirmar contraseña");
+        txtPassword.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.password"));
+        txtConfirmPassword.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.confirmPassword"));
         txtPassword.putClientProperty(FlatClientProperties.STYLE, "iconTextGap:10;" +
                 "showRevealButton:true;");
         txtPassword.setToolTipText(toolTipPassword);
