@@ -28,6 +28,11 @@ val itextPdfVersion = "5.5.13.4"
 val slf4jVersion = "2.0.17"
 
 dependencies {
+
+    implementation("io.github.dj-raven:modal-dialog:2.5.0")
+    implementation("com.miglayout:miglayout-swing:11.4.2")
+    implementation("com.formdev:flatlaf:3.6")
+    implementation("com.formdev:flatlaf-extras:3.6")
     implementation(files("libs/generic-library-1.0.0.jar"))
     implementation("org.jetbrains:annotations:$jetbrainsAnnotationsVersion")
 

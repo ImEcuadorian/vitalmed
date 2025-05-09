@@ -9,7 +9,7 @@ public class Patient extends User {
     private final Generic<List<History>, ?> information;
 
     public Patient(String id, String fullName, String email, String password, String phone, String mobile, String address) {
-        super(id, fullName, email, password, phone, mobile, address);
+        super(id, fullName, email, password, phone, mobile, address, Rol.PATIENT);
         this.information = new Generic<>(new ArrayList<>(), null);
     }
 

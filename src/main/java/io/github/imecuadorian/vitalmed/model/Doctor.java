@@ -11,7 +11,7 @@ public class Doctor extends User {
     public Doctor(String id, String fullName, String email,
                   String password, String phone, String mobile,
                   String address, String speciality) {
-        super(id, fullName, email, password, phone, mobile, address);
+        super(id, fullName, email, password, phone, mobile, address, Rol.DOCTOR);
         this.information = new Generic<>(speciality, new ArrayList<>());
     }
 
