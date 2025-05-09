@@ -1,5 +1,15 @@
 <!-- Created with Jaspersoft Studio version 7.0.2.final using JasperReports Library version 7.0.2-31532122640f516c6d17238ae0e41a08113d5ac0  -->
-<jasperReport name="appointment_template" language="java" columnCount="1" pageWidth="595" pageHeight="842" whenNoDataType="NoPages" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="641a1c24-e1bb-4933-b132-7f0e85359a50">
+<jasperReport name="appointment_template" language="java" columnCount="1" pageWidth="595" pageHeight="845" orientation="Landscape" whenNoDataType="NoPages" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="641a1c24-e1bb-4933-b132-7f0e85359a50" ignorePagination="true">
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
 		<box>
 			<pen lineWidth="0.5" lineColor="#000000"/>
@@ -33,29 +43,111 @@
 	<parameter name="specialty" class="java.lang.String"/>
 	<parameter name="date" class="java.lang.String"/>
 	<parameter name="hour" class="java.lang.String"/>
+	<parameter name="phone" class="java.lang.String"/>
+	<parameter name="patientId" class="java.lang.String"/>
+	<parameter name="patientMobile" class="java.lang.String"/>
+	<parameter name="patientPhone" class="java.lang.String"/>
+	<parameter name="patientEmail" class="java.lang.String"/>
+	<parameter name="patientAddress" class="java.lang.String"/>
+	<title height="113">
+		<element kind="textField" uuid="c7ff2327-ace5-4284-8565-cd90f722897f" x="423" y="10" width="132" height="20" fontName="Bodoni MT Black" fontSize="12.0" pattern="MMMMM dd, yyyy" hTextAlign="Right">
+			<expression><![CDATA[new java.util.Date()]]></expression>
+		</element>
+		<element kind="line" uuid="6d126889-5bf3-4336-9c4b-60bf1bb694f5" x="1" y="100" width="555" height="1"/>
+		<element kind="image" uuid="0702cdf7-a482-4807-9b1f-b8a87ed1c649" x="134" y="10" width="275" height="71">
+			<expression><![CDATA["/src/main/resources/io/github/imecuadorian/vitalmed/images/vitalmed-main-logo.png"]]></expression>
+		</element>
+		<element kind="staticText" uuid="d4831f9a-48df-42d9-96c8-aae2bb614eae" x="432" y="45" width="123" height="20" fontName="Bodoni MT Black" fontSize="12.0" hTextAlign="Right" vTextAlign="Bottom">
+			<text><![CDATA[info@vitalined.com]]></text>
+		</element>
+		<element kind="image" uuid="9cf33282-ec09-4614-a69e-5feb51c3a867" x="418" y="50" width="22" height="18">
+			<expression><![CDATA["C:/Users/DOCENTE/Downloads/correo-electronico (1).png"]]></expression>
+		</element>
+		<element kind="staticText" uuid="5d373f13-1fbc-4f35-961f-591007745383" x="184" y="80" width="190" height="20" fontName="Bodoni MT Black" fontSize="12.0" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[VITALMED - CITA MEDICA]]></text>
+		</element>
+		<element kind="staticText" uuid="f33dabbb-cf07-4e23-97f3-4badbdc4aae6" x="432" y="65" width="123" height="34" fontName="Bodoni MT Black" fontSize="12.0" hTextAlign="Right" vTextAlign="Middle">
+			<text><![CDATA[123 Casa House One coin]]></text>
+		</element>
+		<element kind="image" uuid="e515b6e1-bc8c-44d0-91a9-cd4838465b67" x="418" y="68" width="22" height="20">
+			<expression><![CDATA["C:/Users/DOCENTE/Downloads/casa.png"]]></expression>
+		</element>
+		<element kind="staticText" uuid="d171a2ac-2be5-4446-aa30-8e2611c2aadd" x="444" y="30" width="111" height="20" fontName="Bodoni MT Black" fontSize="12.0" hTextAlign="Right" vTextAlign="Middle">
+			<text><![CDATA[(123) 456-983]]></text>
+		</element>
+		<element kind="image" uuid="ed0dd3d3-e01b-40a3-aaad-5d5bab31ec33" x="418" y="30" width="22" height="20">
+			<expression><![CDATA["C:/Users/DOCENTE/Downloads/telefono.png"]]></expression>
+		</element>
+		<property name="com.jaspersoft.studio.layout"/>
+		<property name="com.jaspersoft.studio.unit.height" value="px"/>
+	</title>
+	<pageHeader height="85">
+		<element kind="staticText" uuid="6dc3d77d-7529-44c1-821b-06b4ba392953" x="20" y="0" width="520" height="80" fontName="Bodoni MT" fontSize="12.0" vTextAlign="Middle">
+			<text><![CDATA[Director General: Josue Samuel Vele Asifuela
+
+Dirección Matriz: CALLE VIEJA 12-30 Y ELIA LIUT
+
+Dirección Sucursal: AV 12 DE OCTUBRE N24-22 Y WILSON]]></text>
+		</element>
+		<element kind="rectangle" uuid="40cf8dac-9c99-4528-8565-41e95f6c04fc" mode="Transparent" x="1" y="-4" width="554" height="89" radius="0">
+			<pen lineWidth="1.0"/>
+		</element>
+	</pageHeader>
+	<columnHeader height="21">
+		<element kind="line" uuid="fd7fdfa7-5644-4689-940f-6a676f3295d0" x="1" y="10" width="555" height="1"/>
+	</columnHeader>
 	<detail>
-		<band height="200" splitType="Stretch">
-			<element kind="staticText" uuid="69b6ba00-7d1f-4eb1-b0c0-e3c62dc2d636" stretchType="NoStretch" x="0" y="0" width="555" height="20" fontSize="16.0" bold="true" hTextAlign="Center">
-				<text><![CDATA[CITA MÉDICA - CLÍNICA VITALMED]]></text>
+		<band height="220">
+			<element kind="textField" uuid="8c5f2471-af2a-4a49-8d1b-fbdefa4973cf" x="139" y="90" width="140" height="30" fontName="Bodoni MT" fontSize="12.0" vTextAlign="Middle">
+				<expression><![CDATA[$P{patientName}]]></expression>
 			</element>
-			<element kind="textField" uuid="8f905f70-cbea-41fe-a9ab-8a6f3ad77d07" stretchType="NoStretch" x="0" y="40" width="555" height="20" fontSize="12.0" bold="true">
-				<expression><![CDATA["Paciente: " + $P{patientName}]]></expression>
+			<element kind="staticText" uuid="6dcafabe-085f-459a-9603-93c73ff2d0ca" x="30" y="90" width="110" height="30" fontName="Bodoni MT" fontSize="12.0" vTextAlign="Middle">
+				<text><![CDATA[Nombre del paciente:]]></text>
 			</element>
-			<element kind="textField" uuid="d4b007f1-5a88-4512-abe6-a8730c91affe" stretchType="NoStretch" x="0" y="60" width="555" height="20" fontSize="12.0">
-				<expression><![CDATA["Doctor: " + $P{doctorName}]]></expression>
+			<element kind="staticText" uuid="1e32c973-3752-4e9b-99bd-8839f37f0f51" x="30" y="130" width="101" height="30" fontName="Bodoni MT" fontSize="12.0" vTextAlign="Middle">
+				<text><![CDATA[Número de cedula:]]></text>
 			</element>
-			<element kind="textField" uuid="038627b1-1a06-4a64-8ec8-3cf1ec14e192" stretchType="NoStretch" x="0" y="80" width="555" height="20" fontSize="12.0">
-				<expression><![CDATA["Especialidad: " + $P{specialty}]]></expression>
+			<element kind="textField" uuid="6d81a16c-4c90-4c40-8f7f-0404a3e7b327" x="130" y="130" width="100" height="30" fontName="Bodoni MT" fontSize="12.0" vTextAlign="Middle">
+				<expression><![CDATA[$P{patientId}]]></expression>
 			</element>
-			<element kind="textField" uuid="8e9e5bb2-a057-489b-8555-358b5e98e2ab" stretchType="NoStretch" x="0" y="100" width="555" height="20" fontSize="12.0">
-				<expression><![CDATA["Sala: " + $P{room}]]></expression>
+			<element kind="staticText" uuid="59d1b99c-c030-4430-a934-638cca7076e6" x="300" y="130" width="111" height="30" fontName="Bodoni MT" fontSize="12.0" vTextAlign="Middle">
+				<text><![CDATA[Celular del paciente:]]></text>
 			</element>
-			<element kind="textField" uuid="aab0bc77-3efe-48b0-a2f1-1024da1114a9" stretchType="NoStretch" x="0" y="120" width="555" height="20" fontSize="12.0">
-				<expression><![CDATA["Fecha: " + $P{date}]]></expression>
+			<element kind="textField" uuid="68e9ff6f-4713-4d24-aab1-1501250257b5" x="410" y="130" width="120" height="30" fontName="Bodoni MT" fontSize="12.0" vTextAlign="Middle">
+				<expression><![CDATA[$P{patientMobile}]]></expression>
 			</element>
-			<element kind="textField" uuid="95063e9e-bfcd-4a74-9f9f-00c7677532fd" stretchType="NoStretch" x="0" y="140" width="555" height="20" fontSize="12.0">
-				<expression><![CDATA["Horario: " + $P{hour}]]></expression>
+			<element kind="staticText" uuid="6d4c4d48-f3d2-4751-b3a8-51217c9daa6b" x="300" y="90" width="111" height="30" fontName="Bodoni MT" fontSize="12.0" vTextAlign="Middle">
+				<text><![CDATA[Telefono del paciente:]]></text>
+			</element>
+			<element kind="textField" uuid="55eecb1f-b6a7-4f3c-bfd0-42bb66cc2ec3" x="411" y="90" width="120" height="30" fontName="Bodoni MT" fontSize="12.0" vTextAlign="Middle">
+				<expression><![CDATA[$P{patientPhone}]]></expression>
+			</element>
+			<element kind="staticText" uuid="a9edb343-b28f-4e4d-baa7-2b8e96de2362" x="30" y="170" width="110" height="30" fontName="Bodoni MT" fontSize="12.0" vTextAlign="Middle">
+				<text><![CDATA[Correo del paciente:]]></text>
+			</element>
+			<element kind="textField" uuid="e6c54f76-d5e9-4e5f-9f2c-551ceaa04dbd" x="139" y="170" width="140" height="30" fontName="Bodoni MT" fontSize="12.0" vTextAlign="Middle">
+				<expression><![CDATA[$P{patientEmail}]]></expression>
+			</element>
+			<element kind="staticText" uuid="694a1713-580f-45ea-8eaf-8386ae269947" x="299" y="170" width="121" height="30" fontName="Bodoni MT" fontSize="12.0" vTextAlign="Middle">
+				<text><![CDATA[Direccion del paciente:]]></text>
+			</element>
+			<element kind="textField" uuid="e4c1b6ee-f076-4b82-825b-d17e53bf9360" x="420" y="170" width="120" height="30" fontName="Bodoni MT" fontSize="12.0" vTextAlign="Middle">
+				<expression><![CDATA[$P{patientAddress}]]></expression>
+			</element>
+			<element kind="image" uuid="b66689be-1aab-452e-b2e4-16b503f8f411" x="10" y="10" width="70" height="70">
+				<expression><![CDATA["C:/Users/DOCENTE/Downloads/contactos-de-google.png"]]></expression>
+			</element>
+			<element kind="staticText" uuid="d0d09f88-c287-4870-90f7-63442adac551" x="90" y="30" width="200" height="30" fontName="Bodoni MT" fontSize="12.0" vTextAlign="Middle">
+				<text><![CDATA[INFORMACIÓN DEL PACIENTE]]></text>
+			</element>
+			<element kind="rectangle" uuid="d600a51f-aa42-4ebf-a40d-0a10fafa0c43" mode="Transparent" x="0" y="-1" width="555" height="220" radius="15"/>
+			<element kind="staticText" uuid="83dc802d-26eb-49ce-94ee-5ae5f618270c" x="370" y="30" width="70" height="30" fontName="Bodoni MT" fontSize="12.0" vTextAlign="Middle">
+				<text><![CDATA[Fecha actual:]]></text>
+			</element>
+			<element kind="textField" uuid="c196f157-1f4f-48e3-833f-704d13d284c3" x="440" y="30" width="100" height="30" fontSize="12.0" pattern="HH:mm" vTextAlign="Middle">
+				<expression><![CDATA[new java.util.Date()]]></expression>
 			</element>
 		</band>
 	</detail>
+	<lastPageFooter height="71"/>
 </jasperReport>
