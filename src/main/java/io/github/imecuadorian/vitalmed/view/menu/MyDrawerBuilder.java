@@ -98,22 +98,22 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
         MenuOption simpleMenuOption = new MenuOption();
 
         MenuItem[] items = new MenuItem[]{
-                new Item.Label("PACIENTE"),
-                new Item("Dashboard","dashboard.svg", FormDashboard.class),
+                new Item.Label(I18n.t("dashboard.menuItem.patient")),
+                new Item(I18n.t("dashboard.menuItem.information"),"dashboard.svg", FormDashboard.class),
 
-                new Item.Label("CITAS"),
-                new Item("Agendar Citas","calendar.svg", FormAppointmentScheduling.class), // Paciente
-                new Item("Gestion de citas", "components.svg"), // Doctor y Admin
+                new Item.Label(I18n.t("dashboard.menuItem.appointment")),
+                new Item(I18n.t("dashboard.menuItem.scheduleAppointment"),"calendar.svg", FormAppointmentScheduling.class), // Paciente
+                new Item(I18n.t("dashboard.menuItem.appointmentManagement"), "components.svg"), // Doctor y Admin
 
-                new Item.Label("HISTORIA CLÍNICA"),
-                new Item("Ver Historial Clínico", "page.svg"), // Doctor
+                new Item.Label(I18n.t("dashboard.menuItem.medicalRecord")),
+                new Item(I18n.t("dashboard.menuItem.seeClinicalHistory"), "page.svg"), // Doctor
 
-                new Item.Label("ADMINISTRACIÓN"),
-                new Item("Registrar Doctores","forms.svg"), // Admin
-                new Item("Administrar Pacientes", "chart.svg", FormPatientManagement.class), // Admin
-                new Item("Asignación de Horarios", "calendar.svg"), // Admin
+                new Item.Label(I18n.t("dashboard.menuItem.administration")),
+                new Item(I18n.t("dashboard.menuItem.registerDoctors"),"forms.svg"), // Admin
+                new Item(I18n.t("dashboard.menuItem.administrationPatients"), "chart.svg", FormPatientManagement.class), // Admin
+                new Item(I18n.t("dashboard.menuItem.assignmentOfSchedules"), "calendar.svg"), // Admin
 
-                new Item("Logout", "logout.svg")
+                new Item(I18n.t("dashboard.menuItem.logout"), "logout.svg")
         };
 
         simpleMenuOption.setMenuStyle(new MenuStyle() {
@@ -143,7 +143,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                 return;
             } else if (i == 9) {
                 action.consume();
-                int option = JOptionPane.showConfirmDialog(null, "¿Deseas cerrar sesión?", "Confirmar Logout", JOptionPane.YES_NO_OPTION);
+                int option = JOptionPane.showConfirmDialog(null, I18n.t("dashboard.menuItem.youWantToLogOut"), I18n.t("dashboard.menuItem.confirmLogout"), JOptionPane.YES_NO_OPTION);
                 if (option == JOptionPane.YES_OPTION) {
                     System.exit(0);
                 }
