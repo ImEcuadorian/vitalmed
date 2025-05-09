@@ -7,9 +7,9 @@ import java.time.*;
 public class Appointment {
 
     private final Generic<String, String> information;
-    private final Generic<String, LocalDateTime> data;
+    private final Generic<Room, LocalDateTime> data;
 
-    public Appointment(String id, String patientId, String doctorId, String speciality, String room, LocalDateTime dateTime) {
+    public Appointment(String id, String patientId, String doctorId, String speciality, Room room, LocalDateTime dateTime) {
         this.information = new Generic<>(id, patientId, doctorId, speciality);
         this.data = new Generic<>(room, dateTime);
     }
@@ -30,7 +30,7 @@ public class Appointment {
         return information.getS2();
     }
 
-    public String getRoom() {
+    public Room getRoom() {
         return data.getT1();
     }
 
