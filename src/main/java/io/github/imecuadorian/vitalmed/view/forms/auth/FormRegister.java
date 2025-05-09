@@ -41,6 +41,7 @@ public class FormRegister extends JPanel {
         txtId.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Cédula");
         add(txtId, "span 2, growx");
 
+
         add(new JLabel("Nombre(s)*"));
         add(new JLabel("Apellido(s)*"));
 

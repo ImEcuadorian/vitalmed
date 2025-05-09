@@ -1,7 +1,6 @@
 package io.github.imecuadorian.vitalmed.view.forms.admin.form;
 
 import com.formdev.flatlaf.*;
-import com.formdev.flatlaf.extras.*;
 import io.github.imecuadorian.vitalmed.controller.*;
 import io.github.imecuadorian.vitalmed.factory.*;
 import io.github.imecuadorian.vitalmed.model.*;
@@ -21,7 +20,11 @@ public class FormAddDoctor extends JPanel {
     private final AdminDashboardController adminDashboardController = new AdminDashboardController(
             ServiceFactory.getAdminService()
     );
-    public FormAddDoctor() {
+
+    private final Runnable success;
+
+    public FormAddDoctor(Runnable success) {
+        this.success = success;
         init();
     }
 
@@ -33,21 +36,14 @@ public class FormAddDoctor extends JPanel {
 
         JLabel lbContactDetail = new JLabel("Datos del nuevo doctor", new ImageIcon(scaled), JLabel.LEFT);
         lbContactDetail.putClientProperty(FlatClientProperties.STYLE, "font:bold +2;");
-        lbContactDetail.setIconTextGap(10); // espacio entre ícono y texto
+        lbContactDetail.setIconTextGap(10);
         add(lbContactDetail, "span 2, gapy 10 10, wrap");
 
 
         add(new JLabel("Cédula*"), "span 2");
         JTextField txtId = new JTextField();
         txtId.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Cédula");
-        add(txtId, " growx");
-        JButton btnSearch = new JButton("Buscar",new FlatSVGIcon("io/github/imecuadorian/vitalmed/icon/search.svg", 0.5f)){
-            @Override
-            public boolean isDefaultButton() {
-                return true;
-            }
-        };
-        add(btnSearch, "grow 0, al center");
+        add(txtId, "span 2, growx");
 
         add(new JLabel("Nombre(s)*"));
         add(new JLabel("Apellido(s)*"));
@@ -60,7 +56,7 @@ public class FormAddDoctor extends JPanel {
         add(txtSurname);
 
 
-        add(new JLabel("Email*"),"span 2");
+        add(new JLabel("Email*"), "span 2");
         JTextField txtEmail = new JTextField();
         txtEmail.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "example@mail.com");
         add(txtEmail, "span 2, growx");
@@ -228,6 +224,9 @@ public class FormAddDoctor extends JPanel {
                 if (adminDashboardController.addDoctor(doctor)) {
                     ModalBorderAction.getModalBorderAction(this).doAction(SimpleModalBorder.OK_OPTION);
                     Toast.show(this, Toast.Type.SUCCESS, "Registro exitoso", ToastLocation.TOP_TRAILING, Constants.getOption());
+                    if (success != null) {
+                        success.run(); // ✅ REFRESCA LA TABLA
+                    }
                 } else {
                     Toast.show(this, Toast.Type.ERROR, "Error al registrar el/la Doctor/a", ToastLocation.TOP_TRAILING, Constants.getOption());
                 }
