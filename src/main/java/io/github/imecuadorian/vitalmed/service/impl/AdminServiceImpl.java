@@ -35,6 +35,20 @@ public class AdminServiceImpl implements AdminService {
             }
             return false;
         }
+        boolean emailExists = doctorRepository.findByEmail(doctor.getEmail()).isPresent();
+        if (emailExists) {
+            if (logger.isLoggable(Level.WARNING)) {
+                logger.warning(String.format("Email %s already registered", doctor.getEmail()));
+            }
+            return false;
+        }
+        boolean cellphoneExists = doctorRepository.findByCellphone(doctor.getMobile()).isPresent();
+        if (cellphoneExists) {
+            if (logger.isLoggable(Level.WARNING)) {
+                logger.warning(String.format("Cellphone %s already registered", doctor.getMobile()));
+            }
+            return false;
+        }
         doctorRepository.save(doctor);
         if (logger.isLoggable(Level.INFO)) {
             logger.info(String.format("Doctor registered: %s", doctor.getId()));
@@ -85,6 +99,11 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public List<Patient> getAllPatients() {
         return patientRepository.findAll();
+    }
+
+    @Override
+    public List<Doctor> getAllDoctors() {
+        return doctorRepository.findAll();
     }
 
     @Override

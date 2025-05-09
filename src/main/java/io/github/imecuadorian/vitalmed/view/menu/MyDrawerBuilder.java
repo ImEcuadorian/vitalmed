@@ -109,7 +109,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                 new Item(I18n.t("dashboard.menuItem.seeClinicalHistory"), "page.svg"), // Doctor
 
                 new Item.Label(I18n.t("dashboard.menuItem.administration")),
-                new Item(I18n.t("dashboard.menuItem.registerDoctors"),"forms.svg"), // Admin
+                new Item(I18n.t("dashboard.menuItem.registerDoctors"),"forms.svg", FormRegisterDoctor.class), // Admin
                 new Item(I18n.t("dashboard.menuItem.administrationPatients"), "chart.svg", FormPatientManagement.class), // Admin
                 new Item(I18n.t("dashboard.menuItem.assignmentOfSchedules"), "calendar.svg"), // Admin
 

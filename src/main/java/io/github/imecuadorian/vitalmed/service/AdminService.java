@@ -9,6 +9,8 @@ public interface AdminService {
     boolean assignSchedules(String doctorId, List<Schedule> schedules);
     boolean resetPatientPassword(String patientId, String newPassword);
     List<Patient> getAllPatients();
+
+    List<Doctor> getAllDoctors();
     boolean registerRoom(Room room);
     boolean updateRoom(String roomId, Room updatedRoom);
     boolean deleteRoom(String roomId);
