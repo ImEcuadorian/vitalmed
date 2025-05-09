@@ -17,7 +17,7 @@ public class AppointmentPdfExporter {
         this.logger = logger;
     }
 
-    public void export(Map<String, Object> parameters, String patientName, String patientId) throws JRException, FileNotFoundException {
+    public void export(Map<String, Object> parameters, String patientName, String patientId) throws JRException {
         InputStream jasperStream = AppointmentPdfExporter.class.getResourceAsStream("/io/github/imecuadorian/vitalmed/templates/appointment_template.jasper");
         JasperReport jasperReport = (JasperReport) JRLoader.loadObject(jasperStream);
 

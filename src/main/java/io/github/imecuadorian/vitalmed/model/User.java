@@ -7,9 +7,12 @@ public class User {
     private final Generic<String, String> information;
     private final Generic<String, String> data;
 
-    public User(String id, String fullName, String email, String password, String phone, String mobile, String address) {
+    private final Generic<Rol, ?> rol;
+
+    public User(String id, String fullName, String email, String password, String phone, String mobile, String address, Rol rol) {
         this.information = new Generic<>(id, fullName, email, password);
         this.data = new Generic<>(phone, mobile, address);
+        this.rol = new Generic<>(rol, null);
     }
 
     public String getId() {
@@ -33,6 +36,10 @@ public class User {
 
     public String getAddress() {
         return data.getS1();
+    }
+
+    public Rol getRol() {
+        return rol.getT1();
     }
 
     public boolean validateLogin(String email, String password) {

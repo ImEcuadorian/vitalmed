@@ -4,7 +4,6 @@ import io.github.imecuadorian.vitalmed.model.*;
 import io.github.imecuadorian.vitalmed.service.*;
 import io.github.imecuadorian.vitalmed.util.*;
 
-import javax.swing.*;
 
 public class LoginController {
     private final AdminService adminService;
@@ -19,19 +18,20 @@ public class LoginController {
         this.patientAuthService = patientAuthService;
     }
 
-    public void login(String email, String password, JFrame currentView) {
+    public User login(String email, String password) {
         if (email.equals(Constants.ADMIN_EMAIL) && password.equals(Constants.ADMIN_PASSWORD)) {
-            currentView.dispose();
-            return;
+            return new Admin();
         }
 
-        doctorAuthService.login(email, password).ifPresentOrElse(doctor -> {
-            JOptionPane.showMessageDialog(currentView, "Bienvenido Dr. " + doctor.getFullName());
-            currentView.dispose();
-        }, () -> patientAuthService.login(email, password).ifPresentOrElse(patient -> {
-            JOptionPane.showMessageDialog(currentView, "Bienvenido " + patient.getFullName());
-            currentView.dispose();
-        }, () -> JOptionPane.showMessageDialog(currentView, "Credenciales inválidas")));
+        if (doctorAuthService.login(email, password).isPresent()) {
+            return doctorAuthService.login(email, password).get();
+        }
+
+        if (patientAuthService.login(email, password).isPresent()) {
+            return patientAuthService.login(email, password).get();
+        }
+        return null;
     }
+
 }
 
