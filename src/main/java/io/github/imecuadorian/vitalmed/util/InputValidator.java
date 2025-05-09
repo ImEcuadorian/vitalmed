@@ -150,7 +150,7 @@ public class InputValidator {
     }
 
     public static void applyPasswordValidation(JTextField field) {
-        applyRegexLimiter(field, PASSWORD_REGEX, 10);
+        applyRegexLimiter(field, PASSWORD_REGEX, 20);
     }
 
     public static void applyNameValidation(JTextField field) {

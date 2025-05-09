@@ -14,16 +14,12 @@ public class AdminDashboardController {
         this.adminService = adminService;
     }
 
-    public void addDoctor(Doctor doctor, DefaultTableModel model) {
+    public boolean addDoctor(Doctor doctor) {
         if (doctor.getId().isBlank() || doctor.getFullName().isBlank() || doctor.getEmail().isBlank()
             || doctor.getPassword().isBlank() || doctor.getSpeciality().isBlank()) {
-            return;
+            return false;
         }
-
-        boolean registered = adminService.registerDoctor(doctor);
-        if (registered) {
-            model.addRow(new Object[]{doctor.getId(), doctor.getFullName(), doctor.getSpeciality()});
-        }
+        return adminService.registerDoctor(doctor);
     }
 
     public List<Patient> getPatients() {
