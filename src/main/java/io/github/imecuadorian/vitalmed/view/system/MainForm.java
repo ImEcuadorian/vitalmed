@@ -5,7 +5,6 @@ import com.formdev.flatlaf.extras.*;
 import io.github.imecuadorian.vitalmed.i18n.*;
 import io.github.imecuadorian.vitalmed.view.component.*;
 import io.github.imecuadorian.vitalmed.view.forms.search.*;
-import io.github.imecuadorian.vitalmed.view.icons.*;
 import net.miginfocom.swing.*;
 import raven.modal.*;
 

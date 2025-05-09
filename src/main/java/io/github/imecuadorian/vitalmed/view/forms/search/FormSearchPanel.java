@@ -90,7 +90,7 @@ public class FormSearchPanel extends JPanel {
             }
 
             private void search() {
-                String st = textSearch.getText().trim().toLowerCase(); // Convert search term to lowercase
+                String st = textSearch.getText().trim().toLowerCase();
                 if (!st.equals(text)) {
                     text = st;
                     panelResult.removeAll();
@@ -100,7 +100,6 @@ public class FormSearchPanel extends JPanel {
                     } else {
                         for (Map.Entry<SystemForm, Class<? extends Form>> entry : formsMap.entrySet()) {
                             SystemForm s = entry.getKey();
-                            // Compare both name and description with lower cased search term
                             if (s.name().toLowerCase().contains(st)
                                     || s.description().toLowerCase().contains(st)
                                     || checkTags(s.tags(), st)) {
@@ -268,7 +267,7 @@ public class FormSearchPanel extends JPanel {
 
     private Component createNoResult(String text) {
         JPanel panel = new JPanel(new MigLayout("insets 15 5 15 5,al center,gapx 1"));
-        JLabel label = new JLabel("No result for \"");
+        JLabel label = new JLabel("No hay resultados para \"");
         JLabel labelEnd = new JLabel("\"");
         label.putClientProperty(FlatClientProperties.STYLE, "" +
                 "foreground:$Label.disabledForeground;");
@@ -478,7 +477,7 @@ public class FormSearchPanel extends JPanel {
                     return new int[]{i, panelResult.getComponentZOrder(listItems.get(i))};
                 }
             }
-            return null;
+            return new int[0];
         }
     }
 }

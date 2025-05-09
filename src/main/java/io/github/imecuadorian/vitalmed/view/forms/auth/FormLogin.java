@@ -40,7 +40,7 @@ public class FormLogin extends JPanel {
         setLayout(new MigLayout("wrap,gapy 4", "[fill,450]"));
 
         ImageIcon logo = new ImageIcon(Objects.requireNonNull(getClass().getResource("/io/github/imecuadorian/vitalmed/images/vitalmed-main-logo.png")));
-        Image scaled = logo.getImage().getScaledInstance(400, 120, Image.SCALE_SMOOTH);
+        Image scaled = logo.getImage().getScaledInstance(450, 120, Image.SCALE_SMOOTH);
         add(new JLabel(new ImageIcon(scaled, "Vitalmed")), "gapbottom 40");
 
         JLabel lbTitle = new JLabel("Bienvenido de Vuelta", CENTER);
@@ -77,7 +77,7 @@ public class FormLogin extends JPanel {
         cmdSignIn.setHorizontalTextPosition(JButton.LEADING);
         add(cmdSignIn, "gapy 20 10");
 
-        JLabel lbNoAccount = new JLabel("Don't have an account?");
+        JLabel lbNoAccount = new JLabel("No tienes cuenta?");
         lbNoAccount.putClientProperty(FlatClientProperties.STYLE, "foreground:$Label.disabledForeground;");
         add(lbNoAccount, "split 2,gapx push n");
 
@@ -118,12 +118,12 @@ public class FormLogin extends JPanel {
 
     private void createAccountActionPerformed(ActionEvent e) {
         ModalDialog.getDefaultOption().getBorderOption().setBorderWidth(2);
-        ModalDialog.showModal(this, new SimpleModalBorder(new FormRegister(), "Register", SimpleModalBorder.DEFAULT_OPTION, (controller, action) -> {
+        ModalDialog.showModal(this, new SimpleModalBorder(new FormRegister(), "Registro", SimpleModalBorder.DEFAULT_OPTION, (controller, action) -> {
         }));
     }
 
     private JButton createNoBorderButton() {
-        JButton button = new JButton("Register");
+        JButton button = new JButton("Registrarse");
         button.putClientProperty(FlatClientProperties.STYLE,
                 "foreground:$Component.accentColor;margin:1,5,1,5;borderWidth:0;focusWidth:0;innerFocusWidth:0;background:null;");
         return button;

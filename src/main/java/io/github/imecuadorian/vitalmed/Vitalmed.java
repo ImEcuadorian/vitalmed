@@ -46,7 +46,7 @@ public class Vitalmed {
         frame.setLayout(new MigLayout("al center center"));
         frame.add(new FormLogin(frame));
         frame.setUndecorated(true);
-        frame.setShape(new RoundRectangle2D.Double(0, 0, frame.getWidth(), frame.getHeight(), 40, 40));
+        frame.setShape(new RoundRectangle2D.Double(0, 0, frame.getWidth(), frame.getHeight(), 100,100));
         frame.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/io/github/imecuadorian/vitalmed/images/vitalmed-main-icon.png")));
     }
 

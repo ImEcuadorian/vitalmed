@@ -1,10 +1,10 @@
 package io.github.imecuadorian.vitalmed.controller;
 
-import io.github.imecuadorian.vitalmed.model.Doctor;
+import io.github.imecuadorian.vitalmed.model.*;
 import io.github.imecuadorian.vitalmed.service.AdminService;
 
-import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.util.*;
 
 public class AdminDashboardController {
 
@@ -17,17 +17,21 @@ public class AdminDashboardController {
     public void addDoctor(Doctor doctor, DefaultTableModel model) {
         if (doctor.getId().isBlank() || doctor.getFullName().isBlank() || doctor.getEmail().isBlank()
             || doctor.getPassword().isBlank() || doctor.getSpeciality().isBlank()) {
-            JOptionPane.showMessageDialog(null, "Complete todos los campos obligatorios.", "Advertencia", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         boolean registered = adminService.registerDoctor(doctor);
         if (registered) {
             model.addRow(new Object[]{doctor.getId(), doctor.getFullName(), doctor.getSpeciality()});
-            JOptionPane.showMessageDialog(null, "Doctor registrado con éxito.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-        } else {
-            JOptionPane.showMessageDialog(null, "No se pudo registrar el doctor. Verifique los datos.", "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    public List<Patient> getPatients() {
+        return adminService.getAllPatients();
+    }
+
+    public boolean resetPassword(String patientId, String newPassword) {
+        return adminService.resetPatientPassword(patientId, newPassword);
     }
 
 }

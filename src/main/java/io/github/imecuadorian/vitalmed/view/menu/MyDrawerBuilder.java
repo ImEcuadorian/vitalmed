@@ -5,6 +5,7 @@ import com.formdev.flatlaf.extras.*;
 import io.github.imecuadorian.vitalmed.i18n.*;
 import io.github.imecuadorian.vitalmed.model.*;
 import io.github.imecuadorian.vitalmed.view.forms.*;
+import io.github.imecuadorian.vitalmed.view.forms.admin.*;
 import io.github.imecuadorian.vitalmed.view.forms.patient.*;
 import io.github.imecuadorian.vitalmed.view.system.*;
 import raven.extras.*;
@@ -98,21 +99,21 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
 
         MenuItem[] items = new MenuItem[]{
                 new Item.Label("PACIENTE"),
-                new Item(I18n.t("dashboard.example"), FormDashboard.class),
+                new Item("Dashboard","dashboard.svg", FormDashboard.class),
 
                 new Item.Label("CITAS"),
-                new Item("Agendar Citas", FormAppointmentScheduling.class), // Paciente
-                new Item("Gestion de citas", FormTable.class), // Doctor y Admin
+                new Item("Agendar Citas","calendar.svg", FormAppointmentScheduling.class), // Paciente
+                new Item("Gestion de citas", "components.svg"), // Doctor y Admin
 
                 new Item.Label("HISTORIA CLÍNICA"),
-                new Item("Ver Historial Clínico"), // Doctor
+                new Item("Ver Historial Clínico", "page.svg"), // Doctor
 
                 new Item.Label("ADMINISTRACIÓN"),
-                new Item("Registrar Doctores"), // Admin
-                new Item("Administrar Pacientes"), // Admin
-                new Item("Asignación de Horarios"), // Admin
+                new Item("Registrar Doctores","forms.svg"), // Admin
+                new Item("Administrar Pacientes", "chart.svg", FormPatientManagement.class), // Admin
+                new Item("Asignación de Horarios", "calendar.svg"), // Admin
 
-                new Item("Logout")
+                new Item("Logout", "logout.svg")
         };
 
         simpleMenuOption.setMenuStyle(new MenuStyle() {
@@ -156,7 +157,9 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
             FormManager.showForm(AllForms.getForm(formClass));
         });
 
-        simpleMenuOption.setMenus(items);
+        simpleMenuOption.setMenus(items)
+                .setBaseIconPath("io/github/imecuadorian/vitalmed/icon/drawer")
+                .setIconScale(0.45f);
 
         return simpleMenuOption;
     }

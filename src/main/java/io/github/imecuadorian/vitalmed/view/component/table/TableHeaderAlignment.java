@@ -12,13 +12,10 @@ public class TableHeaderAlignment implements TableCellRenderer {
     public TableHeaderAlignment(JTable table) {
         this.headerDelegate = table.getTableHeader().getDefaultRenderer();
         this.cellDelegate = table.getDefaultRenderer(Object.class);
-        table.setDefaultRenderer(Object.class, new TableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable jtable, Object o, boolean bln, boolean bln1, int row, int column) {
-                JLabel label = (JLabel) cellDelegate.getTableCellRendererComponent(jtable, o, bln, bln1, row, column);
-                label.setHorizontalAlignment(getAlignment(column));
-                return label;
-            }
+        table.setDefaultRenderer(Object.class, (jtable, o, bln, bln1, row, column) -> {
+            JLabel label = (JLabel) cellDelegate.getTableCellRendererComponent(jtable, o, bln, bln1, row, column);
+            label.setHorizontalAlignment(getAlignment(column));
+            return label;
         });
     }
 

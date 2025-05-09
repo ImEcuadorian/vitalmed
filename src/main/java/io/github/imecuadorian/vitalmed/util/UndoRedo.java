@@ -1,94 +1,94 @@
 package io.github.imecuadorian.vitalmed.util;
 
-import java.util.Iterator;
-import java.util.Stack;
+import java.util.*;
+
 
 public class UndoRedo<E> implements Iterable<E> {
 
-    private final Stack<E> stack1;
-    private final Stack<E> stack2;
+    private final Deque<E> undoStack;
+    private final Deque<E> redoStack;
 
     public UndoRedo() {
-        stack1 = new Stack<>();
-        stack2 = new Stack<>();
+        undoStack = new LinkedList<>();
+        redoStack = new LinkedList<>();
     }
+
 
     public void add(E item) {
-        stack1.push(item);
-        stack2.clear();
+        if (item != null) {
+            undoStack.push(item);
+            redoStack.clear();
+        }
     }
 
+
     public E undo() {
-        if (stack1.size() > 1) {
-            stack2.push(stack1.pop());
-            return stack1.get(stack1.size() - 1);
-        } else {
-            return null;
+        if (undoStack.size() > 1) {
+            redoStack.push(undoStack.pop());
+            return undoStack.peek();
         }
+        return null;
     }
 
     public E redo() {
-        if (!stack2.isEmpty()) {
-            E item = stack2.pop();
-            stack1.push(item);
+        if (!redoStack.isEmpty()) {
+            E item = redoStack.pop();
+            undoStack.push(item);
             return item;
-        } else {
-            return null;
         }
+        return null;
     }
 
     public E getCurrent() {
-        if (stack1.isEmpty()) {
-            return null;
-        } else {
-            return stack1.get(stack1.size() - 1);
-        }
+        return undoStack.peek();
     }
 
+
     public boolean isUndoAble() {
-        return stack1.size() > 1;
+        return undoStack.size() > 1;
     }
 
     public boolean isRedoAble() {
-        return !stack2.empty();
+        return !redoStack.isEmpty();
     }
 
     public void clear() {
-        stack1.clear();
-        stack2.clear();
+        undoStack.clear();
+        redoStack.clear();
     }
 
     public void clearRedo() {
-        stack2.clear();
+        redoStack.clear();
     }
 
     @Override
     public Iterator<E> iterator() {
-        return new MyIterator();
+        return new HistoryIterator();
     }
 
-    private class MyIterator implements Iterator<E> {
-
+    private class HistoryIterator implements Iterator<E> {
+        private final List<E> combinedHistory;
         private int index = 0;
+
+        public HistoryIterator() {
+            List<E> undoList = new ArrayList<>(undoStack);
+            Collections.reverse(undoList);
+
+            List<E> redoList = new ArrayList<>(redoStack);
+
+            combinedHistory = new ArrayList<>();
+            combinedHistory.addAll(undoList);
+            combinedHistory.addAll(redoList);
+        }
 
         @Override
         public boolean hasNext() {
-            if (index < stack1.size()) {
-                return true;
-            } else if (index < stack1.size() + stack2.size()) {
-                return true;
-            } else {
-                return false;
-            }
+            return index < combinedHistory.size();
         }
 
         @Override
         public E next() {
-            if (index < stack1.size()) {
-                return stack1.elementAt(index++);
-            } else {
-                return stack2.elementAt((index++) - stack1.size());
-            }
+            return combinedHistory.get(index++);
         }
     }
 }
