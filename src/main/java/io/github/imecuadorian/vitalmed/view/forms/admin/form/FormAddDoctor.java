@@ -225,7 +225,7 @@ public class FormAddDoctor extends JPanel {
                     ModalBorderAction.getModalBorderAction(this).doAction(SimpleModalBorder.OK_OPTION);
                     Toast.show(this, Toast.Type.SUCCESS, "Registro exitoso", ToastLocation.TOP_TRAILING, Constants.getOption());
                     if (success != null) {
-                        success.run(); // ✅ REFRESCA LA TABLA
+                        success.run();
                     }
                 } else {
                     Toast.show(this, Toast.Type.ERROR, "Error al registrar el/la Doctor/a", ToastLocation.TOP_TRAILING, Constants.getOption());
