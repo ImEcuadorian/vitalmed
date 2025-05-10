@@ -7,6 +7,7 @@ import io.github.imecuadorian.vitalmed.model.*;
 import io.github.imecuadorian.vitalmed.util.*;
 import io.github.imecuadorian.vitalmed.view.*;
 import io.github.imecuadorian.vitalmed.view.menu.*;
+import io.github.imecuadorian.vitalmed.view.modal.*;
 import io.github.imecuadorian.vitalmed.view.system.*;
 import net.miginfocom.swing.*;
 import raven.modal.*;
@@ -18,6 +19,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 
+import static io.github.imecuadorian.vitalmed.util.Constants.getSelectedOption;
 import static javax.swing.SwingConstants.*;
 
 public class FormLogin extends JPanel {
@@ -86,6 +88,20 @@ public class FormLogin extends JPanel {
         add(cmdCreateAccount, "gapx n push");
 
         cmdSignIn.addActionListener(this::signInActionPerformed);
+
+        JButton cmdExit = new JButton("Salir");
+        cmdExit.putClientProperty(FlatClientProperties.STYLE, "iconTextGap:10;");
+        add(cmdExit, "gapy 100 10, align center");
+
+        String message = "¿Está seguro de que desea salir de la aplicación?";
+        cmdExit.addActionListener(e -> {
+            ModalDialog.showModal(this, new SimpleMessageModal(SimpleMessageModal.Type.WARNING, message, "Salir de la aplicación", SimpleModalBorder.YES_NO_OPTION, (controller, action) -> {
+                if (action == SimpleModalBorder.YES_OPTION) {
+                    System.exit(0);
+                }
+            }), getSelectedOption());
+        });
+
 
         // Validation hooks
         InputValidator.applyEmailValidation(txtEmail);

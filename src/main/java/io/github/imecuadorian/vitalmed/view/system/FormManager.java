@@ -2,6 +2,8 @@ package io.github.imecuadorian.vitalmed.view.system;
 
 import io.github.imecuadorian.vitalmed.util.*;
 import io.github.imecuadorian.vitalmed.view.forms.*;
+import io.github.imecuadorian.vitalmed.view.forms.auth.*;
+import lombok.*;
 import raven.modal.*;
 
 import javax.swing.*;
@@ -9,6 +11,7 @@ import javax.swing.*;
 public class FormManager {
 
     protected static final UndoRedo<Form> FORMS = new UndoRedo<>();
+    @Getter
     private static JFrame frame;
     private static MainForm mainForm;
     public static void install(JFrame f) {
@@ -61,15 +64,9 @@ public class FormManager {
         Drawer.setVisible(true);
         frame.getContentPane().removeAll();
         frame.getContentPane().add(getMainForm());
-
         Drawer.setSelectedItemClass(FormDashboard.class);
         frame.repaint();
         frame.revalidate();
-    }
-
-
-    public static JFrame getFrame() {
-        return frame;
     }
 
     private static MainForm getMainForm() {

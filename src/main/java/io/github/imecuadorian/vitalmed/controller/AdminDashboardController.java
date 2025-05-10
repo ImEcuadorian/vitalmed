@@ -26,6 +26,9 @@ public class AdminDashboardController {
         return adminService.getAllPatients();
     }
 
+    public List<Doctor> getDoctors() {
+        return adminService.getAllDoctors();
+    }
     public boolean resetPassword(String patientId, String newPassword) {
         return adminService.resetPatientPassword(patientId, newPassword);
     }

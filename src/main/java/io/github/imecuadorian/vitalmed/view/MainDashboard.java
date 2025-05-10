@@ -16,15 +16,15 @@ public class MainDashboard extends JFrame {
     }
 
     private void init() {
-        AppPreferences.init();
         setTitle("VitalMed " + AppPreferences.VERSION);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         getRootPane().putClientProperty(FlatClientProperties.FULL_WINDOW_CONTENT, true);
-        Drawer.installDrawer(this, MyDrawerBuilder.getInstance());
-        FormManager.install(this);
-        AppPreferences.setupLaf();
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setVisible(true);
+        FormManager.install(this);
+        AppPreferences.init();
+        Drawer.installDrawer(this, MyDrawerBuilder.getInstance());
+        AppPreferences.setupLaf();
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/io/github/imecuadorian/vitalmed/images/vitalmed-main-icon.png")));
     }
 }

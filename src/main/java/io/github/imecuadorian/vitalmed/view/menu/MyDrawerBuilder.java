@@ -6,6 +6,7 @@ import io.github.imecuadorian.vitalmed.i18n.*;
 import io.github.imecuadorian.vitalmed.model.*;
 import io.github.imecuadorian.vitalmed.view.forms.*;
 import io.github.imecuadorian.vitalmed.view.forms.admin.*;
+import io.github.imecuadorian.vitalmed.view.forms.auth.*;
 import io.github.imecuadorian.vitalmed.view.forms.patient.*;
 import io.github.imecuadorian.vitalmed.view.system.*;
 import raven.extras.*;
@@ -112,8 +113,8 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                 new Item(I18n.t("dashboard.menuItem.registerDoctors"),"forms.svg", FormRegisterDoctor.class), // Admin
                 new Item(I18n.t("dashboard.menuItem.administrationPatients"), "chart.svg", FormPatientManagement.class), // Admin
                 new Item(I18n.t("dashboard.menuItem.assignmentOfSchedules"), "calendar.svg"), // Admin
-
-                new Item(I18n.t("dashboard.menuItem.logout"), "logout.svg")
+                new Item.Label("Settings"),
+                new Item(I18n.t("dashboard.menuItem.logout"), "logout.svg", FormLogout.class)
         };
 
         simpleMenuOption.setMenuStyle(new MenuStyle() {

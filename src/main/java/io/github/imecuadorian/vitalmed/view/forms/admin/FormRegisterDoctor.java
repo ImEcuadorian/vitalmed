@@ -113,7 +113,7 @@ public class FormRegisterDoctor extends Form {
         panel.add(createHeaderAction());
         panel.add(scrollPane);
 
-        for (Doctor d : ServiceFactory.getAdminService().getAllDoctors()) {
+        for (Doctor d : adminDashboardController.getDoctors()) {
             tableModel.addRow(new Object[]{tableModel.getRowCount() + 1, d.getId(), d.getFullName(), d.getEmail(), d.getAddress(), d.getMobile(), d.getSpeciality()});
         }
 
@@ -184,7 +184,25 @@ public class FormRegisterDoctor extends Form {
                 .setShadow(BorderOption.Shadow.EXTRA_LARGE);
         option.getLayoutOption().setAnimateDistance(0, 0)
                 .setAnimateScale(0.1f);
-        ModalDialog.showModal(this, new SimpleModalBorder(new FormAddDoctor(), "Registrar Doctor",SimpleModalBorder.DEFAULT_OPTION,(controller, action) -> {}), option);
 
+        FormAddDoctor formAddDoctor = new FormAddDoctor(this::reloadTable);
+        ModalDialog.showModal(this, new SimpleModalBorder(formAddDoctor, "Registrar Doctor",SimpleModalBorder.DEFAULT_OPTION,(controller, action) -> {}), option);
+
+    }
+
+    private void reloadTable() {
+        tableModel.setRowCount(0);
+
+        for (Doctor d : adminDashboardController.getDoctors()) {
+            tableModel.addRow(new Object[]{
+                    tableModel.getRowCount() + 1,
+                    d.getId(),
+                    d.getFullName(),
+                    d.getEmail(),
+                    d.getAddress(),
+                    d.getMobile(),
+                    d.getSpeciality()
+            });
+        }
     }
 }
