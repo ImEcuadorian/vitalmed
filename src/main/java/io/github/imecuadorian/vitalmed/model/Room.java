@@ -22,4 +22,12 @@ public class Room {
     public int getNumber() {
         return number.getT1();
     }
+
+    @Override
+    public String toString() {
+        return """
+                Sala: %s - Especialidad: %s - Número: %d
+                """.formatted(getId(), getSpecialty(), getNumber());
+    }
 }
+

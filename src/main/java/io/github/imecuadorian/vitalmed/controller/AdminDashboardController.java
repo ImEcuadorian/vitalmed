@@ -33,5 +33,13 @@ public class AdminDashboardController {
         return adminService.resetPatientPassword(patientId, newPassword);
     }
 
+    public boolean assignSchedules(String doctorId, List<Schedule> schedules) {
+        return adminService.assignSchedules(doctorId, schedules);
+    }
+
+    public List<Room> getRooms() {
+        return adminService.getAllRooms();
+    }
+
 }
 

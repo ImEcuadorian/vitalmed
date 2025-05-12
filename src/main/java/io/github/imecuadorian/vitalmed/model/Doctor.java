@@ -25,4 +25,11 @@ public class Doctor extends User {
     public void addSchedule(Schedule schedule) {
         information.getS1().add(schedule);
     }
+
+    @Override
+    public String toString() {
+        return """
+                Doctor/a: %s - Especialidad: %s
+                """.formatted(getFullName(), getSpeciality());
+    }
 }

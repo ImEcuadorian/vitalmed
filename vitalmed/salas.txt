@@ -1,0 +1,10 @@
+1;Pediatría;1
+2;Pediatría;2
+3;Odontología;3
+4;Odontología;4
+5;Consulta General;5
+6;Consulta General;6
+7;Ginecología;7
+8;Laboratorio;8
+9;Dermatología;9
+10;Dermatología;10
