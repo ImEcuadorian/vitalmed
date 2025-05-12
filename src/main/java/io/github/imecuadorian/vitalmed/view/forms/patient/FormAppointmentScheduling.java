@@ -28,7 +28,6 @@ public class FormAppointmentScheduling extends Form {
         add(createInfo());
         add(createOptions());
     }
-
     private JPanel createInfo() {
         JPanel panel = new JPanel(new MigLayout("fillx,wrap", "[fill]"));
         JLabel title = new JLabel("Agendamiento de Citas");
@@ -70,7 +69,7 @@ public class FormAppointmentScheduling extends Form {
     }
 
     private Component createExample() {
-        JPanel panel = new JPanel(new MigLayout("wrap,fillx"));
+        JPanel panel = new JPanel(new MigLayout("wrap,al center", "[fill,400]"));
         panel.setBorder(new TitledBorder("Example"));
         PanelSlider.PaneSliderLayoutSize layoutSize = (container, component) -> {
             if (jrComponentPreferredSize.isSelected()) {

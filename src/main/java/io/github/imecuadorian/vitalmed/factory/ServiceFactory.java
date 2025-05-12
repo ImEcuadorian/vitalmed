@@ -14,7 +14,6 @@ public class ServiceFactory {
     private static final String DOCTOR_FILE = "doctores.txt";
     private static final String PATIENT_FILE = "pacientes.txt";
     private static final String APPOINTMENT_FILE = "citas.txt";
-
     private static final String ROOM_FILE = "salas.txt";
     private static final Repository<String, Doctor> doctorRepository =
             new DoctorRepository(DOCTOR_FILE, VITALMED_LOGGER);

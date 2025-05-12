@@ -7,7 +7,7 @@ import io.github.imecuadorian.vitalmed.factory.*;
 import io.github.imecuadorian.vitalmed.model.*;
 import io.github.imecuadorian.vitalmed.util.*;
 import io.github.imecuadorian.vitalmed.view.component.table.*;
-import io.github.imecuadorian.vitalmed.view.forms.admin.form.*;
+import io.github.imecuadorian.vitalmed.view.modal.*;
 import io.github.imecuadorian.vitalmed.view.system.*;
 import net.miginfocom.swing.*;
 import raven.modal.*;
@@ -22,16 +22,19 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
+import static io.github.imecuadorian.vitalmed.util.Constants.*;
+
 @SystemForm(name = "Gestión de Pacientes", description = "Gestión de pacientes", tags = {"pacientes", "gestión"})
 public class FormPatientManagement extends Form {
 
     private final AdminDashboardController adminDashboardController = new AdminDashboardController(ServiceFactory.getAdminService());
     private DefaultTableModel tableModel;
     private TableRowSorter<DefaultTableModel> sorter;
-    public FormPatientManagement() {
 
+    public FormPatientManagement() {
         init();
     }
+
     private void init() {
         setLayout(new MigLayout("fillx,wrap", "[fill]", "[][fill,grow]"));
         add(createInfo());
@@ -53,6 +56,7 @@ public class FormPatientManagement extends Form {
         panel.add(text, "width 500");
         return panel;
     }
+
     private Component createCustomTable() {
         JPanel panel = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[][]0[fill,grow]"));
 
@@ -79,7 +83,7 @@ public class FormPatientManagement extends Form {
         table.getColumnModel().getColumn(0).setMaxWidth(50);
         table.getColumnModel().getColumn(1).setMaxWidth(50);
         table.getColumnModel().getColumn(2).setPreferredWidth(150);
-        table.getColumnModel().getColumn(5).setPreferredWidth(100);
+        table.getColumnModel().getColumn(5).setPreferredWidth(300);
         table.getColumnModel().getColumn(6).setPreferredWidth(250);
 
 
@@ -144,9 +148,11 @@ public class FormPatientManagement extends Form {
             public void insertUpdate(DocumentEvent e) {
                 search(txtSearch.getText());
             }
+
             public void removeUpdate(DocumentEvent e) {
                 search(txtSearch.getText());
             }
+
             public void changedUpdate(DocumentEvent e) {
                 search(txtSearch.getText());
             }
@@ -177,7 +183,8 @@ public class FormPatientManagement extends Form {
             }
 
             showModal(selectedIds);
-        });;
+        });
+        ;
 
 
         panel.add(txtSearch);
@@ -188,14 +195,24 @@ public class FormPatientManagement extends Form {
     }
 
     private void showModal(List<String> selectedIds) {
+        String message = """
+            ¿Está seguro de que desea reiniciar la contraseña de los siguientes pacientes?
+            """;
         Option option = ModalDialog.createOption();
         option.getLayoutOption().setSize(-1, 1f)
                 .setLocation(Location.TRAILING, Location.TOP)
                 .setAnimateDistance(0.7f, 0);
-        ModalDialog.showModal(this, new SimpleModalBorder(
-                new FormResetPassword(), "Reiniciar Contraseña", SimpleModalBorder.DEFAULT_OPTION,
-                (controller, action) -> {
-
-                }), option);
+        ModalDialog.showModal(this, new SimpleMessageModal(SimpleMessageModal.Type.WARNING, message, "Reiniciar Contraseña", SimpleModalBorder.YES_NO_OPTION, (controller, action) -> {
+            if (action == SimpleModalBorder.YES_OPTION) {
+                for (String id : selectedIds) {
+                    adminDashboardController.resetPassword(id, "Vm@" + id);
+                }
+                Toast.show(this, Toast.Type.SUCCESS, "Contraseña reiniciada con éxito", ToastLocation.TOP_TRAILING, Constants.getOption());
+                for (int i = 0; i < tableModel.getRowCount(); i++) {
+                    tableModel.setValueAt(false, i, 0);
+                }
+            }
+        }), getSelectedOption());
     }
+
 }

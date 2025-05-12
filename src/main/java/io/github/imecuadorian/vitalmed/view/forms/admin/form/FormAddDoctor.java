@@ -1,9 +1,8 @@
-package io.github.imecuadorian.vitalmed.view.forms.auth;
+package io.github.imecuadorian.vitalmed.view.forms.admin.form;
 
 import com.formdev.flatlaf.*;
 import io.github.imecuadorian.vitalmed.controller.*;
 import io.github.imecuadorian.vitalmed.factory.*;
-import io.github.imecuadorian.vitalmed.i18n.I18n;
 import io.github.imecuadorian.vitalmed.model.*;
 import io.github.imecuadorian.vitalmed.model.country.*;
 import io.github.imecuadorian.vitalmed.util.*;
@@ -16,12 +15,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 
-public class FormRegister extends JPanel {
+public class FormAddDoctor extends JPanel {
 
-    private final RegistrationController registrationController = new RegistrationController(
-            ServiceFactory.getPatientService()
+    private final AdminDashboardController adminDashboardController = new AdminDashboardController(
+            ServiceFactory.getAdminService()
     );
-    public FormRegister() {
+
+    private final Runnable success;
+
+    public FormAddDoctor(Runnable success) {
+        this.success = success;
         init();
     }
 
@@ -31,86 +34,71 @@ public class FormRegister extends JPanel {
         ImageIcon logo = new ImageIcon(Objects.requireNonNull(getClass().getResource("/io/github/imecuadorian/vitalmed/images/vitalmed-main-icon.png")));
         Image scaled = logo.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
 
-        JLabel lbContactDetail = new JLabel(I18n.t("auth.formRegister.patientsMedicalHistoryData"), new ImageIcon(scaled), JLabel.LEFT);
+        JLabel lbContactDetail = new JLabel("Datos del nuevo doctor", new ImageIcon(scaled), JLabel.LEFT);
         lbContactDetail.putClientProperty(FlatClientProperties.STYLE, "font:bold +2;");
-        lbContactDetail.setIconTextGap(10); // espacio entre ícono y texto
+        lbContactDetail.setIconTextGap(10);
         add(lbContactDetail, "span 2, gapy 10 10, wrap");
 
 
-        add(new JLabel(I18n.t("auth.formRegister.id*")), "span 2");
+        add(new JLabel("Cédula*"), "span 2");
         JTextField txtId = new JTextField();
-        txtId.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.id"));
-        String toolTipId =
-                I18n.t("auth.formRegister.idTooltip"); //Key for the tooltip text
-        txtId.setToolTipText(toolTipId); // Set the tooltip text for the ID field
+        txtId.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Cédula");
         add(txtId, "span 2, growx");
 
-        add(new JLabel(I18n.t("auth.formRegister.names*")));
-        String toolTipName =
-                I18n.t("auth.formRegister.nameTooltip"); //Key for the tooltip text
-        add(new JLabel(I18n.t("auth.formRegister.surnames*")));
-        String toolTipSurname =
-                I18n.t("auth.formRegister.surnameTooltip"); //Key for the tooltip text
+        add(new JLabel("Nombre(s)*"));
+        add(new JLabel("Apellido(s)*"));
 
         JTextField txtName = new JTextField();
-        txtName.setToolTipText(toolTipName); // Set the tooltip text for the name field
         JTextField txtSurname = new JTextField();
-        txtSurname.setToolTipText(toolTipSurname); // Set the tooltip text for the surname field
-        txtName.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.name"));
-        txtSurname.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.surname"));
+        txtName.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Nombre(s)");
+        txtSurname.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Apellido(s)");
         add(txtName);
         add(txtSurname);
 
 
-        add(new JLabel(I18n.t("auth.formRegister.email")),"span 2");
-        String toolTipEmail =
-                I18n.t("auth.formRegister.emailTooltip"); //Key for the tooltip text
+        add(new JLabel("Email*"), "span 2");
         JTextField txtEmail = new JTextField();
-        txtEmail.setToolTipText(toolTipEmail); // Set the tooltip text for the email field
-        txtEmail.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.email"));
+        txtEmail.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "example@mail.com");
         add(txtEmail, "span 2, growx");
 
-        add(new JLabel(I18n.t("auth.formRegister.password*")));
-        add(new JLabel(I18n.t("auth.formRegister.confirmPassword*")));
-        String toolTipPassword =
-                I18n.t("auth.formRegister.passwordTooltip");
-        String toolTipConfirmPassword =
-                I18n.t("auth.formRegister.confirmPasswordTooltip");
+        add(new JLabel("Contraseña*"));
+        add(new JLabel("Confirmar contraseña*"));
+        String toolTipPassword = """
+                <html>
+                La contraseña debe:<br>
+                • Tener al menos 8 caracteres<br>
+                • Contener al menos una mayúscula<br>
+                • Incluir al menos uno de los siguientes símbolos: @, -, /
+                </html>
+                """;
 
         JPasswordField txtPassword = new JPasswordField();
         JPasswordField txtConfirmPassword = new JPasswordField();
-        txtPassword.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.password"));
-        txtConfirmPassword.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.confirmPassword"));
+        txtPassword.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Contraseña");
+        txtConfirmPassword.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Confirmar contraseña");
         txtPassword.putClientProperty(FlatClientProperties.STYLE, "iconTextGap:10;" +
-                "showRevealButton:true;");
+                                                                  "showRevealButton:true;");
         txtPassword.setToolTipText(toolTipPassword);
-        txtConfirmPassword.setToolTipText(toolTipConfirmPassword); // Set the tooltip text for the confirm password field
         txtConfirmPassword.putClientProperty(FlatClientProperties.STYLE, "iconTextGap:10;" +
-                "showRevealButton:true;");
+                                                                         "showRevealButton:true;");
         add(txtPassword);
         add(txtConfirmPassword);
 
-        add(new JLabel(I18n.t("auth.formRegister.CellphoneNumber")));
-        String toolTipCellphone =
-                I18n.t("auth.formRegister.cellphoneTooltip"); //Key for the tooltip text
-        add(new JLabel(I18n.t("auth.formRegister.PhoneNumber")));
-        String toolTipPhone =
-                I18n.t("auth.formRegister.phoneTooltip"); //Key for the tooltip text
+        add(new JLabel("Celular*"));
+        add(new JLabel("Teléfono"));
         JTextField txtPhone = new JTextField();
-        txtPhone.setToolTipText(toolTipPhone); // Set the tooltip text for the phone field
         JTextField txtCellphone = new JTextField();
-        txtCellphone.setToolTipText(toolTipCellphone); // Set the tooltip text for the cellphone field
-        txtPhone.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.phoneNumber"));
-        txtCellphone.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.cellphoneNumber"));
+        txtPhone.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Teléfono");
+        txtCellphone.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Celular");
         add(txtCellphone);
         add(txtPhone);
 
-        add(new JLabel(I18n.t("auth.formRegister.province*")), "split 2, span 2");
-        add(new JLabel(I18n.t("auth.formRegister.canton*")), "wrap");
+        add(new JLabel("Provincia*"), "split 2, span 2");
+        add(new JLabel("Cantón*"), "wrap");
         JComboBox<Province> cbProvince = new JComboBox<>(Province.values());
         JComboBox<String> cbCanton = new JComboBox<>();
-        cbProvince.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.province"));
-        cbCanton.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.canton"));
+        cbProvince.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Provincia");
+        cbCanton.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Cantón");
         add(cbProvince, "split 2, span 2, w ::300");
         add(cbCanton, "wrap");
 
@@ -130,13 +118,37 @@ public class FormRegister extends JPanel {
 
         cbProvince.setSelectedItem(Province.PICHINCHA);
 
-        add(new JLabel(I18n.t("auth.formRegister.address*")), "span 2");
-        String toolTipAddress =
-                I18n.t("auth.formRegister.addressTooltip"); //Key for the tooltip text
+        add(new JLabel("Dirección*"), "span 2");
         JTextField txtAddress = new JTextField();
-        txtAddress.setToolTipText(toolTipAddress); // Set the tooltip text for the address field
-        txtAddress.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.address"));
-        add(txtAddress, "span 2, growx");
+        txtAddress.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Dirección");
+        add(txtAddress, "span 2, growx, wrap");
+
+        JLabel lbSpecialty = new JLabel("Especialidad*");
+        lbSpecialty.putClientProperty(FlatClientProperties.STYLE, "font:bold +2;");
+        lbSpecialty.setIconTextGap(10); // espacio entre ícono y texto
+        add(lbSpecialty, "span 2, gapy 10 10, wrap");
+
+        JComboBox<String> cbSpecialty = new JComboBox<>();
+        cbSpecialty.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Especialidad");
+        cbSpecialty.addItem("Medicina General");
+        cbSpecialty.addItem("Pediatría");
+        cbSpecialty.addItem("Ginecología");
+        cbSpecialty.addItem("Odontología");
+        cbSpecialty.addItem("Dermatología");
+        cbSpecialty.addItem("Oftalmología");
+        cbSpecialty.addItem("Psiquiatría");
+        cbSpecialty.addItem("Cardiología");
+        cbSpecialty.addItem("Neurología");
+        cbSpecialty.addItem("Traumatología");
+        cbSpecialty.addItem("Otorrinolaringología");
+        cbSpecialty.addItem("Urología");
+        cbSpecialty.addItem("Gastroenterología");
+        cbSpecialty.addItem("Endocrinología");
+        cbSpecialty.addItem("Reumatología");
+        cbSpecialty.addItem("Cirugía General");
+        cbSpecialty.addItem("Cirugía Plástica");
+
+        add(cbSpecialty, "span 2, growx, wrap");
 
         JTextArea textArea = new JTextArea();
         textArea.setEnabled(false);
@@ -144,7 +156,7 @@ public class FormRegister extends JPanel {
         textArea.putClientProperty(FlatClientProperties.STYLE, "border:0,0,0,0;" +
                                                                "font:-1;" +
                                                                "background:null;");
-        add(textArea, "gapy 10 10,span 2");
+        add(textArea, "gapy 10 10,span 2, wrap");
 
         JButton btnCancel = new JButton("Cancelar");
         JButton btnRegister = new JButton("Registrar") {
@@ -199,25 +211,27 @@ public class FormRegister extends JPanel {
             }
 
             if (valid) {
-                Patient patient = new Patient(
+                Doctor doctor = new Doctor(
                         txtId.getText(),
                         txtName.getText() + " " + txtSurname.getText(),
                         txtEmail.getText(),
                         pass,
                         txtPhone.getText().isBlank() ? "0000000000" : txtPhone.getText(),
                         txtCellphone.getText(),
-                        cbProvince.getSelectedItem() + " - " + cbCanton.getSelectedItem() + " - " + txtAddress.getText()
+                        cbProvince.getSelectedItem() + " - " + cbCanton.getSelectedItem() + " - " + txtAddress.getText(),
+                        cbSpecialty.getSelectedItem().toString()
                 );
-                if (registrationController.register(patient)) {
+                if (adminDashboardController.addDoctor(doctor)) {
                     ModalBorderAction.getModalBorderAction(this).doAction(SimpleModalBorder.OK_OPTION);
                     Toast.show(this, Toast.Type.SUCCESS, "Registro exitoso", ToastLocation.TOP_TRAILING, Constants.getOption());
+                    if (success != null) {
+                        success.run();
+                    }
                 } else {
-                    Toast.show(this, Toast.Type.ERROR, "Error al registrar el paciente", ToastLocation.TOP_TRAILING, Constants.getOption());
+                    Toast.show(this, Toast.Type.ERROR, "Error al registrar el/la Doctor/a", ToastLocation.TOP_TRAILING, Constants.getOption());
                 }
             }
         });
-
-
 
     }
 }

@@ -6,6 +6,8 @@ import io.github.imecuadorian.vitalmed.i18n.*;
 import io.github.imecuadorian.vitalmed.model.*;
 import io.github.imecuadorian.vitalmed.view.forms.*;
 import io.github.imecuadorian.vitalmed.view.forms.admin.*;
+import io.github.imecuadorian.vitalmed.view.forms.auth.*;
+import io.github.imecuadorian.vitalmed.view.forms.doctor.*;
 import io.github.imecuadorian.vitalmed.view.forms.patient.*;
 import io.github.imecuadorian.vitalmed.view.system.*;
 import raven.extras.*;
@@ -28,7 +30,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
     private User user;
 
 
-    public static MyDrawerBuilder getInstance() {
+    public static MyDrawerBuilder getInstance () {
         if (instance == null) {
             instance = new MyDrawerBuilder();
         }
@@ -37,7 +39,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
 
 
     public void setUser(User user) {
-        boolean updateMenuItem = this.user == null;
+        boolean updateMenuItem = this.user == null || !this.user.getRol().equals(user.getRol());
 
         this.user = user;
 
@@ -98,24 +100,44 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
         MenuOption simpleMenuOption = new MenuOption();
 
         MenuItem[] items = new MenuItem[]{
-                new Item.Label("PACIENTE"),
-                new Item("Dashboard","dashboard.svg", FormDashboard.class),
+                new Item.Label("GENERAL"),                                       // index[0]
+                new Item(I18n.t("dashboard.menuItem.information"), "dashboard.svg", FormDashboard.class), // [0]
 
-                new Item.Label("CITAS"),
-                new Item("Agendar Citas","calendar.svg", FormAppointmentScheduling.class), // Paciente
-                new Item("Gestion de citas", "components.svg"), // Doctor y Admin
+                new Item.Label("GESTIÓN DE CITAS"),                              // index[1]
+                new Item("Citas", "calendar.svg")                                // index[2]
+                        .subMenu(I18n.t("dashboard.menuItem.scheduleAppointment"), FormAppointmentScheduling.class)     // [2,0]
+                        .subMenu(I18n.t("dashboard.menuItem.appointmentManagement"), FormDoctorManagement.class),      // [2,1]
 
-                new Item.Label("HISTORIA CLÍNICA"),
-                new Item("Ver Historial Clínico", "page.svg"), // Doctor
+                new Item.Label("HISTORIAL MÉDICO"),                              // index[3]
+                new Item(I18n.t("dashboard.menuItem.seeClinicalHistory"), "page.svg", FormMedicalHistory.class),   // [4]
 
-                new Item.Label("ADMINISTRACIÓN"),
-                new Item("Registrar Doctores","forms.svg"), // Admin
-                new Item("Administrar Pacientes", "chart.svg", FormPatientManagement.class), // Admin
-                new Item("Asignación de Horarios", "calendar.svg"), // Admin
+                new Item.Label("ADMINISTRACIÓN"),                                // index[5]
+                new Item("Administrar", "forms.svg")                             // index[6]
+                        .subMenu(I18n.t("dashboard.menuItem.registerDoctors"), FormRegisterDoctor.class)               // [6,0]
+                        .subMenu(I18n.t("dashboard.menuItem.administrationPatients"), FormPatientManagement.class)     // [6,1]
+                        .subMenu(I18n.t("dashboard.menuItem.assignmentOfSchedules"), FormScheduleAssignment.class),    // [6,2]
 
-                new Item("Logout", "logout.svg")
+                new Item.Label("CUENTA"),                                        // index[7]
+                new Item(I18n.t("dashboard.menuItem.logout"), "logout.svg", FormLogout.class)                      // [8]
         };
+        int visibleIndex = 0;
+        for (MenuItem mi : items) {
+            if (mi instanceof Item item) {
+                item.initIndexOnNull(new int[]{visibleIndex}, true);
+                if (item.isSubmenuAble()) {
+                    int subIndex = 0;
+                    for (Item sub : item.getSubMenu()) {
+                        sub.initIndexOnNull(new int[]{visibleIndex, subIndex}, true);
+                        subIndex++;
+                    }
+                }
+                visibleIndex++;
+            }
+        }
+        MyMenuValidation.setMenuItems(items);
 
+
+        MyMenuValidation.setMenuItems(items);
         simpleMenuOption.setMenuStyle(new MenuStyle() {
 
             @Override
@@ -143,7 +165,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                 return;
             } else if (i == 9) {
                 action.consume();
-                int option = JOptionPane.showConfirmDialog(null, "¿Deseas cerrar sesión?", "Confirmar Logout", JOptionPane.YES_NO_OPTION);
+                int option = JOptionPane.showConfirmDialog(null, I18n.t("dashboard.menuItem.youWantToLogOut"), I18n.t("dashboard.menuItem.confirmLogout"), JOptionPane.YES_NO_OPTION);
                 if (option == JOptionPane.YES_OPTION) {
                     System.exit(0);
                 }
@@ -157,10 +179,10 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
             FormManager.showForm(AllForms.getForm(formClass));
         });
 
+
         simpleMenuOption.setMenus(items)
                 .setBaseIconPath("io/github/imecuadorian/vitalmed/icon/drawer")
-                .setIconScale(0.45f);
-
+                .setIconScale(0.45f).setMenuValidation(new MyMenuValidation());
         return simpleMenuOption;
     }
 

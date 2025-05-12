@@ -1,6 +1,10 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 plugins {
+    application
     id("java")
     id("io.freefair.lombok") version "8.13.1"
+    id("com.gradleup.shadow") version "9.0.0-beta13"
 }
 
 group = "io.github.imecuadorian.vitalmed"
@@ -27,14 +31,21 @@ val commonCollectionsVersion = "4.5.0"
 val itextPdfVersion = "5.5.13.4"
 val slf4jVersion = "2.0.17"
 
+val modalDialogVersion = "2.5.0"
+val migLayoutVersion = "11.4.2"
+val flatLafVersion = "3.6"
+
+val mysqlConnectorVersion = "9.3.0"
+
 dependencies {
 
-    implementation("io.github.dj-raven:modal-dialog:2.5.0")
-    implementation("com.miglayout:miglayout-swing:11.4.2")
-    implementation("com.formdev:flatlaf:3.6")
-    implementation("com.formdev:flatlaf-extras:3.6")
+    implementation("io.github.dj-raven:modal-dialog:$modalDialogVersion")
+    implementation("com.miglayout:miglayout-swing:$migLayoutVersion")
+    implementation("com.formdev:flatlaf:$flatLafVersion")
+    implementation("com.formdev:flatlaf-extras:$flatLafVersion")
     implementation(files("libs/generic-library-1.0.0.jar"))
     implementation("org.jetbrains:annotations:$jetbrainsAnnotationsVersion")
+    implementation("com.mysql:mysql-connector-j:$mysqlConnectorVersion")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
@@ -65,4 +76,46 @@ tasks.test {
 
 tasks.processResources {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+tasks.named<ShadowJar>("shadowJar") {
+    archiveBaseName.set("vitalmed")
+    archiveClassifier.set("")
+    archiveVersion.set("")
+    manifest {
+        attributes(mapOf("Main-Class" to "io.github.imecuadorian.vitalmed.Vitalmed"))
+    }
+}
+
+application {
+    mainClass.set("io.github.imecuadorian.vitalmed.Vitalmed")
+}
+
+tasks.register<Exec>("packageInstaller") {
+    group = "distribution"
+    description = "Empaqueta la aplicación Vitalmed como un instalador .exe usando jpackage"
+
+    dependsOn("shadowJar")
+
+    val outputDir = layout.buildDirectory.dir("installer")
+    val inputDir = layout.buildDirectory.dir("libs")
+    val iconPath = "$projectDir/src/main/resources/icon.ico"
+
+    doFirst {
+        mkdir(outputDir.get().asFile)
+    }
+
+    commandLine = listOf(
+        "jpackage",
+        "--type", "msi",
+        "--name", "Vitalmed",
+        "--input", inputDir.get().asFile.absolutePath,
+        "--main-jar", "vitalmed.jar",
+        "--main-class", "io.github.imecuadorian.vitalmed.Vitalmed",
+        "--dest", outputDir.get().asFile.absolutePath,
+        "--icon", iconPath,
+        "--win-console",
+        "--vendor", "ImEcuadorian",
+        "--app-version", "1.0"
+    )
 }

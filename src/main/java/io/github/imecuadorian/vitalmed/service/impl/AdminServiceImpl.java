@@ -4,8 +4,7 @@ import io.github.imecuadorian.vitalmed.model.*;
 import io.github.imecuadorian.vitalmed.repository.Repository;
 import io.github.imecuadorian.vitalmed.service.*;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,6 +31,20 @@ public class AdminServiceImpl implements AdminService {
         if (doctorRepository.findById(doctor.getId()).isPresent()) {
             if (logger.isLoggable(Level.WARNING)) {
                 logger.warning(String.format("Doctor with ID %s already exists.", doctor.getId()));
+            }
+            return false;
+        }
+        boolean emailExists = doctorRepository.findByEmail(doctor.getEmail()).isPresent();
+        if (emailExists) {
+            if (logger.isLoggable(Level.WARNING)) {
+                logger.warning(String.format("Email %s already registered", doctor.getEmail()));
+            }
+            return false;
+        }
+        boolean cellphoneExists = doctorRepository.findByCellphone(doctor.getMobile()).isPresent();
+        if (cellphoneExists) {
+            if (logger.isLoggable(Level.WARNING)) {
+                logger.warning(String.format("Cellphone %s already registered", doctor.getMobile()));
             }
             return false;
         }
@@ -85,6 +98,11 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public List<Patient> getAllPatients() {
         return patientRepository.findAll();
+    }
+
+    @Override
+    public List<Doctor> getAllDoctors() {
+        return doctorRepository.findAll();
     }
 
     @Override
