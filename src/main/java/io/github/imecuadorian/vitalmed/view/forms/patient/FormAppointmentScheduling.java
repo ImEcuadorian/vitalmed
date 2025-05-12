@@ -28,7 +28,6 @@ public class FormAppointmentScheduling extends Form {
         add(createInfo());
         add(createOptions());
     }
-
     private JPanel createInfo() {
         JPanel panel = new JPanel(new MigLayout("fillx,wrap", "[fill]"));
         JLabel title = new JLabel("Agendamiento de Citas");

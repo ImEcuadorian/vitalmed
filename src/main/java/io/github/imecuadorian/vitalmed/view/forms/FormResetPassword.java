@@ -1,4 +1,4 @@
-package io.github.imecuadorian.vitalmed.view.forms.auth;
+package io.github.imecuadorian.vitalmed.view.forms;
 
 import io.github.imecuadorian.vitalmed.*;
 import io.github.imecuadorian.vitalmed.util.*;
@@ -8,12 +8,10 @@ import net.miginfocom.swing.*;
 import javax.swing.*;
 import java.awt.*;
 
-@SystemForm(name = "Cerrar Sesión", description = "Cerrar sesión del sistema", tags = {"cerrar sesión"})
-public class FormLogout extends Form {
+@SystemForm(name = "Reset Password", description = "Formulario para resetear la contraseña", tags = {"reset password"})
+public class FormResetPassword extends Form {
 
-    public FormLogout() {
-        init();
-    }
+
 
     private void init() {
         setLayout(new MigLayout("insets 0, fill", "[center]", "[center]"));

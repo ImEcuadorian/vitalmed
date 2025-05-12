@@ -3,7 +3,7 @@ package io.github.imecuadorian.vitalmed.i18n;
 import java.util.*;
 
 public class I18n {
-    private static Locale currentLocale = Locale.of("en", "US");
+    private static Locale currentLocale = Locale.of("es", "EC");
     private static ResourceBundle bundle = loadBundle(currentLocale);
 
     private static ResourceBundle loadBundle(Locale locale) {

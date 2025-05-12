@@ -11,7 +11,6 @@ import java.awt.*;
 
 @SystemForm(name = "Dashboard", description = "Panel para mostrar el estado de la aplicacion")
 public class FormDashboard extends Form {
-
     private JPanel panelLayout;
     public FormDashboard() {
         init();

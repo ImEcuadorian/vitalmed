@@ -4,8 +4,7 @@ import io.github.imecuadorian.vitalmed.model.*;
 import io.github.imecuadorian.vitalmed.repository.Repository;
 import io.github.imecuadorian.vitalmed.service.*;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
