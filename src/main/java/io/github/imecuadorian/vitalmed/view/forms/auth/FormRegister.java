@@ -140,14 +140,14 @@ public class FormRegister extends JPanel {
 
         JTextArea textArea = new JTextArea();
         textArea.setEnabled(false);
-        textArea.setText("Al registrarte, aceptas los términos y condiciones de uso y la política de privacidad de Vitalmed.");
+        textArea.setText(I18n.t("aut.formRegister.textTermsAndConditions"));
         textArea.putClientProperty(FlatClientProperties.STYLE, "border:0,0,0,0;" +
                                                                "font:-1;" +
                                                                "background:null;");
         add(textArea, "gapy 10 10,span 2");
 
-        JButton btnCancel = new JButton("Cancelar");
-        JButton btnRegister = new JButton("Registrar") {
+        JButton btnCancel = new JButton(I18n.t("auth.formRegister.JButton.cancel"));
+        JButton btnRegister = new JButton(I18n.t("auth.formRegister.JButton.register")) {
             @Override
             public boolean isDefaultButton() {
                 return true;
@@ -171,23 +171,23 @@ public class FormRegister extends JPanel {
         btnRegister.addActionListener(actionEvent -> {
             boolean valid = true;
 
-            valid &= InputValidator.isNotEmpty(txtId, "La cédula no puede estar vacía");
-            valid &= InputValidator.isNotEmpty(txtName, "El nombre no puede estar vacío");
-            valid &= InputValidator.isNotEmpty(txtSurname, "El apellido no puede estar vacío");
-            valid &= InputValidator.isNotEmpty(txtEmail, "El correo no puede estar vacío");
-            valid &= InputValidator.isNotEmpty(txtPassword, "La contraseña no puede estar vacía");
-            valid &= InputValidator.isNotEmpty(txtConfirmPassword, "Debe confirmar su contraseña");
-            valid &= InputValidator.isNotEmpty(txtCellphone, "El celular no puede estar vacío");
+            valid &= InputValidator.isNotEmpty(txtId, I18n.t("auth.formRegister.errorMessage.txtId.notEmpty"));
+            valid &= InputValidator.isNotEmpty(txtName, I18n.t("auth.formRegister.errorMessage.txtName.notEmpty"));
+            valid &= InputValidator.isNotEmpty(txtSurname, I18n.t("auth.formRegister.errorMessage.txtSurname.notEmpty"));
+            valid &= InputValidator.isNotEmpty(txtEmail, I18n.t("auth.formRegister.errorMessage.txtEmail.notEmpty"));
+            valid &= InputValidator.isNotEmpty(txtPassword, I18n.t("auth.formRegister.errorMessage.txtPassword.notEmpty"));
+            valid &= InputValidator.isNotEmpty(txtConfirmPassword, I18n.t("auth.formRegister.errorMessage.txtConfirmPassword.notEmpty"));
+            valid &= InputValidator.isNotEmpty(txtCellphone, I18n.t("auth.formRegister.errorMessage.txtCellphone.notEmpty"));
 
-            valid &= InputValidator.isValidPassword(txtPassword, "La contraseña no cumple los requisitos");
-            valid &= InputValidator.isValidPassword(txtConfirmPassword, "La confirmación no cumple los requisitos");
-            valid &= InputValidator.isNotEmpty(txtAddress, "La dirección no puede estar vacía");
+            valid &= InputValidator.isValidPassword(txtPassword, I18n.t("auth.formRegister.errorMessage.txtPassword.validPassword"));
+            valid &= InputValidator.isValidPassword(txtConfirmPassword, I18n.t("auth.formRegister.errorMessage.txtConfirmPassword.validPassword"));
+            valid &= InputValidator.isNotEmpty(txtAddress, I18n.t("auth.formRegister.errorMessage.txtAddress.notEmpty"));
 
-            valid &= InputValidator.isValidName(txtName, "Nombre inválido (máx. 2 palabras, iniciales con mayúscula)");
-            valid &= InputValidator.isValidName(txtSurname, "Apellido inválido (máx. 2 palabras, iniciales con mayúscula)");
+            valid &= InputValidator.isValidName(txtName, I18n.t("auth.formRegister.errorMessage.txtName.validName"));
+            valid &= InputValidator.isValidName(txtSurname, I18n.t("auth.formRegister.errorMessage.txtSurname.validName"));
             valid &= InputValidator.isValidCedula(txtId);
-            valid &= InputValidator.isValidEmail(txtEmail, "Correo inválido");
-            valid &= InputValidator.isValidPhone(txtCellphone, "Número de celular inválido");
+            valid &= InputValidator.isValidEmail(txtEmail, I18n.t("auth.formRegister.errorMessage.txtEmail.validEmail"));
+            valid &= InputValidator.isValidPhone(txtCellphone, I18n.t("auth.formRegister.errorMessage.txtCellphone.validPhone"));
 
             String pass = new String(txtPassword.getPassword());
             String confirm = new String(txtConfirmPassword.getPassword());
