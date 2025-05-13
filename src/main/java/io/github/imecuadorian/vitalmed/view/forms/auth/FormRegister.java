@@ -171,15 +171,15 @@ public class FormRegister extends JPanel {
         btnRegister.addActionListener(actionEvent -> {
             boolean valid = true;
 
-            valid &= InputValidator.isNotEmpty(txtId, "La cédula no puede estar vacía");
-            valid &= InputValidator.isNotEmpty(txtName, "El nombre no puede estar vacío");
-            valid &= InputValidator.isNotEmpty(txtSurname, "El apellido no puede estar vacío");
-            valid &= InputValidator.isNotEmpty(txtEmail, "El correo no puede estar vacío");
-            valid &= InputValidator.isNotEmpty(txtPassword, "La contraseña no puede estar vacía");
-            valid &= InputValidator.isNotEmpty(txtConfirmPassword, "Debe confirmar su contraseña");
-            valid &= InputValidator.isNotEmpty(txtCellphone, "El celular no puede estar vacío");
+            valid &= InputValidator.isNotEmpty(txtId, I18n.t("auth.formRegister.message.txtIdNotEmpty"));
+            valid &= InputValidator.isNotEmpty(txtName, I18n.t("auth.formRegister.message.txtNameNotEmpty"));
+            valid &= InputValidator.isNotEmpty(txtSurname, I18n.t("auth.formRegister.message.txtSurnameNotEmpty"));
+            valid &= InputValidator.isNotEmpty(txtEmail, I18n.t("auth.formRegister.message.txtEmailNotEmpty"));
+            valid &= InputValidator.isNotEmpty(txtPassword, I18n.t("auth.formRegister.message.txtPasswordNotEmpty"));
+            valid &= InputValidator.isNotEmpty(txtConfirmPassword, I18n.t("auth.formRegister.message.txtConfirmPasswordNotEmpty"));
+            valid &= InputValidator.isNotEmpty(txtCellphone, I18n.t("auth.formRegister.message.txtCellphoneNotEmpty"));
 
-            valid &= InputValidator.isValidPassword(txtPassword, "La contraseña no cumple los requisitos");
+            valid &= InputValidator.isValidPassword(txtPassword, I18n.t("auth.formRegister.message.txtPasswordValid"));
             valid &= InputValidator.isValidPassword(txtConfirmPassword, "La confirmación no cumple los requisitos");
             valid &= InputValidator.isNotEmpty(txtAddress, "La dirección no puede estar vacía");
 
