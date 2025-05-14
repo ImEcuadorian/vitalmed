@@ -140,14 +140,14 @@ public class FormRegister extends JPanel {
 
         JTextArea textArea = new JTextArea();
         textArea.setEnabled(false);
-        textArea.setText("Al registrarte, aceptas los términos y condiciones de uso y la política de privacidad de Vitalmed.");
+        textArea.setText(I18n.t("aut.formRegister.textTermsAndConditions"));
         textArea.putClientProperty(FlatClientProperties.STYLE, "border:0,0,0,0;" +
                                                                "font:-1;" +
                                                                "background:null;");
         add(textArea, "gapy 10 10,span 2");
 
-        JButton btnCancel = new JButton("Cancelar");
-        JButton btnRegister = new JButton("Registrar") {
+        JButton btnCancel = new JButton(I18n.t("auth.formRegister.JButton.cancel"));
+        JButton btnRegister = new JButton(I18n.t("auth.formRegister.JButton.register")) {
             @Override
             public boolean isDefaultButton() {
                 return true;
@@ -171,23 +171,23 @@ public class FormRegister extends JPanel {
         btnRegister.addActionListener(actionEvent -> {
             boolean valid = true;
 
-            valid &= InputValidator.isNotEmpty(txtId, I18n.t("auth.formRegister.message.txtIdNotEmpty"));
-            valid &= InputValidator.isNotEmpty(txtName, I18n.t("auth.formRegister.message.txtNameNotEmpty"));
-            valid &= InputValidator.isNotEmpty(txtSurname, I18n.t("auth.formRegister.message.txtSurnameNotEmpty"));
-            valid &= InputValidator.isNotEmpty(txtEmail, I18n.t("auth.formRegister.message.txtEmailNotEmpty"));
-            valid &= InputValidator.isNotEmpty(txtPassword, I18n.t("auth.formRegister.message.txtPasswordNotEmpty"));
-            valid &= InputValidator.isNotEmpty(txtConfirmPassword, I18n.t("auth.formRegister.message.txtConfirmPasswordNotEmpty"));
-            valid &= InputValidator.isNotEmpty(txtCellphone, I18n.t("auth.formRegister.message.txtCellphoneNotEmpty"));
+            valid &= InputValidator.isNotEmpty(txtId, I18n.t("auth.formRegister.errorMessage.txtId.notEmpty"));
+            valid &= InputValidator.isNotEmpty(txtName, I18n.t("auth.formRegister.errorMessage.txtName.notEmpty"));
+            valid &= InputValidator.isNotEmpty(txtSurname, I18n.t("auth.formRegister.errorMessage.txtSurname.notEmpty"));
+            valid &= InputValidator.isNotEmpty(txtEmail, I18n.t("auth.formRegister.errorMessage.txtEmail.notEmpty"));
+            valid &= InputValidator.isNotEmpty(txtPassword, I18n.t("auth.formRegister.errorMessage.txtPassword.notEmpty"));
+            valid &= InputValidator.isNotEmpty(txtConfirmPassword, I18n.t("auth.formRegister.errorMessage.txtConfirmPassword.notEmpty"));
+            valid &= InputValidator.isNotEmpty(txtCellphone, I18n.t("auth.formRegister.errorMessage.txtCellphone.notEmpty"));
 
-            valid &= InputValidator.isValidPassword(txtPassword, I18n.t("auth.formRegister.message.txtPasswordValid"));
-            valid &= InputValidator.isValidPassword(txtConfirmPassword, "La confirmación no cumple los requisitos");
-            valid &= InputValidator.isNotEmpty(txtAddress, "La dirección no puede estar vacía");
+            valid &= InputValidator.isValidPassword(txtPassword, I18n.t("auth.formRegister.errorMessage.txtPassword.validPassword"));
+            valid &= InputValidator.isValidPassword(txtConfirmPassword, I18n.t("auth.formRegister.errorMessage.txtConfirmPassword.validPassword"));
+            valid &= InputValidator.isNotEmpty(txtAddress, I18n.t("auth.formRegister.errorMessage.txtAddress.notEmpty"));
 
-            valid &= InputValidator.isValidName(txtName, "Nombre inválido (máx. 2 palabras, iniciales con mayúscula)");
-            valid &= InputValidator.isValidName(txtSurname, "Apellido inválido (máx. 2 palabras, iniciales con mayúscula)");
+            valid &= InputValidator.isValidName(txtName, I18n.t("auth.formRegister.errorMessage.txtName.validName"));
+            valid &= InputValidator.isValidName(txtSurname, I18n.t("auth.formRegister.errorMessage.txtSurname.validName"));
             valid &= InputValidator.isValidCedula(txtId);
-            valid &= InputValidator.isValidEmail(txtEmail, "Correo inválido");
-            valid &= InputValidator.isValidPhone(txtCellphone, "Número de celular inválido");
+            valid &= InputValidator.isValidEmail(txtEmail, I18n.t("auth.formRegister.errorMessage.txtEmail.validEmail"));
+            valid &= InputValidator.isValidPhone(txtCellphone, I18n.t("auth.formRegister.errorMessage.txtCellphone.validPhone"));
 
             String pass = new String(txtPassword.getPassword());
             String confirm = new String(txtConfirmPassword.getPassword());
@@ -195,7 +195,7 @@ public class FormRegister extends JPanel {
             if (!pass.equals(confirm)) {
                 valid = false;
                 InputValidator.markAsError(txtConfirmPassword);
-                Toast.show(txtConfirmPassword, Toast.Type.ERROR, "Las contraseñas no coinciden", ToastLocation.TOP_TRAILING, Constants.getOption());
+                Toast.show(txtConfirmPassword, Toast.Type.ERROR, I18n.t("auth.formRegister.typeError.txtConfirmPassword"), ToastLocation.TOP_TRAILING, Constants.getOption());
             }
 
             if (valid) {
@@ -210,9 +210,9 @@ public class FormRegister extends JPanel {
                 );
                 if (registrationController.register(patient)) {
                     ModalBorderAction.getModalBorderAction(this).doAction(SimpleModalBorder.OK_OPTION);
-                    Toast.show(this, Toast.Type.SUCCESS, "Registro exitoso", ToastLocation.TOP_TRAILING, Constants.getOption());
+                    Toast.show(this, Toast.Type.SUCCESS, I18n.t("auth.formRegister.typeSuccess.registerPatient"), ToastLocation.TOP_TRAILING, Constants.getOption());
                 } else {
-                    Toast.show(this, Toast.Type.ERROR, "Error al registrar el paciente", ToastLocation.TOP_TRAILING, Constants.getOption());
+                    Toast.show(this, Toast.Type.ERROR, I18n.t("auth.formRegister.typeError.registerPatient"), ToastLocation.TOP_TRAILING, Constants.getOption());
                 }
             }
         });
