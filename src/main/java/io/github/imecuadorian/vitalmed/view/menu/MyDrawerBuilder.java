@@ -100,24 +100,24 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
         MenuOption simpleMenuOption = new MenuOption();
 
         MenuItem[] items = new MenuItem[]{
-                new Item.Label("GENERAL"),                                       // index[0]
+                new Item.Label(I18n.t("dashboard.menuItem.general.title")),                                       // index[0]
                 new Item(I18n.t("dashboard.menuItem.information"), "dashboard.svg", FormDashboard.class), // [0]
 
-                new Item.Label("GESTIÓN DE CITAS"),                              // index[1]
-                new Item("Citas", "calendar.svg")                                // index[2]
+                new Item.Label(I18n.t("dashboard.menuItem.appointmentManagement.title")),                              // index[1]
+                new Item(I18n.t("dashboard.menuItem.appointments"), "calendar.svg")                                // index[2]
                         .subMenu(I18n.t("dashboard.menuItem.scheduleAppointment"), FormAppointmentScheduling.class)     // [2,0]
                         .subMenu(I18n.t("dashboard.menuItem.appointmentManagement"), FormDoctorManagement.class),      // [2,1]
 
-                new Item.Label("HISTORIAL MÉDICO"),                              // index[3]
+                new Item.Label(I18n.t("dashboard.menuItem.medicalHistory.title")),                              // index[3]
                 new Item(I18n.t("dashboard.menuItem.seeClinicalHistory"), "page.svg", FormMedicalHistory.class),   // [4]
 
-                new Item.Label("ADMINISTRACIÓN"),                                // index[5]
-                new Item("Administrar", "forms.svg")                             // index[6]
+                new Item.Label(I18n.t("dashboard.menuItem.administration.title")),                                // index[5]
+                new Item(I18n.t("dashboard.menuItem.administer"), "forms.svg")                             // index[6]
                         .subMenu(I18n.t("dashboard.menuItem.registerDoctors"), FormRegisterDoctor.class)               // [6,0]
                         .subMenu(I18n.t("dashboard.menuItem.administrationPatients"), FormPatientManagement.class)     // [6,1]
                         .subMenu(I18n.t("dashboard.menuItem.assignmentOfSchedules"), FormScheduleAssignment.class),    // [6,2]
 
-                new Item.Label("CUENTA"),                                        // index[7]
+                new Item.Label(I18n.t("dashboard.menuItem.account.title")),                                        // index[7]
                 new Item(I18n.t("dashboard.menuItem.logout"), "logout.svg", FormLogout.class)                      // [8]
         };
         int visibleIndex = 0;

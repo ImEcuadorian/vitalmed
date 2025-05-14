@@ -195,7 +195,7 @@ public class FormRegister extends JPanel {
             if (!pass.equals(confirm)) {
                 valid = false;
                 InputValidator.markAsError(txtConfirmPassword);
-                Toast.show(txtConfirmPassword, Toast.Type.ERROR, "Las contraseñas no coinciden", ToastLocation.TOP_TRAILING, Constants.getOption());
+                Toast.show(txtConfirmPassword, Toast.Type.ERROR, I18n.t("auth.formRegister.typeError.txtConfirmPassword"), ToastLocation.TOP_TRAILING, Constants.getOption());
             }
 
             if (valid) {
@@ -210,9 +210,9 @@ public class FormRegister extends JPanel {
                 );
                 if (registrationController.register(patient)) {
                     ModalBorderAction.getModalBorderAction(this).doAction(SimpleModalBorder.OK_OPTION);
-                    Toast.show(this, Toast.Type.SUCCESS, "Registro exitoso", ToastLocation.TOP_TRAILING, Constants.getOption());
+                    Toast.show(this, Toast.Type.SUCCESS, I18n.t("auth.formRegister.typeSuccess.registerPatient"), ToastLocation.TOP_TRAILING, Constants.getOption());
                 } else {
-                    Toast.show(this, Toast.Type.ERROR, "Error al registrar el paciente", ToastLocation.TOP_TRAILING, Constants.getOption());
+                    Toast.show(this, Toast.Type.ERROR, I18n.t("auth.formRegister.typeError.registerPatient"), ToastLocation.TOP_TRAILING, Constants.getOption());
                 }
             }
         });
