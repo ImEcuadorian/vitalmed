@@ -4,6 +4,7 @@ import com.formdev.flatlaf.*;
 import com.formdev.flatlaf.extras.*;
 import io.github.imecuadorian.vitalmed.controller.*;
 import io.github.imecuadorian.vitalmed.factory.*;
+import io.github.imecuadorian.vitalmed.i18n.I18n;
 import io.github.imecuadorian.vitalmed.model.*;
 import io.github.imecuadorian.vitalmed.util.*;
 import io.github.imecuadorian.vitalmed.view.component.table.*;
@@ -38,7 +39,7 @@ public class FormRegisterDoctor extends Form {
 
     private JPanel createInfo() {
         JPanel panel = new JPanel(new MigLayout("fillx,wrap", "[fill]"));
-        JLabel title = new JLabel("Registro de Doctor");
+        JLabel title = new JLabel(I18n.t("form.formRegisterDoctor.doctorRegistration.title"));
         JTextPane text = new JTextPane();
         text.setText("El registro de doctores es un proceso esencial en el ámbito médico, ya que implica la recopilación y organización de información relevante sobre los profesionales de la salud. Esto incluye datos personales, credenciales, especialidades, experiencia laboral y cualquier otra información necesaria para garantizar una atención médica adecuada y segura.");
         text.setEditable(false);
