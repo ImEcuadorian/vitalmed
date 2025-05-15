@@ -4,6 +4,7 @@ import com.formdev.flatlaf.*;
 import com.formdev.flatlaf.extras.*;
 import io.github.imecuadorian.vitalmed.controller.*;
 import io.github.imecuadorian.vitalmed.factory.*;
+import io.github.imecuadorian.vitalmed.i18n.I18n;
 import io.github.imecuadorian.vitalmed.model.*;
 import io.github.imecuadorian.vitalmed.util.*;
 import io.github.imecuadorian.vitalmed.view.component.table.*;
@@ -44,13 +45,12 @@ public class FormPatientManagement extends Form {
 
     private JPanel createInfo() {
         JPanel panel = new JPanel(new MigLayout("fillx,wrap", "[fill]"));
-        JLabel title = new JLabel("Gestión de Pacientes");
+        JLabel title = new JLabel(I18n.t("form.formPatientManagement.patientManagement.title"));
         JTextPane text = new JTextPane();
-        text.setText("La gestión de pacientes es una parte fundamental de la atención médica, ya que implica el seguimiento y la administración de la información relacionada con los pacientes. Esto incluye el registro de datos personales, historial médico, tratamientos, citas y cualquier otra información relevante para garantizar una atención adecuada y continua.");
+        text.setText(I18n.t("form.formPatientManagement.description"));
         text.setEditable(false);
         text.setBorder(BorderFactory.createEmptyBorder());
-        title.putClientProperty(FlatClientProperties.STYLE, "" +
-                                                            "font:bold +3");
+        title.putClientProperty(FlatClientProperties.STYLE, "font:bold +3");
 
         panel.add(title);
         panel.add(text, "width 500");
@@ -60,7 +60,8 @@ public class FormPatientManagement extends Form {
     private Component createCustomTable() {
         JPanel panel = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[][]0[fill,grow]"));
 
-        Object[] columns = new Object[]{"SELECT", "#", "Cédula", "Nombre", "Email", "Dirección", "Celular"};
+        Object[] columns = new Object[]{"SELECT", "#", I18n.t("form.formPatientManagement.id.table"), I18n.t("form.formPatientManagement.name.table"),
+                I18n.t("form.formPatientManagement.mail.table"), I18n.t("form.formPatientManagement.address.table"), I18n.t("form.formPatientManagement.mobile.table")};
         tableModel = new DefaultTableModel(columns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -99,16 +100,14 @@ public class FormPatientManagement extends Form {
             }
         });
 
-        panel.putClientProperty(FlatClientProperties.STYLE, "" +
-                                                            "arc:20;" +
+        panel.putClientProperty(FlatClientProperties.STYLE, "arc:20;" +
                                                             "background:$Table.background;");
         table.getTableHeader().putClientProperty(FlatClientProperties.STYLE, "" +
                                                                              "height:30;" +
                                                                              "hoverBackground:null;" +
                                                                              "pressedBackground:null;" +
                                                                              "separatorColor:$TableHeader.background;");
-        table.putClientProperty(FlatClientProperties.STYLE, "" +
-                                                            "rowHeight:70;" +
+        table.putClientProperty(FlatClientProperties.STYLE, "rowHeight:70;" +
                                                             "showHorizontalLines:true;" +
                                                             "intercellSpacing:0,1;" +
                                                             "cellFocusColor:$TableHeader.hoverBackground;" +
@@ -121,9 +120,8 @@ public class FormPatientManagement extends Form {
                                                                                         "thumbInsets:3,3,3,3;" +
                                                                                         "background:$Table.background;");
 
-        JLabel title = new JLabel("Tabla de Pacientes");
-        title.putClientProperty(FlatClientProperties.STYLE, "" +
-                                                            "font:bold +2");
+        JLabel title = new JLabel(I18n.t("form.formPatientManagement.patientTable.title"));
+        title.putClientProperty(FlatClientProperties.STYLE, "font:bold +2");
         panel.add(title, "gapx 20");
 
         panel.add(createHeaderAction());
@@ -141,7 +139,7 @@ public class FormPatientManagement extends Form {
         JPanel panel = new JPanel(new MigLayout("insets 5 20 5 20", "[fill,230]push[][]"));
 
         JTextField txtSearch = new JTextField();
-        txtSearch.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Buscar...");
+        txtSearch.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("form.formPatientManagement.search.placeholder"));
         txtSearch.putClientProperty(FlatClientProperties.TEXT_FIELD_LEADING_ICON, new FlatSVGIcon("io/github/imecuadorian/vitalmed/icon/search.svg", 0.4f));
 
         txtSearch.getDocument().addDocumentListener(new DocumentListener() {
@@ -166,7 +164,7 @@ public class FormPatientManagement extends Form {
             }
         });
 
-        JButton cmdCreate = new JButton("Reiniciar Contraseña");
+        JButton cmdCreate = new JButton(I18n.t("form.formPatientManagement.resetPassword.button"));
 
         cmdCreate.addActionListener(e -> {
             List<String> selectedIds = new ArrayList<>();
@@ -178,7 +176,7 @@ public class FormPatientManagement extends Form {
             }
 
             if (selectedIds.isEmpty()) {
-                Toast.show(this, Toast.Type.ERROR, "No se seleccionó ningún paciente", ToastLocation.TOP_TRAILING, Constants.getOption());
+                Toast.show(this, Toast.Type.ERROR, I18n.t("form.formPatientManagement.selectedPatient"), ToastLocation.TOP_TRAILING, Constants.getOption());
                 return;
             }
 
@@ -195,19 +193,17 @@ public class FormPatientManagement extends Form {
     }
 
     private void showModal(List<String> selectedIds) {
-        String message = """
-            ¿Está seguro de que desea reiniciar la contraseña de los siguientes pacientes?
-            """;
+        String message = I18n.t("form.formPatientManagement.resetPassword.message");
         Option option = ModalDialog.createOption();
         option.getLayoutOption().setSize(-1, 1f)
                 .setLocation(Location.TRAILING, Location.TOP)
                 .setAnimateDistance(0.7f, 0);
-        ModalDialog.showModal(this, new SimpleMessageModal(SimpleMessageModal.Type.WARNING, message, "Reiniciar Contraseña", SimpleModalBorder.YES_NO_OPTION, (controller, action) -> {
+        ModalDialog.showModal(this, new SimpleMessageModal(SimpleMessageModal.Type.WARNING, message, I18n.t("form.formPatientManagement.resetPassword.typeWarning"), SimpleModalBorder.YES_NO_OPTION, (controller, action) -> {
             if (action == SimpleModalBorder.YES_OPTION) {
                 for (String id : selectedIds) {
                     adminDashboardController.resetPassword(id, "Vm@" + id);
                 }
-                Toast.show(this, Toast.Type.SUCCESS, "Contraseña reiniciada con éxito", ToastLocation.TOP_TRAILING, Constants.getOption());
+                Toast.show(this, Toast.Type.SUCCESS, I18n.t("form.formPatientManagement.resetPassword.typeSuccess"), ToastLocation.TOP_TRAILING, Constants.getOption());
                 for (int i = 0; i < tableModel.getRowCount(); i++) {
                     tableModel.setValueAt(false, i, 0);
                 }
