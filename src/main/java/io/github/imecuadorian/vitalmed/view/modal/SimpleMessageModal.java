@@ -93,6 +93,7 @@ public class SimpleMessageModal extends SimpleModalBorder {
                                                                  "focusWidth:0;" +
                                                                  "innerFocusWidth:0;" +
                                                                  "default.borderWidth:0;" +
+                                                                 "hoverBackground:fade($Component.accentColor,20%);" +
                                                                  "[light]background:" + colors[0] + ";" +
                                                                  "[dark]background:" + colors[1] + ";");
         } else {

@@ -2,11 +2,12 @@ package io.github.imecuadorian.vitalmed.util;
 
 import com.formdev.flatlaf.*;
 import com.formdev.flatlaf.util.*;
-import io.github.imecuadorian.vitalmed.view.themes.*;
+import lombok.*;
 
 import javax.swing.*;
 import java.util.*;
 import java.util.prefs.*;
+
 public class AppPreferences {
 
     public static final String PREFERENCES_ROOT_PATH = "/vitalmed";
@@ -14,18 +15,12 @@ public class AppPreferences {
     public static final String KEY_LAF_THEME = "lafTheme";
     public static final String KEY_RECENT_SEARCH = "recentSearch";
     public static final String KEY_RECENT_SEARCH_FAVORITE = "recentSearchFavorite";
-
-    public static final String RESOURCE_PREFIX = "res:";
-
     public static final String THEME_UI_KEY = "__Vitalmed.flatlaf.theme";
-
     public static final String VERSION = "1.0.0";
 
+    @Getter
     private static Preferences state;
 
-    public static Preferences getState() {
-        return state;
-    }
 
     public static void init() {
         state = Preferences.userRoot().node(PREFERENCES_ROOT_PATH);
@@ -36,11 +31,7 @@ public class AppPreferences {
             String lafClassName = state.get(KEY_LAF, FlatLightLaf.class.getName());
             if (IntelliJTheme.ThemeLaf.class.getName().equals(lafClassName)) {
                 String theme = state.get(KEY_LAF_THEME, "");
-                if (theme.startsWith(RESOURCE_PREFIX)) {
-                    IntelliJTheme.setup(PanelThemes.class.getResourceAsStream(PanelThemes.THEMES_PACKAGE + theme.substring(RESOURCE_PREFIX.length())));
-                } else {
-                    FlatLightLaf.setup();
-                }
+                FlatDarkLaf.setup();
                 if (!theme.isEmpty()) {
                     UIManager.getLookAndFeelDefaults().put(THEME_UI_KEY, theme);
                 }

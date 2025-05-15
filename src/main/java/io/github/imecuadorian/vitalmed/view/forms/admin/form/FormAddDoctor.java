@@ -135,18 +135,7 @@ public class FormAddDoctor extends JPanel {
         cbSpecialty.addItem("Ginecología");
         cbSpecialty.addItem("Odontología");
         cbSpecialty.addItem("Dermatología");
-        cbSpecialty.addItem("Oftalmología");
-        cbSpecialty.addItem("Psiquiatría");
-        cbSpecialty.addItem("Cardiología");
-        cbSpecialty.addItem("Neurología");
-        cbSpecialty.addItem("Traumatología");
-        cbSpecialty.addItem("Otorrinolaringología");
-        cbSpecialty.addItem("Urología");
-        cbSpecialty.addItem("Gastroenterología");
-        cbSpecialty.addItem("Endocrinología");
-        cbSpecialty.addItem("Reumatología");
-        cbSpecialty.addItem("Cirugía General");
-        cbSpecialty.addItem("Cirugía Plástica");
+        cbSpecialty.addItem("Laboratorio");
 
         add(cbSpecialty, "span 2, growx, wrap");
 

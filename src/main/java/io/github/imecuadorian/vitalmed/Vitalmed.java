@@ -22,6 +22,7 @@ public class Vitalmed extends JFrame {
     public static void main(String[] args) {
         FlatLaf.registerCustomDefaultsSource("io.github.imecuadorian.vitalmed.ui");
         FlatMacDarkLaf.setup();
+        AppPreferences.init();
         EventQueue.invokeLater(() -> {
             try {
 

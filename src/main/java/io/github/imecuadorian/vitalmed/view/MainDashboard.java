@@ -22,7 +22,6 @@ public class MainDashboard extends JFrame {
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setVisible(true);
         FormManager.install(this);
-        AppPreferences.init();
         Drawer.installDrawer(this, MyDrawerBuilder.getInstance());
         AppPreferences.setupLaf();
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/io/github/imecuadorian/vitalmed/images/vitalmed-main-icon.png")));

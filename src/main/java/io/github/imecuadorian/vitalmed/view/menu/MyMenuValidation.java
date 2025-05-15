@@ -6,6 +6,7 @@ import io.github.imecuadorian.vitalmed.view.forms.auth.*;
 import io.github.imecuadorian.vitalmed.view.forms.doctor.*;
 import io.github.imecuadorian.vitalmed.view.forms.patient.*;
 import io.github.imecuadorian.vitalmed.view.system.*;
+import lombok.*;
 import raven.modal.drawer.item.*;
 import raven.modal.drawer.menu.*;
 
@@ -13,24 +14,16 @@ import java.util.*;
 
 public class MyMenuValidation extends MenuValidation {
 
+    @Getter
+    @Setter
     private static User user;
+    @Setter
     private static MenuItem[] menuItems;
 
-    public static void setUser(User u) {
-        user = u;
-    }
-
-    public static void setMenuItems(MenuItem[] items) {
-        menuItems = items;
-    }
-
-    // Valida si el ítem de menú se debe mostrar
     @Override
     public boolean menuValidation(int[] index) {
-        // Validación por clase del ítem
         Class<?> clazz = getClassByIndex(index);
 
-        // Validación del contenedor de submenús
         if (clazz == null) {
             return hasVisibleSubMenu(index);
         }
@@ -58,30 +51,32 @@ public class MyMenuValidation extends MenuValidation {
     }
 
 
-    // Valida si una clase específica se puede acceder (usado en buscador, etc.)
     public static boolean validation(Class<? extends Form> clazz) {
         if (user == null) return false;
 
         return switch (user.getRol()) {
-            case ADMIN -> true;  // El admin puede ver todo
+            case ADMIN -> true;
 
             case DOCTOR -> (
                     clazz == FormDashboard.class ||
                     clazz == FormDoctorManagement.class ||
                     clazz == FormMedicalHistory.class ||
+                    clazz == FormUpdateData.class ||
+                    clazz == FormResetPassword.class ||
                     clazz == FormLogout.class
             );
 
             case PATIENT -> (
                     clazz == FormDashboard.class ||
                     clazz == FormAppointmentScheduling.class ||
+                    clazz == FormUpdateData.class ||
+                    clazz == FormResetPassword.class ||
                     clazz == FormLogout.class
             );
         };
     }
 
 
-    // Obtener clase desde índice del menú
     private static Class<?> getClassByIndex(int[] index) {
         if (menuItems == null || index == null) return null;
 

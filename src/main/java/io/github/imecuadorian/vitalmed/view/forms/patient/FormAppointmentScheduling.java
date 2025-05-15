@@ -27,6 +27,7 @@ public class FormAppointmentScheduling extends Form {
         setLayout(new MigLayout("wrap,fillx", "[fill]", "[][grow,fill]"));
         add(createInfo());
         add(createOptions());
+        add(createTestButton(), "growx");
     }
     private JPanel createInfo() {
         JPanel panel = new JPanel(new MigLayout("fillx,wrap", "[fill]"));
@@ -69,14 +70,10 @@ public class FormAppointmentScheduling extends Form {
     }
 
     private Component createExample() {
-        JPanel panel = new JPanel(new MigLayout("wrap,al center", "[fill,400]"));
+        JPanel panel = new JPanel(new MigLayout("wrap,al center", "[fill,700]"));
         panel.setBorder(new TitledBorder("Example"));
         PanelSlider.PaneSliderLayoutSize layoutSize = (container, component) -> {
-            if (jrComponentPreferredSize.isSelected()) {
                 return minSize(container, component);
-            } else {
-                return container.getSize();
-            }
         };
         slidePane = new SlidePane(layoutSize);
         slidePane.addSlide(new FormRegister());

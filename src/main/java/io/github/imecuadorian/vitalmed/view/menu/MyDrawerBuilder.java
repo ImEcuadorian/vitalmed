@@ -6,6 +6,7 @@ import io.github.imecuadorian.vitalmed.i18n.*;
 import io.github.imecuadorian.vitalmed.model.*;
 import io.github.imecuadorian.vitalmed.view.forms.*;
 import io.github.imecuadorian.vitalmed.view.forms.admin.*;
+import io.github.imecuadorian.vitalmed.view.forms.admin.FormDoctorManagement;
 import io.github.imecuadorian.vitalmed.view.forms.auth.*;
 import io.github.imecuadorian.vitalmed.view.forms.doctor.*;
 import io.github.imecuadorian.vitalmed.view.forms.patient.*;
@@ -106,18 +107,20 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                 new Item.Label(I18n.t("dashboard.menuItem.appointmentManagement.title")),                              // index[1]
                 new Item(I18n.t("dashboard.menuItem.appointments"), "calendar.svg")                                // index[2]
                         .subMenu(I18n.t("dashboard.menuItem.scheduleAppointment"), FormAppointmentScheduling.class)     // [2,0]
-                        .subMenu(I18n.t("dashboard.menuItem.appointmentManagement"), FormDoctorManagement.class),      // [2,1]
+                        .subMenu(I18n.t("dashboard.menuItem.appointmentManagement"), io.github.imecuadorian.vitalmed.view.forms.doctor.FormDoctorManagement.class),      // [2,1]
 
                 new Item.Label(I18n.t("dashboard.menuItem.medicalHistory.title")),                              // index[3]
                 new Item(I18n.t("dashboard.menuItem.seeClinicalHistory"), "page.svg", FormMedicalHistory.class),   // [4]
 
                 new Item.Label(I18n.t("dashboard.menuItem.administration.title")),                                // index[5]
                 new Item(I18n.t("dashboard.menuItem.administer"), "forms.svg")                             // index[6]
-                        .subMenu(I18n.t("dashboard.menuItem.registerDoctors"), FormRegisterDoctor.class)               // [6,0]
+                        .subMenu(I18n.t("dashboard.menuItem.registerDoctors"), FormDoctorManagement.class)               // [6,0]
                         .subMenu(I18n.t("dashboard.menuItem.administrationPatients"), FormPatientManagement.class)     // [6,1]
                         .subMenu(I18n.t("dashboard.menuItem.assignmentOfSchedules"), FormScheduleAssignment.class),    // [6,2]
 
-                new Item.Label(I18n.t("dashboard.menuItem.account.title")),                                        // index[7]
+                new Item.Label(I18n.t("dashboard.menuItem.account.title")),
+                new Item("Actualizar Datos", FormUpdateData.class),
+                new Item("Reiniciar Contraseña", FormResetPassword.class),// index[7]
                 new Item(I18n.t("dashboard.menuItem.logout"), "logout.svg", FormLogout.class)                      // [8]
         };
         int visibleIndex = 0;

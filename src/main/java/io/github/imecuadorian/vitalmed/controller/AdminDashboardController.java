@@ -1,12 +1,15 @@
 package io.github.imecuadorian.vitalmed.controller;
 
 import io.github.imecuadorian.vitalmed.model.*;
-import io.github.imecuadorian.vitalmed.service.AdminService;
+import io.github.imecuadorian.vitalmed.service.*;
 
-import javax.swing.table.DefaultTableModel;
+import java.io.*;
 import java.util.*;
 
-public class AdminDashboardController {
+public class AdminDashboardController implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     private final AdminService adminService;
 
@@ -29,6 +32,7 @@ public class AdminDashboardController {
     public List<Doctor> getDoctors() {
         return adminService.getAllDoctors();
     }
+
     public boolean resetPassword(String patientId, String newPassword) {
         return adminService.resetPatientPassword(patientId, newPassword);
     }

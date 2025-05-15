@@ -3,7 +3,7 @@ package io.github.imecuadorian.vitalmed.view.forms.auth;
 import com.formdev.flatlaf.*;
 import io.github.imecuadorian.vitalmed.controller.*;
 import io.github.imecuadorian.vitalmed.factory.*;
-import io.github.imecuadorian.vitalmed.i18n.I18n;
+import io.github.imecuadorian.vitalmed.i18n.*;
 import io.github.imecuadorian.vitalmed.model.*;
 import io.github.imecuadorian.vitalmed.model.country.*;
 import io.github.imecuadorian.vitalmed.util.*;
@@ -16,13 +16,44 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 
-public class FormRegister extends JPanel {
+public class FormRegister extends JPanel implements LanguageChangeListener {
 
     private final RegistrationController registrationController = new RegistrationController(
             ServiceFactory.getPatientService()
     );
+
+    private JLabel lblId = new JLabel();
+    private JLabel lbContactDetail;
+    private JLabel lblNames;
+    private JLabel lblSurnames;
+    private JLabel lblEmail;
+    private JLabel lblPassword;
+    private JLabel lblConfirmPassword;
+    private JLabel lblCellphone;
+    private JLabel lblPhone;
+    private JLabel lblProvince;
+    private JLabel lblCanton;
+    private JLabel lblAddress;
+
+    // Inputs
+    private JTextField txtId = new JTextField();
+    private JTextField txtName = new JTextField();
+    private JTextField txtSurname = new JTextField();
+    private JTextField txtEmail = new JTextField();
+    private JPasswordField txtPassword = new JPasswordField();
+    private JPasswordField txtConfirmPassword = new JPasswordField();
+    private JTextField txtPhone = new JTextField();
+    private JTextField txtCellphone = new JTextField();
+    private JComboBox<Province> cbProvince = new JComboBox<>(Province.values());
+    private JComboBox<String> cbCanton = new JComboBox<>();
+    private JTextField txtAddress = new JTextField();
+    private JTextArea textAreaTerms = new JTextArea();
+
+    private JButton btnCancel;
+    private JButton btnRegister;
     public FormRegister() {
         init();
+        I18n.addListener(this);
     }
 
     private void init() {
@@ -31,84 +62,71 @@ public class FormRegister extends JPanel {
         ImageIcon logo = new ImageIcon(Objects.requireNonNull(getClass().getResource("/io/github/imecuadorian/vitalmed/images/vitalmed-main-icon.png")));
         Image scaled = logo.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
 
-        JLabel lbContactDetail = new JLabel(I18n.t("auth.formRegister.patientsMedicalHistoryData"), new ImageIcon(scaled), JLabel.LEFT);
+        lbContactDetail = new JLabel(I18n.t("auth.formRegister.patientsMedicalHistoryData"), new ImageIcon(scaled), JLabel.LEFT);
         lbContactDetail.putClientProperty(FlatClientProperties.STYLE, "font:bold +2;");
-        lbContactDetail.setIconTextGap(10); // espacio entre ícono y texto
+        lbContactDetail.setIconTextGap(10);
         add(lbContactDetail, "span 2, gapy 10 10, wrap");
 
+        lblId.setText(I18n.t("auth.formRegister.id*"));
+        add(lblId, "span 2");
 
-        add(new JLabel(I18n.t("auth.formRegister.id*")), "span 2");
-        JTextField txtId = new JTextField();
         txtId.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.id"));
-        String toolTipId =
-                I18n.t("auth.formRegister.idTooltip"); //Key for the tooltip text
-        txtId.setToolTipText(toolTipId); // Set the tooltip text for the ID field
+        txtId.setToolTipText(I18n.t("auth.formRegister.idTooltip"));
         add(txtId, "span 2, growx");
 
-        add(new JLabel(I18n.t("auth.formRegister.names*")));
-        String toolTipName =
-                I18n.t("auth.formRegister.nameTooltip"); //Key for the tooltip text
-        add(new JLabel(I18n.t("auth.formRegister.surnames*")));
-        String toolTipSurname =
-                I18n.t("auth.formRegister.surnameTooltip"); //Key for the tooltip text
+        lblNames = new JLabel(I18n.t("auth.formRegister.names*"));
+        lblNames.setToolTipText(I18n.t("auth.formRegister.nameTooltip"));
+        lblSurnames = new JLabel(I18n.t("auth.formRegister.surnames*"));
+        lblSurnames.setToolTipText(I18n.t("auth.formRegister.surnameTooltip"));
+        add(lblNames);
+        add(lblSurnames);
 
-        JTextField txtName = new JTextField();
-        txtName.setToolTipText(toolTipName); // Set the tooltip text for the name field
-        JTextField txtSurname = new JTextField();
-        txtSurname.setToolTipText(toolTipSurname); // Set the tooltip text for the surname field
+        txtName.setToolTipText(lblNames.getToolTipText());
+        txtSurname.setToolTipText(lblSurnames.getToolTipText());
         txtName.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.name"));
         txtSurname.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.surname"));
         add(txtName);
         add(txtSurname);
 
+        lblEmail = new JLabel(I18n.t("auth.formRegister.email"));
+        add(lblEmail, "span 2");
 
-        add(new JLabel(I18n.t("auth.formRegister.email")),"span 2");
-        String toolTipEmail =
-                I18n.t("auth.formRegister.emailTooltip"); //Key for the tooltip text
-        JTextField txtEmail = new JTextField();
-        txtEmail.setToolTipText(toolTipEmail); // Set the tooltip text for the email field
+        txtEmail.setToolTipText(I18n.t("auth.formRegister.emailTooltip"));
         txtEmail.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.email"));
         add(txtEmail, "span 2, growx");
 
-        add(new JLabel(I18n.t("auth.formRegister.password*")));
-        add(new JLabel(I18n.t("auth.formRegister.confirmPassword*")));
-        String toolTipPassword =
-                I18n.t("auth.formRegister.passwordTooltip");
-        String toolTipConfirmPassword =
-                I18n.t("auth.formRegister.confirmPasswordTooltip");
+        lblPassword = new JLabel(I18n.t("auth.formRegister.password*"));
+        lblConfirmPassword = new JLabel(I18n.t("auth.formRegister.confirmPassword*"));
+        add(lblPassword);
+        add(lblConfirmPassword);
 
-        JPasswordField txtPassword = new JPasswordField();
-        JPasswordField txtConfirmPassword = new JPasswordField();
+        txtPassword.setToolTipText(I18n.t("auth.formRegister.passwordTooltip"));
         txtPassword.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.password"));
+        txtPassword.putClientProperty(FlatClientProperties.STYLE, "iconTextGap:10;showRevealButton:true;");
+
+        txtConfirmPassword.setToolTipText(I18n.t("auth.formRegister.confirmPasswordTooltip"));
         txtConfirmPassword.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.confirmPassword"));
-        txtPassword.putClientProperty(FlatClientProperties.STYLE, "iconTextGap:10;" +
-                "showRevealButton:true;");
-        txtPassword.setToolTipText(toolTipPassword);
-        txtConfirmPassword.setToolTipText(toolTipConfirmPassword); // Set the tooltip text for the confirm password field
-        txtConfirmPassword.putClientProperty(FlatClientProperties.STYLE, "iconTextGap:10;" +
-                "showRevealButton:true;");
+        txtConfirmPassword.putClientProperty(FlatClientProperties.STYLE, "iconTextGap:10;showRevealButton:true;");
         add(txtPassword);
         add(txtConfirmPassword);
 
-        add(new JLabel(I18n.t("auth.formRegister.CellphoneNumber")));
-        String toolTipCellphone =
-                I18n.t("auth.formRegister.cellphoneTooltip"); //Key for the tooltip text
-        add(new JLabel(I18n.t("auth.formRegister.PhoneNumber")));
-        String toolTipPhone =
-                I18n.t("auth.formRegister.phoneTooltip"); //Key for the tooltip text
-        JTextField txtPhone = new JTextField();
-        txtPhone.setToolTipText(toolTipPhone); // Set the tooltip text for the phone field
-        JTextField txtCellphone = new JTextField();
-        txtCellphone.setToolTipText(toolTipCellphone); // Set the tooltip text for the cellphone field
+        lblCellphone = new JLabel(I18n.t("auth.formRegister.CellphoneNumber"));
+        lblPhone = new JLabel(I18n.t("auth.formRegister.PhoneNumber"));
+        add(lblCellphone);
+        add(lblPhone);
+
+        txtPhone.setToolTipText(I18n.t("auth.formRegister.phoneTooltip"));
         txtPhone.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.phoneNumber"));
+        txtCellphone.setToolTipText(I18n.t("auth.formRegister.cellphoneTooltip"));
         txtCellphone.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.cellphoneNumber"));
         add(txtCellphone);
         add(txtPhone);
 
-        add(new JLabel(I18n.t("auth.formRegister.province*")), "split 2, span 2");
-        add(new JLabel(I18n.t("auth.formRegister.canton*")), "wrap");
-        JComboBox<Province> cbProvince = new JComboBox<>(Province.values());
-        JComboBox<String> cbCanton = new JComboBox<>();
+        lblProvince = new JLabel(I18n.t("auth.formRegister.province*"));
+        lblCanton = new JLabel(I18n.t("auth.formRegister.canton*"));
+        add(lblProvince, "split 2, span 2");
+        add(lblCanton, "wrap");
+
         cbProvince.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.province"));
         cbCanton.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.canton"));
         add(cbProvince, "split 2, span 2, w ::300");
@@ -119,7 +137,6 @@ public class FormRegister extends JPanel {
             if (selected != null) {
                 cbCanton.removeAllItems();
                 selected.getListCantons().forEach(cbCanton::addItem);
-
                 if (selected == Province.PICHINCHA) {
                     cbCanton.setSelectedItem("Distrito Metropolitano de Quito");
                 } else {
@@ -127,32 +144,28 @@ public class FormRegister extends JPanel {
                 }
             }
         });
-
         cbProvince.setSelectedItem(Province.PICHINCHA);
 
-        add(new JLabel(I18n.t("auth.formRegister.address*")), "span 2");
-        String toolTipAddress =
-                I18n.t("auth.formRegister.addressTooltip"); //Key for the tooltip text
-        JTextField txtAddress = new JTextField();
-        txtAddress.setToolTipText(toolTipAddress); // Set the tooltip text for the address field
+        lblAddress = new JLabel(I18n.t("auth.formRegister.address*"));
+        add(lblAddress, "span 2");
+
+        txtAddress.setToolTipText(I18n.t("auth.formRegister.addressTooltip"));
         txtAddress.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.address"));
         add(txtAddress, "span 2, growx");
 
-        JTextArea textArea = new JTextArea();
-        textArea.setEnabled(false);
-        textArea.setText(I18n.t("aut.formRegister.textTermsAndConditions"));
-        textArea.putClientProperty(FlatClientProperties.STYLE, "border:0,0,0,0;" +
-                                                               "font:-1;" +
-                                                               "background:null;");
-        add(textArea, "gapy 10 10,span 2");
+        textAreaTerms.setEnabled(false);
+        textAreaTerms.setText(I18n.t("aut.formRegister.textTermsAndConditions"));
+        textAreaTerms.putClientProperty(FlatClientProperties.STYLE, "border:0,0,0,0;font:-1;background:null;");
+        add(textAreaTerms, "gapy 10 10,span 2");
 
-        JButton btnCancel = new JButton(I18n.t("auth.formRegister.JButton.cancel"));
-        JButton btnRegister = new JButton(I18n.t("auth.formRegister.JButton.register")) {
+        btnCancel = new JButton(I18n.t("auth.formRegister.JButton.cancel"));
+        btnRegister = new JButton(I18n.t("auth.formRegister.JButton.register")) {
             @Override
             public boolean isDefaultButton() {
                 return true;
             }
         };
+
         btnCancel.addActionListener(actionEvent -> {
             ModalBorderAction.getModalBorderAction(this).doAction(SimpleModalBorder.CANCEL_OPTION);
         });
@@ -166,7 +179,6 @@ public class FormRegister extends JPanel {
         InputValidator.applyEmailValidation(txtEmail);
         InputValidator.applyPhoneValidation(txtCellphone);
         InputValidator.applyPhoneValidation(txtPhone);
-
 
         btnRegister.addActionListener(actionEvent -> {
             boolean valid = true;
@@ -216,8 +228,50 @@ public class FormRegister extends JPanel {
                 }
             }
         });
-
-
-
     }
+
+
+    @Override
+    public void onLanguageChanged(ResourceBundle bundle) {
+        lbContactDetail.setText(I18n.t("auth.formRegister.patientsMedicalHistoryData"));
+        lblId.setText(I18n.t("auth.formRegister.id*"));
+        lblNames.setText(I18n.t("auth.formRegister.names*"));
+        lblSurnames.setText(I18n.t("auth.formRegister.surnames*"));
+        lblEmail.setText(I18n.t("auth.formRegister.email"));
+        lblPassword.setText(I18n.t("auth.formRegister.password*"));
+        lblConfirmPassword.setText(I18n.t("auth.formRegister.confirmPassword*"));
+        lblCellphone.setText(I18n.t("auth.formRegister.CellphoneNumber"));
+        lblPhone.setText(I18n.t("auth.formRegister.PhoneNumber"));
+        lblProvince.setText(I18n.t("auth.formRegister.province*"));
+        lblCanton.setText(I18n.t("auth.formRegister.canton*"));
+        lblAddress.setText(I18n.t("auth.formRegister.address*"));
+
+        txtId.setToolTipText(I18n.t("auth.formRegister.idTooltip"));
+        txtId.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.id"));
+        txtName.setToolTipText(I18n.t("auth.formRegister.nameTooltip"));
+        txtName.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.name"));
+        txtSurname.setToolTipText(I18n.t("auth.formRegister.surnameTooltip"));
+        txtSurname.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.surname"));
+        txtEmail.setToolTipText(I18n.t("auth.formRegister.emailTooltip"));
+        txtEmail.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.email"));
+        txtPassword.setToolTipText(I18n.t("auth.formRegister.passwordTooltip"));
+        txtPassword.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.password"));
+        txtConfirmPassword.setToolTipText(I18n.t("auth.formRegister.confirmPasswordTooltip"));
+        txtConfirmPassword.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.confirmPassword"));
+        txtPhone.setToolTipText(I18n.t("auth.formRegister.phoneTooltip"));
+        txtPhone.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.phoneNumber"));
+        txtCellphone.setToolTipText(I18n.t("auth.formRegister.cellphoneTooltip"));
+        txtCellphone.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.cellphoneNumber"));
+        txtAddress.setToolTipText(I18n.t("auth.formRegister.addressTooltip"));
+        txtAddress.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.address"));
+
+        cbProvince.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.province"));
+        cbCanton.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formRegister.placeholder.canton"));
+
+        textAreaTerms.setText(I18n.t("aut.formRegister.textTermsAndConditions"));
+
+        btnCancel.setText(I18n.t("auth.formRegister.JButton.cancel"));
+        btnRegister.setText(I18n.t("auth.formRegister.JButton.register"));
+    }
+
 }

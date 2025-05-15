@@ -74,7 +74,8 @@ public class MainForm extends JPanel {
         btnEs.setFocusable(false);
         btnEs.setToolTipText("Español");
         btnEs.addActionListener(e -> {
-            I18n.setLocale(new Locale("es"));
+            Locale next = I18n.getLocale().getLanguage().equals("es") ? Locale.ENGLISH : Locale.of("es", "EC");
+            I18n.setLocale(next);
             SwingUtilities.updateComponentTreeUI(SwingUtilities.getWindowAncestor(panel));
         });
 
@@ -82,7 +83,8 @@ public class MainForm extends JPanel {
         btnEn.setFocusable(false);
         btnEn.setToolTipText("English");
         btnEn.addActionListener(e -> {
-            I18n.setLocale(new Locale("en"));
+            Locale next = I18n.getLocale().getLanguage().equals("es") ? Locale.ENGLISH : Locale.of("es", "EC");
+            I18n.setLocale(next);
             SwingUtilities.updateComponentTreeUI(SwingUtilities.getWindowAncestor(panel));
         });
 

@@ -2,6 +2,7 @@ package io.github.imecuadorian.vitalmed.view.forms.auth;
 
 import io.github.imecuadorian.vitalmed.*;
 import io.github.imecuadorian.vitalmed.util.*;
+import io.github.imecuadorian.vitalmed.view.menu.*;
 import io.github.imecuadorian.vitalmed.view.system.*;
 import net.miginfocom.swing.*;
 
@@ -35,10 +36,11 @@ public class FormLogout extends Form {
             dashboardFrame.dispose();
 
             EventQueue.invokeLater(()->{
+                MyMenuValidation.setUser(null);
                 new Vitalmed().setVisible(true);
             });
         });
 
-        add(contentPanel);  // lo agregas centrado al contenedor principal
+        add(contentPanel);
     }
 }
