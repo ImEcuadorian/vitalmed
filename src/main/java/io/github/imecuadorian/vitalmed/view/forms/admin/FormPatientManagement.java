@@ -25,7 +25,7 @@ import java.util.List;
 
 import static io.github.imecuadorian.vitalmed.util.Constants.*;
 
-@SystemForm(name = "Gestión de Pacientes", description = "Gestión de pacientes", tags = {"pacientes", "gestión"})
+@SystemForm(name = "Gestión de Pacientes", description = "Gestión de pacientes", tags = {"pacientes", "gestión", "patient", "management"})
 public class FormPatientManagement extends Form {
 
     private final AdminDashboardController adminDashboardController = new AdminDashboardController(ServiceFactory.getAdminService());
