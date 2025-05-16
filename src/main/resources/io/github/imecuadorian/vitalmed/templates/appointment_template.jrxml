@@ -82,16 +82,16 @@
 			<text><![CDATA[123 Casa House One coin]]></text>
 		</element>
 		<element kind="image" uuid="e515b6e1-bc8c-44d0-91a9-cd4838465b67" x="418" y="68" width="22" height="20">
-			<expression><![CDATA["C:/Users/DOCENTE/Downloads/casa.png"]]></expression>
+			<expression><![CDATA["/src/main/resources/io/github/imecuadorian/vitalmed/images/casa.png"]]></expression>
 		</element>
 		<element kind="staticText" uuid="d171a2ac-2be5-4446-aa30-8e2611c2aadd" x="444" y="30" width="111" height="20" fontName="Bodoni MT Black" fontSize="12.0" hTextAlign="Right" vTextAlign="Middle">
 			<text><![CDATA[(123) 456-983]]></text>
 		</element>
 		<element kind="image" uuid="ed0dd3d3-e01b-40a3-aaad-5d5bab31ec33" x="418" y="30" width="22" height="20">
-			<expression><![CDATA["C:/Users/DOCENTE/Downloads/telefono.png"]]></expression>
+			<expression><![CDATA["/src/main/resources/io/github/imecuadorian/vitalmed/images/telefono.png"]]></expression>
 		</element>
 		<element kind="image" uuid="3fd4bd71-8e16-45be-9cc5-8734b6bf3c26" x="418" y="50" width="22" height="18">
-			<expression><![CDATA["C:/Users/DOCENTE/Downloads/correo-electronico.png"]]></expression>
+			<expression><![CDATA["/src/main/resources/io/github/imecuadorian/vitalmed/images/correo-electronico.png"]]></expression>
 		</element>
 		<property name="com.jaspersoft.studio.layout"/>
 		<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -150,7 +150,7 @@ Dirección Sucursal: AV 12 DE OCTUBRE N24-22 Y WILSON]]></text>
 				<expression><![CDATA[$P{patientAddress}]]></expression>
 			</element>
 			<element kind="image" uuid="b66689be-1aab-452e-b2e4-16b503f8f411" x="10" y="10" width="70" height="70">
-				<expression><![CDATA["C:/Users/DOCENTE/Downloads/contactos-de-google.png"]]></expression>
+				<expression><![CDATA["/src/main/resources/io/github/imecuadorian/vitalmed/images/contactos-de-google.png"]]></expression>
 			</element>
 			<element kind="staticText" uuid="d0d09f88-c287-4870-90f7-63442adac551" x="90" y="30" width="210" height="30" fontName="Bodoni MT Black" fontSize="12.0" vTextAlign="Middle">
 				<text><![CDATA[INFORMACIÓN DEL PACIENTE]]></text>
@@ -191,7 +191,7 @@ Dirección Sucursal: AV 12 DE OCTUBRE N24-22 Y WILSON]]></text>
 			<element kind="textField" uuid="add3d88c-edc0-4bf9-addf-9f56b4578478" x="439" y="300" width="100" height="30" fontName="Bodoni MT" fontSize="12.0" vTextAlign="Middle">
 				<expression><![CDATA[$P{patientMedications}]]></expression>
 			</element>
-			<element kind="line" uuid="9f76dcb8-0da5-4c70-9e96-27154bd9e157" x="0" y="210" width="555" height="1"/>
+			<element kind="line" uuid="9f76dcb8-0da5-4c70-9e96-27154bd9e157" x="30" y="210" width="509" height="1"/>
 			<element kind="rectangle" uuid="4dd92e09-9b51-4f62-b0f2-00b6d7e972c5" mode="Transparent" x="0" y="0" width="555" height="340" radius="15"/>
 		</band>
 		<band height="224">
@@ -214,7 +214,7 @@ Dirección Sucursal: AV 12 DE OCTUBRE N24-22 Y WILSON]]></text>
 				<text><![CDATA[INFORMACIÓN DEL MEDICO:]]></text>
 			</element>
 			<element kind="image" uuid="5dad07fe-3fa0-4400-bc88-c54ccba7c28d" x="15" y="15" width="70" height="70">
-				<expression><![CDATA["C:/Users/DOCENTE/Downloads/historial-medico.png"]]></expression>
+				<expression><![CDATA["/src/main/resources/io/github/imecuadorian/vitalmed/images/historial-medico.png"]]></expression>
 			</element>
 			<element kind="staticText" uuid="49002beb-e0d4-455d-ab17-332f36c752c1" x="31" y="140" width="130" height="30" fontName="Bodoni MT" fontSize="12.0" vTextAlign="Middle">
 				<text><![CDATA[Especialidad del medico:]]></text>
@@ -246,7 +246,7 @@ Dirección Sucursal: AV 12 DE OCTUBRE N24-22 Y WILSON]]></text>
 	</columnFooter>
 	<lastPageFooter height="396">
 		<element kind="image" uuid="818a7667-5ad2-49a6-a8f6-74125a20bdf1" x="15" y="60" width="70" height="70">
-			<expression><![CDATA["C:/Users/DOCENTE/Downloads/botiquin-de-primeros-auxilios.png"]]></expression>
+			<expression><![CDATA["/src/main/resources/io/github/imecuadorian/vitalmed/images/botiquin-de-primeros-auxilios.png"]]></expression>
 			<property name="com.jaspersoft.studio.unit.x" value="px"/>
 			<property name="com.jaspersoft.studio.unit.y" value="px"/>
 		</element>
@@ -294,7 +294,7 @@ Dirección Sucursal: AV 12 DE OCTUBRE N24-22 Y WILSON]]></text>
 			<expression><![CDATA[$P{patientOperations}]]></expression>
 		</element>
 		<element kind="image" uuid="4096dde8-5d62-48ba-b812-ebadec6b954f" x="330" y="190" width="215" height="190">
-			<expression><![CDATA["C:/Users/DOCENTE/Downloads/pngtree-doctor-character-cartoon-vector-illustration-isolated-on-white-background-png-image_16003590.png"]]></expression>
+			<expression><![CDATA["/src/main/resources/io/github/imecuadorian/vitalmed/images/pngtree-doctor-character-cartoon-vector-illustration-isolated-on-white-background-png-image_16003590.png"]]></expression>
 		</element>
 		<element kind="rectangle" uuid="efbb79d3-bd25-4601-9808-2b74156e47bb" mode="Transparent" x="1" y="40" width="554" height="350" radius="15"/>
 		<element kind="image" uuid="af34e267-931c-42d3-b513-412c37429533" x="500" y="-16" width="56" height="53">
