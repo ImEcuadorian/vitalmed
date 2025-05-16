@@ -3,6 +3,7 @@ package io.github.imecuadorian.vitalmed.view.forms.admin;
 import com.formdev.flatlaf.FlatClientProperties;
 import io.github.imecuadorian.vitalmed.controller.AdminDashboardController;
 import io.github.imecuadorian.vitalmed.factory.ServiceFactory;
+import io.github.imecuadorian.vitalmed.i18n.I18n;
 import io.github.imecuadorian.vitalmed.model.*;
 import io.github.imecuadorian.vitalmed.util.*;
 import io.github.imecuadorian.vitalmed.view.system.Form;
@@ -22,7 +23,9 @@ public class FormScheduleAssignment extends Form {
     private final AdminDashboardController controller = new AdminDashboardController(ServiceFactory.getAdminService());
     private JComboBox<Doctor> cmbDoctor;
     private JComboBox<Room> cmbRoom;
-    private final String[] days = {"LUNES", "MARTES", "MIÉRCOLES", "JUEVES", "VIERNES"};
+    private final String[] days = {I18n.t("form.formScheduleAssignment.monday.days"), I18n.t("form.formScheduleAssignment.tuesday.days"),
+            I18n.t("form.formScheduleAssignment.wednesday.days"), I18n.t("form.formScheduleAssignment.thursday.days"),
+            I18n.t("form.formScheduleAssignment.friday.days")};
     private final JTable[] tables = new JTable[5];
 
     public FormScheduleAssignment() {
@@ -40,11 +43,11 @@ public class FormScheduleAssignment extends Form {
     private JPanel createHeaderPanel() {
         JPanel panel = new JPanel(new MigLayout("fillx,wrap", "[][grow]"));
 
-        JLabel title = new JLabel("Asignación de Turnos");
+        JLabel title = new JLabel(I18n.t("form.formScheduleAssignment.turnAssignment.title"));
         title.putClientProperty(FlatClientProperties.STYLE, "font:bold +3");
 
         JTextPane text = new JTextPane();
-        text.setText("Este módulo permite asignar horarios a los doctores. Se debe seleccionar un doctor, una sala y registrar hasta 4 turnos por cada uno de los 5 días laborales. El formato de horario debe ser HH:mm.");
+        text.setText(I18n.t("form.formScheduleAssignment.description"));//Ver fuente :)
         text.setEditable(false);
         text.setOpaque(false);
         text.setBorder(BorderFactory.createEmptyBorder());
@@ -52,10 +55,10 @@ public class FormScheduleAssignment extends Form {
         panel.add(title, "span 2");
         panel.add(text, "span 2, width 600");
 
-        JLabel lblDoctor = new JLabel("Doctor:");
+        JLabel lblDoctor = new JLabel(I18n.t("form.formScheduleAssignment.doctor.label"));
         cmbDoctor = new JComboBox<>(controller.getDoctors().toArray(new Doctor[0]));
 
-        JLabel lblRoom = new JLabel("Sala:");
+        JLabel lblRoom = new JLabel(I18n.t("form.formScheduleAssignment.room.label"));
         cmbRoom = new JComboBox<>(controller.getRooms().toArray(new Room[0]));
 
         panel.add(lblDoctor);
@@ -69,7 +72,8 @@ public class FormScheduleAssignment extends Form {
     private JPanel createSchedulePanel() {
         JPanel daysPanel = new JPanel(new MigLayout("wrap 1, fillx", "[grow]"));
         for (int i = 0; i < days.length; i++) {
-            DefaultTableModel model = new DefaultTableModel(new Object[]{"Hora inicio", "Hora fin"}, 4);
+            DefaultTableModel model = new DefaultTableModel(new Object[]{I18n.t("form.formScheduleAssigment.startTime.tableModel"),
+                    I18n.t("form.formScheduleAssigment.endTime.tableModel")}, 4);
             JTable table = new JTable(model);
             tables[i] = table;
 
@@ -87,7 +91,7 @@ public class FormScheduleAssignment extends Form {
     }
 
     private JButton createSaveButton() {
-        JButton button = new JButton("Guardar turnos");
+        JButton button = new JButton(I18n.t("form.formScheduleAssignment.saveShifts.button"));
         button.addActionListener(e -> saveSchedules());
         return button;
     }
@@ -97,7 +101,7 @@ public class FormScheduleAssignment extends Form {
         Room room = (Room) cmbRoom.getSelectedItem();
 
         if (doctor == null || room == null) {
-            JOptionPane.showMessageDialog(this, "Debe seleccionar un doctor y una sala.");
+            JOptionPane.showMessageDialog(this, I18n.t("form.formScheduleAssignment.error.selectDoctorAndRoom"));
             return;
         }
 
@@ -114,7 +118,8 @@ public class FormScheduleAssignment extends Form {
                         LocalTime end = LocalTime.parse(endStr);
                         schedules.add(new Schedule(DayOfWeek.of(i + 1), start, end, room));
                     } catch (Exception ex) {
-                        JOptionPane.showMessageDialog(this, "Error en " + days[i] + ", fila " + (j + 1) + ": Formato HH:mm requerido.");
+                        JOptionPane.showMessageDialog(this, I18n.t("form.formScheduleAssignment.errorMessage.errorIn") + days[i] + ", fila " + (j + 1)
+                                + I18n.t("form.formScheduleAssignment.errorMessage.invalidTime"));
                         return;
                     }
                 }
@@ -123,9 +128,9 @@ public class FormScheduleAssignment extends Form {
 
         boolean success = controller.assignSchedules(doctor.getId(), schedules);
         if (success) {
-            JOptionPane.showMessageDialog(this, "Turnos guardados exitosamente.");
+            JOptionPane.showMessageDialog(this, I18n.t("form.formScheduleAssignment.success.shiftsSaved"));
         } else {
-            JOptionPane.showMessageDialog(this, "Error al guardar los turnos.");
+            JOptionPane.showMessageDialog(this, I18n.t("form.formScheduleAssignment.error.shiftsNotSaved"));
         }
     }
 }
