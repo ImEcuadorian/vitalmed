@@ -48,7 +48,7 @@ public class CheckBoxTableHeaderRenderer extends JCheckBox implements TableCellR
     }
 
     private void checkRow() {
-        boolean initValue = table.getRowCount() == 0 ? false : (boolean) table.getValueAt(0, column);
+        boolean initValue = table.getRowCount() != 0 && (boolean) table.getValueAt(0, column);
         for (int i = 1; i < table.getRowCount(); i++) {
             boolean v = (boolean) table.getValueAt(i, column);
             if (initValue != v) {

@@ -13,7 +13,6 @@ public class Constants {
     public static final String PHONE_REGEX = "^09[0-9]{8}$";
     public static final int MAX_DAYS = 5;
     public static final int MAX_TURNS_PER_DAY = 4;
-
     public static final String ADMIN_EMAIL = "admin@vitalmed.com";
     public static final String ADMIN_PASSWORD = "Admin@2024";
 
