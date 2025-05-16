@@ -20,7 +20,7 @@ import javax.swing.event.*;
 import javax.swing.table.*;
 import java.awt.*;
 
-@SystemForm(name = "Registro de Doctor", description = "Registro de doctor", tags = {"doctor", "registro"})
+@SystemForm(name = "Registro de Doctor", description = "Registro de doctor", tags = {"doctor", "registro", "register", "doctor"})
 public class FormRegisterDoctor extends Form {
 
     private final AdminDashboardController adminDashboardController = new AdminDashboardController(ServiceFactory.getAdminService());
@@ -41,11 +41,10 @@ public class FormRegisterDoctor extends Form {
         JPanel panel = new JPanel(new MigLayout("fillx,wrap", "[fill]"));
         JLabel title = new JLabel(I18n.t("form.formRegisterDoctor.doctorRegistration.title"));
         JTextPane text = new JTextPane();
-        text.setText("El registro de doctores es un proceso esencial en el ámbito médico, ya que implica la recopilación y organización de información relevante sobre los profesionales de la salud. Esto incluye datos personales, credenciales, especialidades, experiencia laboral y cualquier otra información necesaria para garantizar una atención médica adecuada y segura.");
+        text.setText(I18n.t("form.formRegisterDoctor.description"));
         text.setEditable(false);
         text.setBorder(BorderFactory.createEmptyBorder());
-        title.putClientProperty(FlatClientProperties.STYLE, "" +
-                                                            "font:bold +3");
+        title.putClientProperty(FlatClientProperties.STYLE, "font:bold +3");
 
         panel.add(title);
         panel.add(text, "width 500");
@@ -55,7 +54,9 @@ public class FormRegisterDoctor extends Form {
     private Component createCustomTable() {
         JPanel panel = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[][]0[fill,grow]"));
 
-        Object[] columns = new Object[]{"#", "Cédula", "Nombre", "Email", "Dirección", "Celular", "Especialidad"};
+        Object[] columns = new Object[]{"#", I18n.t("form.formRegisterDoctor.id.table"), I18n.t("form.formRegisterDoctor.name.table"),
+                I18n.t("form.formRegisterDoctor.mail.table"), I18n.t("form.formRegisterDoctor.address.table"),
+                I18n.t("form.formRegisterDoctor.mobile.table"), I18n.t("form.formRegisterDoctor.speciality.table")};
         tableModel = new DefaultTableModel(columns, 0);
 
         JTable table = new JTable(tableModel);
@@ -84,31 +85,26 @@ public class FormRegisterDoctor extends Form {
             }
         });
 
-        panel.putClientProperty(FlatClientProperties.STYLE, "" +
-                                                            "arc:20;" +
+        panel.putClientProperty(FlatClientProperties.STYLE, "arc:20;" +
                                                             "background:$Table.background;");
-        table.getTableHeader().putClientProperty(FlatClientProperties.STYLE, "" +
-                                                                             "height:30;" +
+        table.getTableHeader().putClientProperty(FlatClientProperties.STYLE, "height:30;" +
                                                                              "hoverBackground:null;" +
                                                                              "pressedBackground:null;" +
                                                                              "separatorColor:$TableHeader.background;");
-        table.putClientProperty(FlatClientProperties.STYLE, "" +
-                                                            "rowHeight:70;" +
+        table.putClientProperty(FlatClientProperties.STYLE, "rowHeight:70;" +
                                                             "showHorizontalLines:true;" +
                                                             "intercellSpacing:0,1;" +
                                                             "cellFocusColor:$TableHeader.hoverBackground;" +
                                                             "selectionBackground:$TableHeader.hoverBackground;" +
                                                             "selectionInactiveBackground:$TableHeader.hoverBackground;" +
                                                             "selectionForeground:$Table.foreground;");
-        scrollPane.getVerticalScrollBar().putClientProperty(FlatClientProperties.STYLE, "" +
-                                                                                        "trackArc:$ScrollBar.thumbArc;" +
+        scrollPane.getVerticalScrollBar().putClientProperty(FlatClientProperties.STYLE, "trackArc:$ScrollBar.thumbArc;" +
                                                                                         "trackInsets:3,3,3,3;" +
                                                                                         "thumbInsets:3,3,3,3;" +
                                                                                         "background:$Table.background;");
 
-        JLabel title = new JLabel("Tabla de Doctores");
-        title.putClientProperty(FlatClientProperties.STYLE, "" +
-                                                            "font:bold +2");
+        JLabel title = new JLabel(I18n.t("form.formRegisterDoctor.doctorTable.title"));
+        title.putClientProperty(FlatClientProperties.STYLE, "font:bold +2");
         panel.add(title, "gapx 20");
 
         panel.add(createHeaderAction());
@@ -126,7 +122,7 @@ public class FormRegisterDoctor extends Form {
         JPanel panel = new JPanel(new MigLayout("insets 5 20 5 20", "[fill,230]push[][]"));
 
         JTextField txtSearch = new JTextField();
-        txtSearch.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Buscar...");
+        txtSearch.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("form.formRegisterDoctor.search.placeholder"));
         txtSearch.putClientProperty(FlatClientProperties.TEXT_FIELD_LEADING_ICON, new FlatSVGIcon("io/github/imecuadorian/vitalmed/icon/search.svg", 0.4f));
 
         txtSearch.getDocument().addDocumentListener(new DocumentListener() {
@@ -151,7 +147,7 @@ public class FormRegisterDoctor extends Form {
             }
         });
 
-        JButton cmdCreate = new JButton("Crear Doctor") {
+        JButton cmdCreate = new JButton(I18n.t("form.formRegisterDoctor.createDoctor.button")) {
             ;
 
             @Override
@@ -187,7 +183,7 @@ public class FormRegisterDoctor extends Form {
                 .setAnimateScale(0.1f);
 
         FormAddDoctor formAddDoctor = new FormAddDoctor(this::reloadTable);
-        ModalDialog.showModal(this, new SimpleModalBorder(formAddDoctor, "Registrar Doctor",SimpleModalBorder.DEFAULT_OPTION,(controller, action) -> {}), option);
+        ModalDialog.showModal(this, new SimpleModalBorder(formAddDoctor, I18n.t("form.formRegisterDoctor.registerDoctor.button"),SimpleModalBorder.DEFAULT_OPTION,(controller, action) -> {}), option);
 
     }
 
