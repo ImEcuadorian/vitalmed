@@ -20,7 +20,7 @@ import javax.swing.event.*;
 import javax.swing.table.*;
 import java.awt.*;
 
-@SystemForm(name = "Registro de Doctor", description = "Registro de doctor", tags = {"doctor", "registro", "register", "doctor"})
+@SystemForm(name = "Registro de Doctor", description = "Registro de doctor", tags = {"doctor", "registro", "doctor", "register"})
 public class FormRegisterDoctor extends Form {
 
     private final AdminDashboardController adminDashboardController = new AdminDashboardController(ServiceFactory.getAdminService());
