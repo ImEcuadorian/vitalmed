@@ -6,7 +6,7 @@ import io.github.imecuadorian.vitalmed.i18n.*;
 import io.github.imecuadorian.vitalmed.model.*;
 import io.github.imecuadorian.vitalmed.view.forms.*;
 import io.github.imecuadorian.vitalmed.view.forms.admin.*;
-import io.github.imecuadorian.vitalmed.view.forms.admin.FormDoctorManagement;
+import io.github.imecuadorian.vitalmed.view.forms.admin.FormDoctorManagementAdmin;
 import io.github.imecuadorian.vitalmed.view.forms.auth.*;
 import io.github.imecuadorian.vitalmed.view.forms.doctor.*;
 import io.github.imecuadorian.vitalmed.view.forms.patient.*;
@@ -114,7 +114,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
 
                 new Item.Label(I18n.t("dashboard.menuItem.administration.title")),                                // index[5]
                 new Item(I18n.t("dashboard.menuItem.administer"), "forms.svg")                             // index[6]
-                        .subMenu(I18n.t("dashboard.menuItem.registerDoctors"), FormDoctorManagement.class)               // [6,0]
+                        .subMenu(I18n.t("dashboard.menuItem.registerDoctors"), FormDoctorManagementAdmin.class)               // [6,0]
                         .subMenu(I18n.t("dashboard.menuItem.administrationPatients"), FormPatientManagement.class)     // [6,1]
                         .subMenu(I18n.t("dashboard.menuItem.assignmentOfSchedules"), FormScheduleAssignment.class),    // [6,2]
 

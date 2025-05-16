@@ -22,7 +22,7 @@ import java.awt.*;
 import java.util.*;
 
 @SystemForm(name = "Registro de Doctor", description = "Registro de doctor", tags = {"doctor", "registro"})
-public class FormDoctorManagement extends Form implements LanguageChangeListener {
+public class FormDoctorManagementAdmin extends Form implements LanguageChangeListener {
 
     private final transient AdminDashboardController adminDashboardController = new AdminDashboardController(ServiceFactory.getAdminService());
     private transient TableRowSorter<DefaultTableModel> sorter;
@@ -38,7 +38,7 @@ public class FormDoctorManagement extends Form implements LanguageChangeListener
     private JButton btnEdit;
     private transient Object[] columns;
 
-    public FormDoctorManagement() {
+    public FormDoctorManagementAdmin() {
         setupLayout();
     }
 
@@ -55,10 +55,10 @@ public class FormDoctorManagement extends Form implements LanguageChangeListener
     }
 
     private void setupLayout() {
-        I18n.addListener(this);
         setLayout(new MigLayout("fillx, wrap", FILL, "[][fill, grow]"));
         add(createInfo());
         add(createCustomTable(), "gapx 7 7");
+        I18n.addListener(this);
     }
 
     private JPanel createInfo() {
@@ -77,14 +77,14 @@ public class FormDoctorManagement extends Form implements LanguageChangeListener
         JPanel panel = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", FILL, "[][]0[fill,grow]"));
 
         this.columns = new Object[]{
-                I18n.t("form.formRegisterDoctor.table.col.select"),
-                I18n.t("form.formRegisterDoctor.table.col.number"),
-                I18n.t("form.formRegisterDoctor.table.col.id"),
-                I18n.t("form.formRegisterDoctor.table.col.name"),
-                I18n.t("form.formRegisterDoctor.table.col.email"),
-                I18n.t("form.formRegisterDoctor.table.col.address"),
-                I18n.t("form.formRegisterDoctor.table.col.phone"),
-                I18n.t("form.formRegisterDoctor.table.col.specialty")
+                I18n.t("form.formDoctorManagementAdmin.table.col.select"),
+                I18n.t("form.formDoctorManagementAdmin.table.col.number"),
+                I18n.t("form.formDoctorManagementAdmin.table.col.id"),
+                I18n.t("form.formDoctorManagementAdmin.table.col.name"),
+                I18n.t("form.formDoctorManagementAdmin.table.col.email"),
+                I18n.t("form.formDoctorManagementAdmin.table.col.address"),
+                I18n.t("form.formDoctorManagementAdmin.table.col.phone"),
+                I18n.t("form.formDoctorManagementAdmin.table.col.specialty")
         };
         tableModel = new DefaultTableModel(this.columns, 0) {
             @Override
@@ -166,14 +166,14 @@ public class FormDoctorManagement extends Form implements LanguageChangeListener
     }
     private void updateTableHeaders() {
         columns = new Object[]{
-                I18n.t("form.formRegisterDoctor.table.col.select"),
-                I18n.t("form.formRegisterDoctor.table.col.number"),
-                I18n.t("form.formRegisterDoctor.table.col.id"),
-                I18n.t("form.formRegisterDoctor.table.col.name"),
-                I18n.t("form.formRegisterDoctor.table.col.email"),
-                I18n.t("form.formRegisterDoctor.table.col.address"),
-                I18n.t("form.formRegisterDoctor.table.col.phone"),
-                I18n.t("form.formRegisterDoctor.table.col.specialty")
+                I18n.t("form.formDoctorManagementAdmin.table.col.select"),
+                I18n.t("form.formDoctorManagementAdmin.table.col.number"),
+                I18n.t("form.formDoctorManagementAdmin.table.col.id"),
+                I18n.t("form.formDoctorManagementAdmin.table.col.name"),
+                I18n.t("form.formDoctorManagementAdmin.table.col.email"),
+                I18n.t("form.formDoctorManagementAdmin.table.col.address"),
+                I18n.t("form.formDoctorManagementAdmin.table.col.phone"),
+                I18n.t("form.formDoctorManagementAdmin.table.col.specialty")
         };
         tableModel.setColumnIdentifiers(columns);
     }
@@ -247,7 +247,7 @@ public class FormDoctorManagement extends Form implements LanguageChangeListener
                 .setAnimateScale(0.1f);
 
         FormAddDoctor formAddDoctor = new FormAddDoctor(this::reloadTable);
-        ModalDialog.showModal(this, new SimpleModalBorder(formAddDoctor, "Registrar Doctor", SimpleModalBorder.DEFAULT_OPTION, (controller, action) -> {
+        ModalDialog.showModal(this, new SimpleModalBorder(formAddDoctor, I18n.t("form.formDoctorManagementAdmin.doctorRegister.formAddDoctor"), SimpleModalBorder.DEFAULT_OPTION, (controller, action) -> {
         }), option);
 
     }
@@ -270,13 +270,13 @@ public class FormDoctorManagement extends Form implements LanguageChangeListener
 
     @Override
     public void onLanguageChanged(ResourceBundle bundle) {
-        lblTitle.setText(I18n.t("form.formRegisterDoctor.doctorRegistration.lblTitle"));
-        text.setText("El registro de doctores es un proceso esencial en el ámbito médico, ya que implica la recopilación y organización de información relevante sobre los profesionales de la salud. Esto incluye datos personales, credenciales, especialidades, experiencia laboral y cualquier otra información necesaria para garantizar una atención médica adecuada y segura.");
-        lblTitleTable.setText("Tabla de Doctores");
-        txtSearch.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Buscar...");
-        btnCreate.setText("Crear Doctor");
-        btnDelete.setText("Eliminar Doctor");
-        btnEdit.setText("Editar Doctor");
+        lblTitle.setText(I18n.t("form.formDoctorManagementAdmin.doctorRegistration.lblTitle"));
+        text.setText(I18n.t("form.formDoctorManagementAdmin.description"));
+        lblTitleTable.setText(I18n.t("form.formDoctorManagementAdmin.tableOfDoctors.title"));
+        txtSearch.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("form.formDoctorManagementAdmin.search.placeholder"));
+        btnCreate.setText(I18n.t("form.formDoctorManagementAdmin.createDoctor.btnCreate"));
+        btnDelete.setText(I18n.t("form.formDoctorManagementAdmin.deleteDoctor.btnDelete"));
+        btnEdit.setText(I18n.t("form.formDoctorManagementAdmin.editDoctor.btnEdit"));
 
         updateTableHeaders();
     }
