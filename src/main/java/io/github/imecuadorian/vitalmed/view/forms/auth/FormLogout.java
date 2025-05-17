@@ -1,6 +1,7 @@
 package io.github.imecuadorian.vitalmed.view.forms.auth;
 
 import io.github.imecuadorian.vitalmed.*;
+import io.github.imecuadorian.vitalmed.i18n.I18n;
 import io.github.imecuadorian.vitalmed.util.*;
 import io.github.imecuadorian.vitalmed.view.menu.*;
 import io.github.imecuadorian.vitalmed.view.system.*;
@@ -21,14 +22,14 @@ public class FormLogout extends Form {
 
         JPanel contentPanel = new JPanel(new MigLayout("wrap 1, align center, gapy 15", "[300::300]", "[]"));
 
-        JLabel title = new JLabel("Cerrar Sesión");
+        JLabel title = new JLabel(I18n.t("form.formLogout.title"));
         title.setFont(title.getFont().deriveFont(Font.BOLD, 20f));
         contentPanel.add(title, "align center");
 
-        JLabel message = new JLabel("¿Está seguro de que desea cerrar sesión?");
+        JLabel message = new JLabel(I18n.t("form.formLogout.message"));
         contentPanel.add(message, "align center");
 
-        JButton btnLogout = new JButton("Cerrar Sesión");
+        JButton btnLogout = new JButton(I18n.t("form.formLogout.btnLogout"));
         contentPanel.add(btnLogout, "align center");
 
         btnLogout.addActionListener(e -> {
