@@ -119,8 +119,8 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                         .subMenu(I18n.t("dashboard.menuItem.assignmentOfSchedules"), FormScheduleAssignment.class),    // [6,2]
 
                 new Item.Label(I18n.t("dashboard.menuItem.account.title")),
-                new Item("Actualizar Datos", FormUpdateData.class),
-                new Item("Reiniciar Contraseña", FormResetPassword.class),// index[7]
+                new Item(I18n.t("dashboard.menuItem.updateData"), FormUpdateData.class),
+                new Item(I18n.t("dashboard.menuItem.restartPassword"), FormResetPassword.class),// index[7]
                 new Item(I18n.t("dashboard.menuItem.logout"), "logout.svg", FormLogout.class)                      // [8]
         };
         int visibleIndex = 0;

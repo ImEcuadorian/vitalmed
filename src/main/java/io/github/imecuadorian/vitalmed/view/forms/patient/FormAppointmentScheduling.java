@@ -3,6 +3,7 @@ package io.github.imecuadorian.vitalmed.view.forms.patient;
 import com.formdev.flatlaf.*;
 import com.formdev.flatlaf.ui.*;
 import com.formdev.flatlaf.util.*;
+import io.github.imecuadorian.vitalmed.i18n.I18n;
 import io.github.imecuadorian.vitalmed.util.*;
 import io.github.imecuadorian.vitalmed.view.component.*;
 import io.github.imecuadorian.vitalmed.view.forms.auth.*;
@@ -31,7 +32,7 @@ public class FormAppointmentScheduling extends Form {
     }
     private JPanel createInfo() {
         JPanel panel = new JPanel(new MigLayout("fillx,wrap", "[fill]"));
-        JLabel title = new JLabel("Agendamiento de Citas");
+        JLabel title = new JLabel(I18n.t("form.formAppointmentScheduling.appointmentScheduling.title"));
         JTextPane text = new JTextPane();
         text.setText("SlidePane is a custom Java Swing component that enables smooth transitions between panels with animated sliding effects.");
         text.setEditable(false);

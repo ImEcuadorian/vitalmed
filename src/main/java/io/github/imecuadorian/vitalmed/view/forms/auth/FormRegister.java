@@ -230,7 +230,6 @@ public class FormRegister extends JPanel implements LanguageChangeListener {
         });
     }
 
-
     @Override
     public void onLanguageChanged(ResourceBundle bundle) {
         lbContactDetail.setText(I18n.t("auth.formRegister.patientsMedicalHistoryData"));

@@ -3,6 +3,7 @@ package io.github.imecuadorian.vitalmed.view.forms.auth;
 import com.formdev.flatlaf.*;
 import io.github.imecuadorian.vitalmed.controller.*;
 import io.github.imecuadorian.vitalmed.factory.*;
+import io.github.imecuadorian.vitalmed.i18n.I18n;
 import io.github.imecuadorian.vitalmed.model.*;
 import io.github.imecuadorian.vitalmed.util.*;
 import io.github.imecuadorian.vitalmed.view.*;
@@ -45,31 +46,31 @@ public class FormLogin extends JPanel {
         Image scaled = logo.getImage().getScaledInstance(450, 120, Image.SCALE_SMOOTH);
         add(new JLabel(new ImageIcon(scaled, "Vitalmed")), "gapbottom 40");
 
-        JLabel lbTitle = new JLabel("Bienvenido de Vuelta", CENTER);
+        JLabel lbTitle = new JLabel(I18n.t("auth.formLogin.welcomeBack.jLabel"), CENTER);
         lbTitle.putClientProperty(FlatClientProperties.STYLE, "font:bold +15;");
         add(lbTitle, "gapy 8 8");
 
-        add(new JLabel("Inicia sesión para continuar", CENTER), "gapy 10 5");
+        add(new JLabel(I18n.t("auth.formLogin.logInToContinue"), CENTER), "gapy 10 5");
 
-        JLabel lbEmail = new JLabel("Email");
+        JLabel lbEmail = new JLabel(I18n.t("auth.formLogin.email"));
         lbEmail.putClientProperty(FlatClientProperties.STYLE, "font:bold;");
         add(lbEmail, "gapy 10 5");
 
         txtEmail = new JTextField();
         txtEmail.putClientProperty(FlatClientProperties.STYLE, "iconTextGap:10;");
-        txtEmail.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Enter your email");
+        txtEmail.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formLogin.placeholder.email"));
         add(txtEmail);
 
-        JLabel lbPassword = new JLabel("Contraseña");
+        JLabel lbPassword = new JLabel(I18n.t("auth.formLogin.password"));
         lbPassword.putClientProperty(FlatClientProperties.STYLE, "font:bold;");
         add(lbPassword, "gapy 10 5");
 
         txtPassword = new JPasswordField();
         txtPassword.putClientProperty(FlatClientProperties.STYLE, "iconTextGap:10;showRevealButton:true;");
-        txtPassword.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Enter your password");
+        txtPassword.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("auth.formLogin.placeholder.password"));
         add(txtPassword);
 
-        JButton cmdSignIn = new JButton("Iniciar sesión") {
+        JButton cmdSignIn = new JButton(I18n.t("auth.formLogin.JButton.signIn.JButton")) {
             @Override
             public boolean isDefaultButton() {
                 return true;
@@ -79,7 +80,7 @@ public class FormLogin extends JPanel {
         cmdSignIn.setHorizontalTextPosition(JButton.LEADING);
         add(cmdSignIn, "gapy 20 10");
 
-        JLabel lbNoAccount = new JLabel("No tienes cuenta?");
+        JLabel lbNoAccount = new JLabel(I18n.t("auth.formLogin.noAccount.jLabel"), CENTER);
         lbNoAccount.putClientProperty(FlatClientProperties.STYLE, "foreground:$Label.disabledForeground;");
         add(lbNoAccount, "split 2,gapx push n");
 
@@ -89,13 +90,13 @@ public class FormLogin extends JPanel {
 
         cmdSignIn.addActionListener(this::signInActionPerformed);
 
-        JButton cmdExit = new JButton("Salir");
+        JButton cmdExit = new JButton(I18n.t("auth.formLogin.JButton.exit.JButton"));
         cmdExit.putClientProperty(FlatClientProperties.STYLE, "iconTextGap:10;");
         add(cmdExit, "gapy 100 10, align center");
 
-        String message = "¿Está seguro de que desea salir de la aplicación?";
+        String message = I18n.t("auth.formLogin.exitMessage");
         cmdExit.addActionListener(e -> {
-            ModalDialog.showModal(this, new SimpleMessageModal(SimpleMessageModal.Type.WARNING, message, "Salir de la aplicación", SimpleModalBorder.YES_NO_OPTION, (controller, action) -> {
+            ModalDialog.showModal(this, new SimpleMessageModal(SimpleMessageModal.Type.WARNING, message, I18n.t("auth.formLogin.typeWarning.messageExit"), SimpleModalBorder.YES_NO_OPTION, (controller, action) -> {
                 if (action == SimpleModalBorder.YES_OPTION) {
                     System.exit(0);
                 }
@@ -111,10 +112,10 @@ public class FormLogin extends JPanel {
     private void signInActionPerformed(ActionEvent e) {
         boolean valid = true;
 
-        valid &= InputValidator.isNotEmpty(txtEmail, "El campo email no puede estar vacío");
-        valid &= InputValidator.isValidEmail(txtEmail, "El email no es válido");
-        valid &= InputValidator.isNotEmpty(txtPassword, "El campo contraseña no puede estar vacío");
-        valid &= InputValidator.isValidPassword(txtPassword, "El campo contraseña no es válido");
+        valid &= InputValidator.isNotEmpty(txtEmail, I18n.t("auth.formLogin.txtEmail.notEmpty"));
+        valid &= InputValidator.isValidEmail(txtEmail, I18n.t("auth.formLogin.txtEmail.validEmail"));
+        valid &= InputValidator.isNotEmpty(txtPassword, I18n.t("auth.formLogin.txtPassword.notEmpty"));
+        valid &= InputValidator.isValidPassword(txtPassword, I18n.t("auth.formLogin.txtPassword.validPassword"));
 
         if (!valid) return;
 
@@ -123,7 +124,7 @@ public class FormLogin extends JPanel {
 
         User user = loginController.login(email, password);
         if (user == null) {
-            Toast.show(this, Toast.Type.ERROR, "Las credenciales son incorrectas", ToastLocation.TOP_TRAILING, Constants.getOption());
+            Toast.show(this, Toast.Type.ERROR, I18n.t("auth.formLogin.typeError.credentialsIncorrect"), ToastLocation.TOP_TRAILING, Constants.getOption());
         } else {
             frame.dispose();
             new MainDashboard().setVisible(true);
@@ -134,12 +135,12 @@ public class FormLogin extends JPanel {
 
     private void createAccountActionPerformed(ActionEvent e) {
         ModalDialog.getDefaultOption().getBorderOption().setBorderWidth(2);
-        ModalDialog.showModal(this, new SimpleModalBorder(new FormRegister(), "Registro", SimpleModalBorder.DEFAULT_OPTION, (controller, action) -> {
+        ModalDialog.showModal(this, new SimpleModalBorder(new FormRegister(), I18n.t("auth.formLogin.formRegister.title"), SimpleModalBorder.DEFAULT_OPTION, (controller, action) -> {
         }));
     }
 
     private JButton createNoBorderButton() {
-        JButton button = new JButton("Registrarse");
+        JButton button = new JButton(I18n.t("auth.formLogin.JButton.register.JButton"));
         button.putClientProperty(FlatClientProperties.STYLE,
                 "foreground:$Component.accentColor;margin:1,5,1,5;borderWidth:0;focusWidth:0;innerFocusWidth:0;background:null;");
         return button;
