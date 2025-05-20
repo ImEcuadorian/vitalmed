@@ -65,31 +65,20 @@ public class MainForm extends JPanel {
     }
 
     private JPanel createFooter() {
-        JPanel panel = new JPanel(new MigLayout("insets 1 n 1 n,al trailing center,gapx 10,height 30!", "[]push[][]", "fill"));
-        panel.putClientProperty(FlatClientProperties.STYLE, "" +
-                                                            "[light]background:tint($Panel.background,20%);" +
+        JPanel panel = new JPanel(new MigLayout("insets 1 n 1 n,al trailing center,gapx 10,height 30!", "push[]", "fill"));
+        panel.putClientProperty(FlatClientProperties.STYLE, "[light]background:tint($Panel.background,20%);" +
                                                             "[dark]background:tint($Panel.background,5%);");
 
-        JButton btnEs = new JButton("ES");
+        JButton btnEs = new JButton("EN");
         btnEs.setFocusable(false);
-        btnEs.setToolTipText("Español");
         btnEs.addActionListener(e -> {
             Locale next = I18n.getLocale().getLanguage().equals("es") ? Locale.ENGLISH : Locale.of("es", "EC");
             I18n.setLocale(next);
             SwingUtilities.updateComponentTreeUI(SwingUtilities.getWindowAncestor(panel));
-        });
-
-        JButton btnEn = new JButton("EN");
-        btnEn.setFocusable(false);
-        btnEn.setToolTipText("English");
-        btnEn.addActionListener(e -> {
-            Locale next = I18n.getLocale().getLanguage().equals("es") ? Locale.ENGLISH : Locale.of("es", "EC");
-            I18n.setLocale(next);
-            SwingUtilities.updateComponentTreeUI(SwingUtilities.getWindowAncestor(panel));
+            btnEs.setText(I18n.getLocale().getLanguage().equals("es") ? "EN" : "ES");
         });
 
         panel.add(btnEs);
-        panel.add(btnEn);
 
         return panel;
     }

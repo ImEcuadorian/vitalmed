@@ -41,19 +41,19 @@ public class FormScheduleAssignment extends Form {
     }
 
     private JPanel createHeaderPanel() {
-        JPanel panel = new JPanel(new MigLayout("fillx,wrap", "[][grow]"));
+        JPanel panel = new JPanel(new MigLayout("fillx,wrap", "[grow]"));
 
         JLabel title = new JLabel(I18n.t("form.formScheduleAssignment.turnAssignment.title"));
         title.putClientProperty(FlatClientProperties.STYLE, "font:bold +3");
 
         JTextPane text = new JTextPane();
-        text.setText(I18n.t("form.formScheduleAssignment.description"));//Ver fuente :)
+        text.setText(I18n.t("form.formScheduleAssignment.description"));
         text.setEditable(false);
         text.setOpaque(false);
         text.setBorder(BorderFactory.createEmptyBorder());
 
         panel.add(title, "span 2");
-        panel.add(text, "span 2, width 600");
+        panel.add(text);
 
         JLabel lblDoctor = new JLabel(I18n.t("form.formScheduleAssignment.doctor.label"));
         cmbDoctor = new JComboBox<>(controller.getDoctors().toArray(new Doctor[0]));
@@ -69,7 +69,7 @@ public class FormScheduleAssignment extends Form {
         return panel;
     }
 
-    private JPanel createSchedulePanel() {
+    private JScrollPane createSchedulePanel() {
         JPanel daysPanel = new JPanel(new MigLayout("wrap 1, fillx", "[grow]"));
         for (int i = 0; i < days.length; i++) {
             DefaultTableModel model = new DefaultTableModel(new Object[]{I18n.t("form.formScheduleAssigment.startTime.tableModel"),
@@ -87,7 +87,7 @@ public class FormScheduleAssignment extends Form {
 
             daysPanel.add(dayPanel);
         }
-        return daysPanel;
+        return new JScrollPane(daysPanel);
     }
 
     private JButton createSaveButton() {

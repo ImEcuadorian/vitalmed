@@ -46,7 +46,7 @@ public class FormAddDoctor extends JPanel {
         txtId.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("form.admin.form.formAddDoctor.id.placeHolder"));
         add(txtId, "span 2, growx");
 
-        add(new JLabel(I18n.t("form.admin.form.formAddDoctor.name*")), "span 2");
+        add(new JLabel(I18n.t("form.admin.form.formAddDoctor.name*")));
         add(new JLabel(I18n.t("form.admin.form.formAddDoctor.surname*")));
 
         JTextField txtName = new JTextField();
@@ -62,7 +62,7 @@ public class FormAddDoctor extends JPanel {
         txtEmail.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("form.admin.form.formAddDoctor.email.placeHolder"));
         add(txtEmail, "span 2, growx");
 
-        add(new JLabel(I18n.t("form.admin.form.formAddDoctor.password*")), "span 2");
+        add(new JLabel(I18n.t("form.admin.form.formAddDoctor.password*")));
         add(new JLabel(I18n.t("form.admin.form.formAddDoctor.confirmPassword*")));
         String toolTipPassword = I18n.t("form.admin.form.formAddDoctor.password.toolTip");
 
@@ -78,7 +78,7 @@ public class FormAddDoctor extends JPanel {
         add(txtPassword);
         add(txtConfirmPassword);
 
-        add(new JLabel(I18n.t("form.admin.form.formAddDoctor.cellphone*")), "span 2");
+        add(new JLabel(I18n.t("form.admin.form.formAddDoctor.cellphone*")));
         add(new JLabel(I18n.t("form.admin.form.formAddDoctor.phone*")));
         JTextField txtPhone = new JTextField();
         JTextField txtCellphone = new JTextField();

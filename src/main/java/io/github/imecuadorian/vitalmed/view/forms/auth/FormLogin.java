@@ -78,6 +78,10 @@ public class FormLogin extends JPanel {
         };
         cmdSignIn.putClientProperty(FlatClientProperties.STYLE, "foreground:#FFFFFF;iconTextGap:10;");
         cmdSignIn.setHorizontalTextPosition(JButton.LEADING);
+        if (frame instanceof JFrame jFrame) {
+            jFrame.getRootPane().setDefaultButton(cmdSignIn);
+        }
+        cmdSignIn.setDefaultCapable(true);
         add(cmdSignIn, "gapy 20 10");
 
         JLabel lbNoAccount = new JLabel(I18n.t("auth.formLogin.noAccount.jLabel"), CENTER);
@@ -104,9 +108,9 @@ public class FormLogin extends JPanel {
         });
 
 
-        // Validation hooks
         InputValidator.applyEmailValidation(txtEmail);
         InputValidator.applyPasswordValidation(txtPassword);
+
     }
 
     private void signInActionPerformed(ActionEvent e) {

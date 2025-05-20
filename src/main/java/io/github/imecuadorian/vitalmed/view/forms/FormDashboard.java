@@ -13,10 +13,10 @@ import java.awt.*;
 public class FormDashboard extends Form {
     private JPanel panelLayout;
     public FormDashboard() {
-        init();
+        setupComponents();
     }
 
-    private void init() {
+    private void setupComponents() {
         setLayout(new MigLayout("wrap,fill", "[fill]", "[grow 0][fill]"));
         createTitle();
         createPanelLayout();
@@ -39,6 +39,7 @@ public class FormDashboard extends Form {
 
         title.putClientProperty(FlatClientProperties.STYLE, "" +
                                                             "font:bold +3");
+        panel.add(title, "growx");
 
         add(panel);
     }
