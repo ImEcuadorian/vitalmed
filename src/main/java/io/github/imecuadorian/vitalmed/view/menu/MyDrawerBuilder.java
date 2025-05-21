@@ -107,7 +107,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                 new Item.Label(I18n.t("dashboard.menuItem.appointmentManagement.title")),                              // index[1]
                 new Item(I18n.t("dashboard.menuItem.appointments"), "calendar.svg")                                // index[2]
                         .subMenu(I18n.t("dashboard.menuItem.scheduleAppointment"), FormAppointmentScheduling.class)     // [2,0]
-                        .subMenu(I18n.t("dashboard.menuItem.appointmentManagement"), io.github.imecuadorian.vitalmed.view.forms.doctor.FormDoctorManagement.class),      // [2,1]
+                        .subMenu(I18n.t("dashboard.menuItem.appointmentManagement"), FormAppointmentManagement.class),      // [2,1]
 
                 new Item.Label(I18n.t("dashboard.menuItem.medicalHistory.title")),                              // index[3]
                 new Item(I18n.t("dashboard.menuItem.seeClinicalHistory"), "page.svg", FormMedicalHistory.class),   // [4]

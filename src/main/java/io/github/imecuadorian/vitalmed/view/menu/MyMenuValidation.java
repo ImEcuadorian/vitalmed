@@ -59,7 +59,7 @@ public class MyMenuValidation extends MenuValidation {
 
             case DOCTOR -> (
                     clazz == FormDashboard.class ||
-                    clazz == FormDoctorManagement.class ||
+                    clazz == FormAppointmentManagement.class ||
                     clazz == FormMedicalHistory.class ||
                     clazz == FormUpdateData.class ||
                     clazz == FormResetPassword.class ||
