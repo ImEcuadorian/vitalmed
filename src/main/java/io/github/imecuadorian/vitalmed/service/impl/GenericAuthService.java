@@ -1,21 +1,19 @@
 package io.github.imecuadorian.vitalmed.service.impl;
 
-import io.github.imecuadorian.vitalmed.model.User;
-import io.github.imecuadorian.vitalmed.repository.Repository;
-import io.github.imecuadorian.vitalmed.service.AuthService;
+import io.github.imecuadorian.vitalmed.model.*;
+import io.github.imecuadorian.vitalmed.repository.*;
+import io.github.imecuadorian.vitalmed.service.*;
+import org.slf4j.*;
 
-import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.*;
 
 public class GenericAuthService<T extends User> implements AuthService<T> {
 
     private final Repository<String, T> repository;
-    private final Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(GenericAuthService.class);
 
-    public GenericAuthService(Repository<String, T> repository, Logger logger) {
+    public GenericAuthService(Repository<String, T> repository) {
         this.repository = repository;
-        this.logger = logger;
     }
 
     @Override
@@ -24,10 +22,10 @@ public class GenericAuthService<T extends User> implements AuthService<T> {
                 .filter(user -> user.validateLogin(email, password))
                 .findFirst();
 
-        if (logger.isLoggable(Level.INFO)) {
-            logger.info(result.isPresent()
-                    ? String.format("Login successful for %s", email)
-                    : String.format("Login failed for %s", email));
+        if (result.isPresent()) {
+            logger.info("Login is successful for user {}", email);
+        } else {
+            logger.warn("Login failed for user {}", email);
         }
 
         return result;

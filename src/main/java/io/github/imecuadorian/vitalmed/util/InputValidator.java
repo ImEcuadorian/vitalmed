@@ -1,4 +1,3 @@
-// Clase utilitaria para validaciones
 package io.github.imecuadorian.vitalmed.util;
 
 import javax.swing.*;

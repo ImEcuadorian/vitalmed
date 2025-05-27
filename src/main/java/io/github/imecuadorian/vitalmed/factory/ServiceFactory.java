@@ -11,6 +11,7 @@ import java.util.logging.*;
 
 public class ServiceFactory {
     private static final Logger VITALMED_LOGGER = Logger.getLogger("VitalmedLogger");
+    private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(ServiceFactory.class);
     private static final String DOCTOR_FILE = "doctores.txt";
     private static final String PATIENT_FILE = "pacientes.txt";
     private static final String APPOINTMENT_FILE = "citas.txt";
@@ -40,10 +41,10 @@ public class ServiceFactory {
             new AdminServiceImpl(doctorRepository, patientRepository, roomRepository, VITALMED_LOGGER);
 
     @Getter
-    private static final AuthService<Doctor> doctorAuth = new GenericAuthService<>(doctorRepository, VITALMED_LOGGER);
+    private static final AuthService<Doctor> doctorAuth = new GenericAuthService<>(doctorRepository);
 
     @Getter
-    private static final AuthService<Patient> patientAuth = new GenericAuthService<>(patientRepository, VITALMED_LOGGER);
+    private static final AuthService<Patient> patientAuth = new GenericAuthService<>(patientRepository);
 
     private ServiceFactory() {
         throw new UnsupportedOperationException("ServiceFactory is a utility class and cannot be instantiated.");

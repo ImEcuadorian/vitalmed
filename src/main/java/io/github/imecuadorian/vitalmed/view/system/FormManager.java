@@ -2,7 +2,6 @@ package io.github.imecuadorian.vitalmed.view.system;
 
 import io.github.imecuadorian.vitalmed.util.*;
 import io.github.imecuadorian.vitalmed.view.forms.*;
-import io.github.imecuadorian.vitalmed.view.forms.auth.*;
 import lombok.*;
 import raven.modal.*;
 
@@ -14,6 +13,9 @@ public class FormManager {
     @Getter
     private static JFrame frame;
     private static MainForm mainForm;
+
+    private FormManager() {
+    }
     public static void install(JFrame f) {
         frame = f;
         install();
@@ -75,8 +77,5 @@ public class FormManager {
         }
         return mainForm;
     }
-
-
-
 
 }

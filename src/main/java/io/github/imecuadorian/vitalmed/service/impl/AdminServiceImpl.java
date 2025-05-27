@@ -60,7 +60,7 @@ public class AdminServiceImpl implements AdminService {
         Optional<Doctor> doctorOpt = doctorRepository.findById(doctorId);
         if (doctorOpt.isEmpty()) {
             if (logger.isLoggable(Level.WARNING)) {
-                logger.warning(String.format("Doctor not found: %s", doctorId));
+                logger.warning(String.format("Doctor isn't found: %s", doctorId));
             }
             return false;
         }
