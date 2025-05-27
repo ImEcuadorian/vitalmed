@@ -1,4 +1,4 @@
-package io.github.imecuadorian.vitalmed.pdf;
+package io.github.imecuadorian.vitalmed.report;
 
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.util.*;

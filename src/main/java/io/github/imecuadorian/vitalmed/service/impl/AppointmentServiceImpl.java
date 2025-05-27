@@ -3,7 +3,6 @@ package io.github.imecuadorian.vitalmed.service.impl;
 import io.github.imecuadorian.vitalmed.model.Appointment;
 import io.github.imecuadorian.vitalmed.repository.Repository;
 import io.github.imecuadorian.vitalmed.service.AppointmentService;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Level;
@@ -21,7 +20,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public boolean createAppointment(Appointment appointment) {
-        if (!isAvailable(appointment.getDoctorId(), appointment.getRoom().getId() , appointment.getDateTime())) {
+        if (!isAvailable(appointment.getDoctorId(), appointment.getRoom().getId(), appointment.getDateTime())) {
             if (logger.isLoggable(Level.WARNING)) {
                 logger.warning("Conflict: Doctor already has an appointment at " + appointment.getDateTime());
             }

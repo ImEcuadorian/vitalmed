@@ -6,7 +6,6 @@ public class User {
 
     private final Generic<String, String> information;
     private final Generic<String, String> data;
-
     private final Generic<Rol, ?> rol;
 
     public User(String id, String fullName, String email, String password, String phone, String mobile, String address, Rol rol) {

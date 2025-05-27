@@ -182,8 +182,8 @@ public class FormRegisterDoctor extends Form {
         option.getLayoutOption().setAnimateDistance(0, 0)
                 .setAnimateScale(0.1f);
 
-        FormAddDoctor formAddDoctor = new FormAddDoctor(this::reloadTable);
-        ModalDialog.showModal(this, new SimpleModalBorder(formAddDoctor, I18n.t("form.formRegisterDoctor.registerDoctor.button"),SimpleModalBorder.DEFAULT_OPTION,(controller, action) -> {}), option);
+        final FormAddDoctor formAddDoctor = new FormAddDoctor(this::reloadTable);
+        ModalDialog.showModal(this, new SimpleModalBorder(formAddDoctor, I18n.t("form.formRegisterDoctor.registerDoctor.button"), SimpleModalBorder.DEFAULT_OPTION, (controller, action) ->  { }), option);
 
     }
 

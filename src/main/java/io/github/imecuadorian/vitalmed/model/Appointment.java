@@ -9,7 +9,8 @@ public class Appointment {
     private final Generic<String, String> information;
     private final Generic<Room, LocalDateTime> data;
 
-    public Appointment(String id, String patientId, String doctorId, String speciality, Room room, LocalDateTime dateTime) {
+    public Appointment(String id, String patientId, String doctorId, String speciality, Room room,
+                       LocalDateTime dateTime) {
         this.information = new Generic<>(id, patientId, doctorId, speciality);
         this.data = new Generic<>(room, dateTime);
     }
