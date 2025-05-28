@@ -1,11 +1,16 @@
 package io.github.imecuadorian.vitalmed.i18n;
 
+import org.jetbrains.annotations.*;
+
 import java.util.*;
 
 public class I18n {
     private static Locale currentLocale = Locale.of("es", "EC");
     private static ResourceBundle bundle = loadBundle(currentLocale);
-    private static final List<LanguageChangeListener> listeners = new ArrayList<>();
+    private static final List<LanguageChangeListener> LISTENERS = new ArrayList<>();
+
+    private I18n() {
+    }
 
     private static ResourceBundle loadBundle(Locale locale) {
         return ResourceBundle.getBundle("io.github.imecuadorian.vitalmed.i18n.messages", locale);
@@ -21,21 +26,17 @@ public class I18n {
         return currentLocale;
     }
 
-    public static String t(String key) {
+    public static @NotNull String t(String key) {
         return bundle.getString(key);
     }
 
     public static void addListener(LanguageChangeListener listener) {
-        listeners.add(listener);
-        listener.onLanguageChanged(bundle); // inicializa textos
-    }
-
-    public static void removeListener(LanguageChangeListener listener) {
-        listeners.remove(listener);
+        LISTENERS.add(listener);
+        listener.onLanguageChanged(bundle);
     }
 
     private static void notifyListeners() {
-        for (LanguageChangeListener listener : listeners) {
+        for (LanguageChangeListener listener : LISTENERS) {
             listener.onLanguageChanged(bundle);
         }
     }

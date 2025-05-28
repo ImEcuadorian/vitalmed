@@ -8,7 +8,8 @@ public class User {
     private final Generic<String, String> data;
     private final Generic<Rol, ?> rol;
 
-    public User(String id, String fullName, String email, String password, String phone, String mobile, String address, Rol rol) {
+    public User(String id, String fullName, String email, String password,
+                String phone, String mobile, String address, Rol rol) {
         this.information = new Generic<>(id, fullName, email, password);
         this.data = new Generic<>(phone, mobile, address);
         this.rol = new Generic<>(rol, null);

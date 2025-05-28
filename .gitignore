@@ -46,3 +46,12 @@ bin/
 !/vitalmed/doctores.txt
 !/vitalmed/citas.txt
 !/vitalmed/pacientes.txt
+
+# Reportes de cobertura y CI
+jacoco.exec
+jacocoHtml/
+build/reports/
+test-results/
+
+# Logs
+*.log

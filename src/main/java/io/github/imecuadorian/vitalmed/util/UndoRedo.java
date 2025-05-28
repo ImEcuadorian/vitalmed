@@ -1,5 +1,7 @@
 package io.github.imecuadorian.vitalmed.util;
 
+import org.jetbrains.annotations.*;
+
 import java.util.*;
 
 
@@ -9,8 +11,8 @@ public class UndoRedo<E> implements Iterable<E> {
     private final Deque<E> redoStack;
 
     public UndoRedo() {
-        undoStack = new LinkedList<>();
-        redoStack = new LinkedList<>();
+        this.undoStack = new LinkedList<>();
+        this.redoStack = new LinkedList<>();
     }
 
 
@@ -62,7 +64,7 @@ public class UndoRedo<E> implements Iterable<E> {
     }
 
     @Override
-    public Iterator<E> iterator() {
+    public @NotNull Iterator<E> iterator() {
         return new HistoryIterator();
     }
 
@@ -72,7 +74,7 @@ public class UndoRedo<E> implements Iterable<E> {
 
         public HistoryIterator() {
             List<E> undoList = new ArrayList<>(undoStack);
-            Collections.reverse(undoList);
+            undoList.reversed();
 
             List<E> redoList = new ArrayList<>(redoStack);
 
@@ -88,6 +90,9 @@ public class UndoRedo<E> implements Iterable<E> {
 
         @Override
         public E next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException("No more elements in the history.");
+            }
             return combinedHistory.get(index++);
         }
     }

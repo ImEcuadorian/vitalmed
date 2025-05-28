@@ -1,14 +1,13 @@
 package io.github.imecuadorian.vitalmed.db;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
+import com.zaxxer.hikari.*;
 import io.github.cdimascio.dotenv.*;
-
-import java.sql.Connection;
-import java.sql.SQLException;
+import lombok.*;
 
 public class MySQLConnectionPool {
-    private static final HikariDataSource dataSource;
+
+    @Getter
+    private static final HikariDataSource HIKARI_DATA_SOURCE;
 
     static {
         Dotenv dotenv = Dotenv.configure().load();
@@ -28,12 +27,9 @@ public class MySQLConnectionPool {
         config.setIdleTimeout(10000);
         config.setMaxLifetime(300000);
 
-        dataSource = new HikariDataSource(config);
+        HIKARI_DATA_SOURCE = new HikariDataSource(config);
     }
 
-    private MySQLConnectionPool() {}
+    private MySQLConnectionPool() { }
 
-    public static Connection getConnection() throws SQLException {
-        return dataSource.getConnection();
-    }
 }

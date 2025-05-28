@@ -1,30 +1,28 @@
 package io.github.imecuadorian.vitalmed.view.forms.auth;
 
-import com.formdev.flatlaf.FlatClientProperties;
-import io.github.imecuadorian.vitalmed.controller.LoginController;
-import io.github.imecuadorian.vitalmed.factory.ServiceFactory;
-import io.github.imecuadorian.vitalmed.i18n.I18n;
-import io.github.imecuadorian.vitalmed.model.User;
-import io.github.imecuadorian.vitalmed.util.Constants;
-import io.github.imecuadorian.vitalmed.util.InputValidator;
-import io.github.imecuadorian.vitalmed.view.MainDashboard;
-import io.github.imecuadorian.vitalmed.view.menu.MyDrawerBuilder;
-import io.github.imecuadorian.vitalmed.view.modal.SimpleMessageModal;
-import io.github.imecuadorian.vitalmed.view.system.FormManager;
-import net.miginfocom.swing.MigLayout;
+import com.formdev.flatlaf.*;
+import io.github.imecuadorian.vitalmed.controller.*;
+import io.github.imecuadorian.vitalmed.factory.*;
+import io.github.imecuadorian.vitalmed.i18n.*;
+import io.github.imecuadorian.vitalmed.model.*;
+import io.github.imecuadorian.vitalmed.util.*;
+import io.github.imecuadorian.vitalmed.view.*;
+import io.github.imecuadorian.vitalmed.view.menu.*;
+import io.github.imecuadorian.vitalmed.view.modal.*;
+import io.github.imecuadorian.vitalmed.view.system.*;
+import net.miginfocom.swing.*;
 import raven.modal.*;
-import raven.modal.component.SimpleModalBorder;
-import raven.modal.toast.option.ToastLocation;
+import raven.modal.component.*;
+import raven.modal.toast.option.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.awt.event.*;
+import java.util.*;
 
-import static javax.swing.SwingConstants.CENTER;
+import static javax.swing.SwingConstants.*;
 
-public class FormLogin extends JPanel implements io.github.imecuadorian.vitalmed.i18n.LanguageChangeListener {
+public class FormLogin extends JPanel implements LanguageChangeListener {
 
     private static final int LOGO_WIDTH = 450;
     private static final int LOGO_HEIGHT = 120;
@@ -107,7 +105,9 @@ public class FormLogin extends JPanel implements io.github.imecuadorian.vitalmed
                     I18n.t("auth.formLogin.typeWarning.messageExit"),
                     SimpleModalBorder.YES_NO_OPTION,
                     (controller, action) -> {
-                        if (action == SimpleModalBorder.YES_OPTION) System.exit(0);
+                        if (action == SimpleModalBorder.YES_OPTION) {
+                            System.exit(0);
+                        }
                     }), Constants.getSelectedOption());
         });
 
@@ -123,7 +123,9 @@ public class FormLogin extends JPanel implements io.github.imecuadorian.vitalmed
         valid &= InputValidator.isNotEmpty(txtPassword, I18n.t("auth.formLogin.txtPassword.notEmpty"));
         valid &= InputValidator.isValidPassword(txtPassword, I18n.t("auth.formLogin.txtPassword.validPassword"));
 
-        if (!valid) return;
+        if (!valid) {
+            return;
+        }
 
         User user = loginController.login(txtEmail.getText(), new String(txtPassword.getPassword()));
         if (user == null) {
@@ -144,7 +146,8 @@ public class FormLogin extends JPanel implements io.github.imecuadorian.vitalmed
                 new SimpleModalBorder(new FormRegister(),
                         I18n.t("auth.formLogin.formRegister.title"),
                         SimpleModalBorder.DEFAULT_OPTION,
-                        (controller, action) -> {}));
+                        (controller, action) -> {
+                        }));
     }
 
     private JPanel createAccountSection() {

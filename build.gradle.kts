@@ -12,12 +12,10 @@ plugins {
 }
 
 group = "io.github.imecuadorian.vitalmed"
-version = "1.0-SNAPSHOT"
+version = project.property("projectVersion") as String
 
 java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(21))
-    }
+    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
 }
 
 repositories {
@@ -25,63 +23,62 @@ repositories {
     flatDir { dirs("libs") }
 }
 
-object V {
-    const val jetbrainsAnnotations = "26.0.2"
-    const val junitPlatform = "1.12.1"
-    const val jasperReports = "7.0.3"
-    const val commonCollections = "4.5.0"
-    const val openpdf = "2.0.4"
-    const val logback = "1.5.18"
-    const val modalDialog = "2.5.0"
-    const val migLayout = "11.4.2"
-    const val flatLaf = "3.6"
-    const val mysqlConnector = "9.3.0"
-    const val bcrypt = "0.10.2"
-    const val dotenv = "3.2.0"
-    const val hikari = "6.3.0"
-    const val cucumber = "7.22.2"
-    const val mockito = "5.18.0"
-    const val junitJupiterBom = "5.12.2"
-    const val bouncycastle = "1.80"
-    const val logStashLogbackEncoder = "8.1"
-}
+// --- Versión de dependencias desde gradle.properties ---
+val jetbrainsAnnotations: String by project
+val junitPlatform: String by project
+val jasperReports: String by project
+val commonCollections: String by project
+val openpdf: String by project
+val logback: String by project
+val modalDialog: String by project
+val migLayout: String by project
+val flatLaf: String by project
+val mysqlConnector: String by project
+val bcrypt: String by project
+val dotenv: String by project
+val hikari: String by project
+val cucumber: String by project
+val mockito: String by project
+val junitJupiterBom: String by project
+val bouncycastle: String by project
+val logStashLogbackEncoder: String by project
 
 dependencies {
-    implementation("io.github.dj-raven:modal-dialog:${V.modalDialog}")
-    implementation("com.miglayout:miglayout-swing:${V.migLayout}")
-    implementation("com.formdev:flatlaf:${V.flatLaf}")
-    implementation("com.formdev:flatlaf-extras:${V.flatLaf}")
+    implementation("io.github.dj-raven:modal-dialog:$modalDialog")
+    implementation("com.miglayout:miglayout-swing:$migLayout")
+    implementation("com.formdev:flatlaf:$flatLaf")
+    implementation("com.formdev:flatlaf-extras:$flatLaf")
 
     implementation(files("libs/generic-library-1.0.0.jar"))
 
-    implementation("org.jetbrains:annotations:${V.jetbrainsAnnotations}")
-    implementation("com.mysql:mysql-connector-j:${V.mysqlConnector}")
-    implementation("com.zaxxer:HikariCP:${V.hikari}")
-    implementation("io.github.cdimascio:dotenv-java:${V.dotenv}")
-    implementation("at.favre.lib:bcrypt:${V.bcrypt}")
-    implementation("org.bouncycastle:bcprov-jdk15to18:${V.bouncycastle}")
+    implementation("org.jetbrains:annotations:$jetbrainsAnnotations")
+    implementation("com.mysql:mysql-connector-j:$mysqlConnector")
+    implementation("com.zaxxer:HikariCP:$hikari")
+    implementation("io.github.cdimascio:dotenv-java:$dotenv")
+    implementation("at.favre.lib:bcrypt:$bcrypt")
+    implementation("org.bouncycastle:bcprov-jdk15to18:$bouncycastle")
 
-    implementation("ch.qos.logback:logback-classic:${V.logback}")
-    implementation("net.logstash.logback:logstash-logback-encoder:${V.logStashLogbackEncoder}")
+    implementation("ch.qos.logback:logback-classic:$logback")
+    implementation("net.logstash.logback:logstash-logback-encoder:$logStashLogbackEncoder")
 
-    implementation("net.sf.jasperreports:jasperreports:${V.jasperReports}")
-    implementation("net.sf.jasperreports:jasperreports-fonts:${V.jasperReports}")
-    implementation("net.sf.jasperreports:jasperreports-functions:${V.jasperReports}")
-    implementation("net.sf.jasperreports:jasperreports-metadata:${V.jasperReports}")
-    implementation("net.sf.jasperreports:jasperreports-javaflow:${V.jasperReports}")
-    implementation("net.sf.jasperreports:jasperreports-pdf:${V.jasperReports}")
-    implementation("org.apache.commons:commons-collections4:${V.commonCollections}")
-    implementation("com.github.librepdf:openpdf:${V.openpdf}")
+    implementation("net.sf.jasperreports:jasperreports:$jasperReports")
+    implementation("net.sf.jasperreports:jasperreports-fonts:$jasperReports")
+    implementation("net.sf.jasperreports:jasperreports-functions:$jasperReports")
+    implementation("net.sf.jasperreports:jasperreports-metadata:$jasperReports")
+    implementation("net.sf.jasperreports:jasperreports-javaflow:$jasperReports")
+    implementation("net.sf.jasperreports:jasperreports-pdf:$jasperReports")
+    implementation("org.apache.commons:commons-collections4:$commonCollections")
+    implementation("com.github.librepdf:openpdf:$openpdf")
 
-    implementation("org.mockito:mockito-core:${V.mockito}")
+    implementation("org.mockito:mockito-core:$mockito")
 
-    testImplementation(platform("org.junit:junit-bom:${V.junitJupiterBom}"))
+    testImplementation(platform("org.junit:junit-bom:$junitJupiterBom"))
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("org.junit.jupiter:junit-jupiter-params")
-    testImplementation("io.cucumber:cucumber-java:${V.cucumber}")
-    testImplementation("io.cucumber:cucumber-junit-platform-engine:${V.cucumber}")
+    testImplementation("io.cucumber:cucumber-java:$cucumber")
+    testImplementation("io.cucumber:cucumber-junit-platform-engine:$cucumber")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher:${V.junitPlatform}")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:$junitPlatform")
 }
 
 sourceSets {
@@ -98,7 +95,6 @@ application {
 }
 
 tasks {
-
     withType<JavaCompile> { options.encoding = "UTF-8" }
 
     test {
@@ -157,9 +153,9 @@ tasks {
     jacocoTestReport {
         dependsOn(test)
         reports {
-            xml.required.set(true)      // Codecov / Sonar
+            xml.required.set(true)
             csv.required.set(false)
-            html.required.set(true)     // Navegable local
+            html.required.set(true)
             html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
         }
         finalizedBy("openCoverage")
@@ -180,13 +176,15 @@ tasks {
         dependsOn("clean", "test", "jacocoTestReport")
     }
 
-    processResources { duplicatesStrategy = DuplicatesStrategy.EXCLUDE }
+    processResources {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    }
 }
 
 jacoco { toolVersion = "0.8.13" }
 
 checkstyle {
-    toolVersion = "10.24.0" // o la versión más reciente
+    toolVersion = "10.24.0"
     configFile = file("config/checkstyle/checkstyle.xml")
     isIgnoreFailures = false
     isShowViolations = true

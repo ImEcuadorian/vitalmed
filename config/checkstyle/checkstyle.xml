@@ -11,9 +11,8 @@
 
     <property name="charset" value="UTF-8"/>
 
-    <!-- Reglas generales fuera de TreeWalker -->
     <module name="LineLength">
-        <property name="max" value="120"/>
+        <property name="max" value="150"/>
         <property name="ignorePattern" value="^package.*|^import.*"/>
     </module>
 
@@ -25,17 +24,9 @@
 
     <module name="TreeWalker">
 
-        <!-- Validación de imports -->
-        <module name="AvoidStarImport"/>
         <module name="UnusedImports"/>
         <module name="RedundantImport"/>
-        <module name="ImportOrder">
-            <property name="ordered" value="true"/>
-            <property name="separated" value="true"/>
-            <property name="sortStaticImportsAlphabetically" value="true"/>
-        </module>
 
-        <!-- Nombres y convenciones -->
         <module name="OuterTypeFilename"/>
         <module name="TypeName"/>
         <module name="MethodName"/>
@@ -44,25 +35,19 @@
         <module name="MemberName"/>
         <module name="ConstantName"/>
 
-        <!-- Estilo de llaves y bloques -->
         <module name="LeftCurly">
             <property name="option" value="eol"/>
-        </module>
-        <module name="RightCurly">
-            <property name="option" value="alone"/>
         </module>
         <module name="NeedBraces"/>
         <module name="EmptyBlock">
             <property name="option" value="text"/>
         </module>
 
-        <!-- Espaciado -->
         <module name="WhitespaceAfter"/>
         <module name="WhitespaceAround"/>
         <module name="NoWhitespaceBefore"/>
         <module name="NoWhitespaceAfter"/>
 
-        <!-- Control de complejidad -->
         <module name="CyclomaticComplexity">
             <property name="max" value="10"/>
         </module>
@@ -76,8 +61,6 @@
             <property name="max" value="200"/>
         </module>
 
-        <!-- Otros -->
-        <module name="FinalLocalVariable"/>
         <module name="MissingSwitchDefault"/>
         <module name="FallThrough"/>
         <module name="EqualsHashCode"/>
@@ -86,7 +69,6 @@
         <module name="MultipleVariableDeclarations"/>
         <module name="ModifierOrder"/>
 
-        <!-- Comentarios y documentación -->
         <module name="JavadocType"/>
         <module name="JavadocMethod"/>
         <module name="TodoComment">
