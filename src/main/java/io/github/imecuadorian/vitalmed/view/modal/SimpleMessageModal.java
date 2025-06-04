@@ -15,24 +15,12 @@ import java.awt.*;
 public class SimpleMessageModal extends SimpleModalBorder {
 
     private final Type type;
-    private Component titleComponent;
-
     public SimpleMessageModal(Type type, String message, String title, int optionType, ModalCallback callback) {
         this(type, createMessage(type, message), title, optionType, callback);
     }
 
     public SimpleMessageModal(Type type, Component messageComponent, String title, int optionType, ModalCallback callback) {
         super(messageComponent, title, optionType, callback);
-        this.type = type;
-    }
-
-    public SimpleMessageModal(Type type, String message, Component titleComponent, int optionType, ModalCallback callback) {
-        this(type, createMessage(type, message), titleComponent, optionType, callback);
-    }
-
-    public SimpleMessageModal(Type type, Component messageComponent, Component titleComponent, int optionType, ModalCallback callback) {
-        super(messageComponent, null, optionType, callback);
-        this.titleComponent = titleComponent;
         this.type = type;
     }
 
@@ -43,21 +31,19 @@ public class SimpleMessageModal extends SimpleModalBorder {
         text.setCaret(new DefaultCaret() {
             @Override
             public void paint(Graphics g) {
+                // intentionally empty to disable caret rendering
             }
         });
         String gap = type == Type.DEFAULT ? "30" : "62";
-        text.putClientProperty(FlatClientProperties.STYLE, "" +
-                                                           "border:0," + gap + ",10,30;" +
-                                                           "[light]foreground:lighten($Label.foreground,20%);" +
-                                                           "[dark]foreground:darken($Label.foreground,20%);");
+        String style = "border:0," + gap + ",10,30;" +
+                       "[light]foreground:lighten($Label.foreground,20%);" +
+                       "[dark]foreground:darken($Label.foreground,20%);";
+        text.putClientProperty(FlatClientProperties.STYLE, style);
         return text;
     }
 
     @Override
     protected JComponent createTitleComponent(String title) {
-        if (titleComponent != null && titleComponent instanceof JComponent) {
-            return (JComponent) titleComponent;
-        }
         if (type == Type.DEFAULT) {
             return super.createTitleComponent(title);
         }
@@ -71,12 +57,11 @@ public class SimpleMessageModal extends SimpleModalBorder {
     @Override
     protected JComponent createOptionButton(Option[] optionsType) {
         JPanel panel = (JPanel) super.createOptionButton(optionsType);
-        if (panel == null) return null;
-
-        // modify layout option
-        if (panel.getLayout() instanceof MigLayout) {
-            MigLayout layout = (MigLayout) panel.getLayout();
-            layout.setColumnConstraints("[]12[]");
+        if (panel == null) {
+            return null;
+        }
+        if (panel.getLayout() instanceof MigLayout migLayout) {
+            migLayout.setColumnConstraints("[]12[]");
         }
         return panel;
     }
@@ -84,36 +69,36 @@ public class SimpleMessageModal extends SimpleModalBorder {
     @Override
     protected JButton createButtonOption(Option option) {
         JButton button = super.createButtonOption(option);
-        String colors[] = getColorKey(type);
+        String[] colors = getColorKey(type);
         if (button.isDefaultButton()) {
-            button.putClientProperty(FlatClientProperties.STYLE, "" +
-                                                                 "arc:999;" +
-                                                                 "margin:3,33,3,33;" +
-                                                                 "borderWidth:0;" +
-                                                                 "focusWidth:0;" +
-                                                                 "innerFocusWidth:0;" +
-                                                                 "default.borderWidth:0;" +
-                                                                 "hoverBackground:fade($Component.accentColor,20%);" +
-                                                                 "[light]background:" + colors[0] + ";" +
-                                                                 "[dark]background:" + colors[1] + ";");
+            String style = "arc:999;" +
+                           "margin:3,33,3,33;" +
+                           "borderWidth:0;" +
+                           "focusWidth:0;" +
+                           "innerFocusWidth:0;" +
+                           "default.borderWidth:0;" +
+                           "hoverBackground:fade($Component.accentColor,20%);" +
+                           "[light]background:" + colors[0] + ";" +
+                           "[dark]background:" + colors[1] + ";";
+            button.putClientProperty(FlatClientProperties.STYLE, style);
         } else {
-            button.putClientProperty(FlatClientProperties.STYLE, "" +
-                                                                 "arc:999;" +
-                                                                 "margin:3,33,3,33;" +
-                                                                 "borderWidth:1;" +
-                                                                 "focusWidth:0;" +
-                                                                 "innerFocusWidth:1;" +
-                                                                 "background:null;" +
-                                                                 "[light]borderColor:" + colors[0] + ";" +
-                                                                 "[dark]borderColor:" + colors[1] + ";" +
-                                                                 "[light]focusedBorderColor:" + colors[0] + ";" +
-                                                                 "[dark]focusedBorderColor:" + colors[1] + ";" +
-                                                                 "[light]focusColor:" + colors[0] + ";" +
-                                                                 "[dark]focusColor:" + colors[1] + ";" +
-                                                                 "[light]hoverBorderColor:" + colors[0] + ";" +
-                                                                 "[dark]hoverBorderColor:" + colors[1] + ";" +
-                                                                 "[light]foreground:" + colors[0] + ";" +
-                                                                 "[dark]foreground:" + colors[1] + ";");
+            String style = "arc:999;" +
+                           "margin:3,33,3,33;" +
+                           "borderWidth:1;" +
+                           "focusWidth:0;" +
+                           "innerFocusWidth:1;" +
+                           "background:null;" +
+                           "[light]borderColor:" + colors[0] + ";" +
+                           "[dark]borderColor:" + colors[1] + ";" +
+                           "[light]focusedBorderColor:" + colors[0] + ";" +
+                           "[dark]focusedBorderColor:" + colors[1] + ";" +
+                           "[light]focusColor:" + colors[0] + ";" +
+                           "[dark]focusColor:" + colors[1] + ";" +
+                           "[light]hoverBorderColor:" + colors[0] + ";" +
+                           "[dark]hoverBorderColor:" + colors[1] + ";" +
+                           "[light]foreground:" + colors[0] + ";" +
+                           "[dark]foreground:" + colors[1] + ";";
+            button.putClientProperty(FlatClientProperties.STYLE, style);
         }
         return button;
     }
@@ -129,7 +114,6 @@ public class SimpleMessageModal extends SimpleModalBorder {
 
     protected String[] getColorKey(Type type) {
         if (type == Type.DEFAULT) {
-            // use accent color as default type
             return new String[]{"$Component.accentColor", "$Component.accentColor"};
         }
         ToastPanel.ThemesData data = Toast.getThemesData().get(asToastType(type));

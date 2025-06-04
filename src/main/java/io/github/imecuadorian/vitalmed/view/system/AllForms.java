@@ -1,11 +1,15 @@
 package io.github.imecuadorian.vitalmed.view.system;
 
+import org.jetbrains.annotations.*;
+import org.slf4j.*;
+
 import javax.swing.*;
 import java.lang.reflect.*;
 import java.util.*;
 
 public class AllForms {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AllForms.class);
     private static AllForms instance;
 
     private final Map<Class<? extends Form>, Form> formsMap;
@@ -21,7 +25,7 @@ public class AllForms {
         formsMap = new HashMap<>();
     }
 
-    public static Form getForm(Class<? extends Form> cls) {
+    public static @Nullable Form getForm(Class<? extends Form> cls) {
         if (getInstance().formsMap.containsKey(cls)) {
             return getInstance().formsMap.get(cls);
         }
@@ -32,11 +36,12 @@ public class AllForms {
             return form;
         } catch (NoSuchMethodException | InvocationTargetException | InstantiationException |
                  IllegalAccessException e) {
-            throw new RuntimeException(e);
+            LOGGER.error( "Error initializing form: {}", cls.getName(), e);
         }
+        return null;
     }
 
-    public static void formInit(Form form) {
-        SwingUtilities.invokeLater(() -> form.formInit());
+    public static void formInit(@NotNull Form form) {
+        SwingUtilities.invokeLater(form::formInit);
     }
 }

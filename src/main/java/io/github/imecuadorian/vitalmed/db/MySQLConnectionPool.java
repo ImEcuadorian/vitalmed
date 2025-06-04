@@ -2,11 +2,9 @@ package io.github.imecuadorian.vitalmed.db;
 
 import com.zaxxer.hikari.*;
 import io.github.cdimascio.dotenv.*;
-import lombok.*;
 
 public class MySQLConnectionPool {
 
-    @Getter
     private static final HikariDataSource HIKARI_DATA_SOURCE;
 
     static {
@@ -32,4 +30,7 @@ public class MySQLConnectionPool {
 
     private MySQLConnectionPool() { }
 
+    public static HikariDataSource getDataSource() {
+        return HIKARI_DATA_SOURCE;
+    }
 }

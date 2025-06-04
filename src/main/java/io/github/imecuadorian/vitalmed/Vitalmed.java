@@ -2,7 +2,6 @@ package io.github.imecuadorian.vitalmed;
 
 import com.formdev.flatlaf.*;
 import com.formdev.flatlaf.themes.*;
-import io.github.imecuadorian.vitalmed.db.*;
 import io.github.imecuadorian.vitalmed.util.*;
 import io.github.imecuadorian.vitalmed.view.forms.auth.*;
 import net.miginfocom.swing.*;
@@ -11,7 +10,6 @@ import org.slf4j.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.*;
-import java.sql.*;
 
 public class Vitalmed extends JFrame {
 

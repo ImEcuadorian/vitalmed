@@ -31,7 +31,7 @@ public class FormRegisterDoctor extends Form {
         init();
     }
 
-    private void init() {
+    public void init() {
         setLayout(new MigLayout("fillx,wrap", "[fill]", "[][fill,grow]"));
         add(createInfo());
         add(createCustomTable(), "gapx 7 7");

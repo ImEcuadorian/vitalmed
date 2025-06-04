@@ -5,7 +5,6 @@ import io.github.imecuadorian.vitalmed.repository.*;
 import io.github.imecuadorian.vitalmed.repository.impl.*;
 import io.github.imecuadorian.vitalmed.service.*;
 import io.github.imecuadorian.vitalmed.service.impl.*;
-import lombok.*;
 
 import java.util.logging.*;
 
@@ -28,25 +27,45 @@ public class ServiceFactory {
     private static final Repository<String, Room> roomRepository =
             new RoomRepository(ROOM_FILE, VITALMED_LOGGER);
 
-    @Getter
     private static final DoctorService doctorService =
             new DoctorServiceImpl(doctorRepository, appointmentRepository, VITALMED_LOGGER);
 
-    @Getter
     private static final PatientService patientService =
             new PatientServiceImpl(patientRepository, appointmentRepository, VITALMED_LOGGER);
 
-    @Getter
     private static final AdminService adminService =
             new AdminServiceImpl(doctorRepository, patientRepository, roomRepository, VITALMED_LOGGER);
 
-    @Getter
     private static final AuthService<Doctor> doctorAuth = new GenericAuthService<>(doctorRepository);
 
-    @Getter
     private static final AuthService<Patient> patientAuth = new GenericAuthService<>(patientRepository);
 
     private ServiceFactory() {
         throw new UnsupportedOperationException("ServiceFactory is a utility class and cannot be instantiated.");
+    }
+
+    public static DoctorService getDoctorService() {
+        return doctorService;
+    }
+    public static PatientService getPatientService() {
+        return patientService;
+    }
+    public static AdminService getAdminService() {
+        return adminService;
+    }
+    public static AuthService<Doctor> getDoctorAuthService() {
+        return doctorAuth;
+    }
+    public static AuthService<Patient> getPatientAuthService() {
+        return patientAuth;
+    }
+    public static Repository<String, Doctor> getDoctorRepository() {
+        return doctorRepository;
+    }
+    public static Repository<String, Patient> getPatientRepository() {
+        return patientRepository;
+    }
+    public static Repository<String, Appointment> getAppointmentRepository() {
+        return appointmentRepository;
     }
 }

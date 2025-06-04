@@ -18,9 +18,14 @@ public class AppPreferences {
     public static final String THEME_UI_KEY = "__Vitalmed.flatlaf.theme";
     public static final String VERSION = "1.0.0";
 
-    @Getter
     private static Preferences state;
 
+    public static Preferences getState() {
+        if (state == null) {
+            init();
+        }
+        return state;
+    }
 
     public static void init() {
         state = Preferences.userRoot().node(PREFERENCES_ROOT_PATH);

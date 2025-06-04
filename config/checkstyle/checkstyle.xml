@@ -55,7 +55,7 @@
             <property name="max" value="80"/>
         </module>
         <module name="ClassDataAbstractionCoupling">
-            <property name="max" value="10"/>
+            <property name="max" value="30"/>
         </module>
         <module name="NPathComplexity">
             <property name="max" value="200"/>

@@ -25,7 +25,7 @@ public class FormAppointmentManagement extends Form implements LanguageChangeLis
         I18n.addListener(this);
     }
 
-    private void init() {
+    public void init() {
         setLayout(new MigLayout("fill, insets 10 10 10 10", "[fill]", "[][grow]"));
         add(createInfo(), "growx, wrap");
 

@@ -10,6 +10,7 @@ import javax.swing.*;
 public class FormManager {
 
     protected static final UndoRedo<Form> FORMS = new UndoRedo<>();
+
     @Getter
     private static JFrame frame;
     private static MainForm mainForm;
@@ -22,7 +23,7 @@ public class FormManager {
     }
 
     private static void install() {
-        FormSearch.getInstance().installKeyMap(getMainForm());
+        FormSearch.INSTANCE.installKeyMap(getMainForm());
     }
 
     public static void showForm(Form form) {

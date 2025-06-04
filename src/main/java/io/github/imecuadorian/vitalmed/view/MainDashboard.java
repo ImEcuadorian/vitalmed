@@ -17,9 +17,10 @@ public class MainDashboard extends JFrame {
 
     private void init() {
         setTitle("VitalMed " + AppPreferences.VERSION);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
         getRootPane().putClientProperty(FlatClientProperties.FULL_WINDOW_CONTENT, true);
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setExtendedState(MAXIMIZED_BOTH);
+        setMinimumSize(new Dimension(1024, 720));
         setVisible(true);
         FormManager.install(this);
         Drawer.installDrawer(this, MyDrawerBuilder.getInstance());

@@ -32,7 +32,7 @@ public class FormScheduleAssignment extends Form {
         init();
     }
 
-    private void init() {
+    public void init() {
         setLayout(new MigLayout("fillx,wrap", "[fill]", "[][grow][]"));
 
         add(createHeaderPanel());

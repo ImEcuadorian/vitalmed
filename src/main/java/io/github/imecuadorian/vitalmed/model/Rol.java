@@ -1,9 +1,5 @@
 package io.github.imecuadorian.vitalmed.model;
 
-import lombok.*;
-
-@Getter
-@AllArgsConstructor
 public enum Rol {
 
     PATIENT("Paciente"),
@@ -11,4 +7,12 @@ public enum Rol {
     ADMIN("Administrador");
 
     private final String name;
+
+    Rol(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
 }

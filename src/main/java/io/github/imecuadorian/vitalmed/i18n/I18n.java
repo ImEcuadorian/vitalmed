@@ -5,7 +5,7 @@ import org.jetbrains.annotations.*;
 import java.util.*;
 
 public class I18n {
-    private static Locale currentLocale = Locale.of("es", "EC");
+    private static Locale currentLocale = Locale.of("en", "US");
     private static ResourceBundle bundle = loadBundle(currentLocale);
     private static final List<LanguageChangeListener> LISTENERS = new ArrayList<>();
 

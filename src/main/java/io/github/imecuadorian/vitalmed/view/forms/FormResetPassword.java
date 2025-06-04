@@ -8,14 +8,12 @@ import io.github.imecuadorian.vitalmed.model.*;
 import io.github.imecuadorian.vitalmed.util.*;
 import io.github.imecuadorian.vitalmed.view.menu.*;
 import io.github.imecuadorian.vitalmed.view.system.*;
-import lombok.extern.slf4j.*;
 import net.miginfocom.swing.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 
-@Slf4j
 @SystemForm(name = "Reset Password", description = "Formulario para resetear la contraseña", tags = {"reset password"})
 public class FormResetPassword extends Form implements LanguageChangeListener {
 
