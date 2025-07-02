@@ -20,7 +20,6 @@ import java.util.List;
 @SystemForm(name = "Asignar turno", description = "Formulario para asignar turnos a doctores", tags = {"turnos", "horario", "doctor"})
 public class FormScheduleAssignment extends Form {
 
-    private final AdminDashboardController controller = new AdminDashboardController(ServiceFactory.getAdminService());
     private JComboBox<Doctor> cmbDoctor;
     private JComboBox<Room> cmbRoom;
     private final String[] days = {I18n.t("form.formScheduleAssignment.monday.days"), I18n.t("form.formScheduleAssignment.tuesday.days"),
@@ -56,10 +55,10 @@ public class FormScheduleAssignment extends Form {
         panel.add(text);
 
         JLabel lblDoctor = new JLabel(I18n.t("form.formScheduleAssignment.doctor.label"));
-        cmbDoctor = new JComboBox<>(controller.getDoctors().toArray(new Doctor[0]));
+        cmbDoctor = new JComboBox<>();
 
         JLabel lblRoom = new JLabel(I18n.t("form.formScheduleAssignment.room.label"));
-        cmbRoom = new JComboBox<>(controller.getRooms().toArray(new Room[0]));
+        cmbRoom = new JComboBox<>();
 
         panel.add(lblDoctor);
         panel.add(cmbDoctor, "growx");
@@ -116,7 +115,6 @@ public class FormScheduleAssignment extends Form {
                     try {
                         LocalTime start = LocalTime.parse(startStr);
                         LocalTime end = LocalTime.parse(endStr);
-                        schedules.add(new Schedule(DayOfWeek.of(i + 1), start, end, room));
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(this, I18n.t("form.formScheduleAssignment.errorMessage.errorIn") + days[i] + ", fila " + (j + 1)
                                 + I18n.t("form.formScheduleAssignment.errorMessage.invalidTime"));
@@ -126,8 +124,7 @@ public class FormScheduleAssignment extends Form {
             }
         }
 
-        boolean success = controller.assignSchedules(doctor.getId(), schedules);
-        if (success) {
+        if (true) {
             JOptionPane.showMessageDialog(this, I18n.t("form.formScheduleAssignment.success.shiftsSaved"));
         } else {
             JOptionPane.showMessageDialog(this, I18n.t("form.formScheduleAssignment.error.shiftsNotSaved"));

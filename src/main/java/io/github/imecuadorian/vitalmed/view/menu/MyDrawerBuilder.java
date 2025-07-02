@@ -40,7 +40,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
 
 
     public void setUser(User user) {
-        boolean updateMenuItem = this.user == null || !this.user.getRol().equals(user.getRol());
+        boolean updateMenuItem = this.user == null;
 
         this.user = user;
 
@@ -49,8 +49,8 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
         SimpleHeader header = (SimpleHeader) getHeader();
         SimpleHeaderData data = header.getSimpleHeaderData();
 
-        data.setTitle(user.getFullName());
-        data.setDescription(user.getEmail());
+        data.setTitle("Name");
+        data.setDescription("Email");
         header.setSimpleHeaderData(data);
 
         if (updateMenuItem) {

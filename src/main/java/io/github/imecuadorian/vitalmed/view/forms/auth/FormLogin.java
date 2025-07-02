@@ -38,9 +38,7 @@ public class FormLogin extends JPanel implements io.github.imecuadorian.vitalmed
     private JButton cmdExit;
 
     private final transient LoginController loginController = new LoginController(
-            ServiceFactory.getAdminService(),
-            ServiceFactory.getDoctorAuth(),
-            ServiceFactory.getPatientAuth()
+            ServiceFactory.getUSER_SERVICE()
     );
 
     public FormLogin(Frame frame) {

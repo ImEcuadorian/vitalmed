@@ -4,10 +4,8 @@ import lombok.*;
 
 @Builder
 @With
-public record Room(
+public record Specialty(
         Integer id,
-        String code,
-        Specialty specialty
+        String name
 ) implements BaseEntity<Integer> {
 }
-

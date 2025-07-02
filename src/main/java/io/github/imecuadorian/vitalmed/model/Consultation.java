@@ -1,28 +1,23 @@
 package io.github.imecuadorian.vitalmed.model;
 
-import io.github.imecuadorian.library.*;
+import lombok.*;
 
-public class Consultation {
-    private final Generic<String, String> information;
+import java.time.*;
+import java.util.*;
 
-    public Consultation(String speciality, String diagnosis, String treatment, String medication) {
-        this.information = new Generic<>(speciality, diagnosis, treatment, medication);
+@Builder
+@With
+public record Consultation(
+        String appointmentId,
+        String specialty,
+        String diagnosis,
+        String treatment,
+        String medication,
+        Instant createdAt
+) {
+    public Consultation {
+        // you can validate non-null fields here
+        Objects.requireNonNull(appointmentId);
+        Objects.requireNonNull(diagnosis);
     }
-
-    public String getSpeciality() {
-        return information.getT1();
-    }
-
-    public String getDiagnosis() {
-        return information.getT2();
-    }
-
-    public String getTreatment() {
-        return information.getS1();
-    }
-
-    public String getMedication() {
-        return information.getS2();
-    }
-
 }

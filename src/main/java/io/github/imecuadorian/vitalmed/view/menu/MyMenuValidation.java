@@ -54,7 +54,7 @@ public class MyMenuValidation extends MenuValidation {
     public static boolean validation(Class<? extends Form> clazz) {
         if (user == null) return false;
 
-        return switch (user.getRol()) {
+        return switch (user.role()) {
             case ADMIN -> true;
 
             case DOCTOR -> (

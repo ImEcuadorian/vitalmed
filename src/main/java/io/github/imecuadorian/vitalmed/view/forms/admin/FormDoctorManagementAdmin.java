@@ -24,7 +24,6 @@ import java.util.*;
 @SystemForm(name = "Registro de Doctor", description = "Registro de doctor", tags = {"doctor", "registro"})
 public class FormDoctorManagementAdmin extends Form implements LanguageChangeListener {
 
-    private final transient AdminDashboardController adminDashboardController = new AdminDashboardController(ServiceFactory.getAdminService());
     private transient TableRowSorter<DefaultTableModel> sorter;
     private static final String FILL = "[fill]";
     private DefaultTableModel tableModel;
@@ -44,9 +43,6 @@ public class FormDoctorManagementAdmin extends Form implements LanguageChangeLis
 
     @Override
     public void formInit() {
-        for (Doctor d : adminDashboardController.getDoctors()) {
-            tableModel.addRow(new Object[]{false, tableModel.getRowCount() + 1, d.getId(), d.getFullName(), d.getEmail(), d.getAddress(), d.getMobile(), d.getSpeciality()});
-        }
     }
 
     @Override
@@ -255,17 +251,6 @@ public class FormDoctorManagementAdmin extends Form implements LanguageChangeLis
     private void reloadTable() {
         tableModel.setRowCount(0);
 
-        for (Doctor d : adminDashboardController.getDoctors()) {
-            tableModel.addRow(new Object[]{
-                    tableModel.getRowCount() + 1,
-                    d.getId(),
-                    d.getFullName(),
-                    d.getEmail(),
-                    d.getAddress(),
-                    d.getMobile(),
-                    d.getSpeciality()
-            });
-        }
     }
 
     @Override

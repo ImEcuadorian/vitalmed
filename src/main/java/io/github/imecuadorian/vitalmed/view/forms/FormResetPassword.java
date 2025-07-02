@@ -21,9 +21,6 @@ public class FormResetPassword extends Form implements LanguageChangeListener {
 
     private JLabel lblTitle;
     private JTextPane text;
-    private final AdminDashboardController adminDashboardController = new AdminDashboardController(
-            ServiceFactory.getAdminService()
-    );
 
     public FormResetPassword() {
         init();
@@ -91,7 +88,6 @@ public class FormResetPassword extends Form implements LanguageChangeListener {
             String passwordActual = new String(passwordActualField.getPassword());
             String passwordNew = new String(passwordNewField.getPassword());
             String passwordConfirm = new String(passwordConfirmField.getPassword());
-            adminDashboardController.resetPassword(user.getId(), passwordNew);
         });
 
         contentPanel.add(formPanel, "align center");

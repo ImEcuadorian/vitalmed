@@ -3,14 +3,17 @@ package io.github.imecuadorian.vitalmed.controller;
 import io.github.imecuadorian.vitalmed.model.*;
 import io.github.imecuadorian.vitalmed.service.*;
 
+import java.util.concurrent.*;
+
 public class RegistrationController {
 
-    private final PatientService patientService;
+    private final UserService userService;
 
-    public RegistrationController(PatientService patientService) {
-        this.patientService = patientService;
+    public RegistrationController(UserService userService) {
+        this.userService = userService;
     }
-    public boolean register(Patient patient) {
-        return patientService.register(patient);
+
+    public CompletableFuture<User> registerUser(User user) {
+        return userService.createUser(user);
     }
 }

@@ -23,7 +23,6 @@ import java.awt.*;
 @SystemForm(name = "Registro de Doctor", description = "Registro de doctor", tags = {"doctor", "registro", "doctor", "register"})
 public class FormRegisterDoctor extends Form {
 
-    private final AdminDashboardController adminDashboardController = new AdminDashboardController(ServiceFactory.getAdminService());
     private DefaultTableModel tableModel;
     private TableRowSorter<DefaultTableModel> sorter;
 
@@ -110,10 +109,6 @@ public class FormRegisterDoctor extends Form {
         panel.add(createHeaderAction());
         panel.add(scrollPane);
 
-        for (Doctor d : adminDashboardController.getDoctors()) {
-            tableModel.addRow(new Object[]{tableModel.getRowCount() + 1, d.getId(), d.getFullName(), d.getEmail(), d.getAddress(), d.getMobile(), d.getSpeciality()});
-        }
-
         return panel;
     }
 
@@ -190,16 +185,5 @@ public class FormRegisterDoctor extends Form {
     private void reloadTable() {
         tableModel.setRowCount(0);
 
-        for (Doctor d : adminDashboardController.getDoctors()) {
-            tableModel.addRow(new Object[]{
-                    tableModel.getRowCount() + 1,
-                    d.getId(),
-                    d.getFullName(),
-                    d.getEmail(),
-                    d.getAddress(),
-                    d.getMobile(),
-                    d.getSpeciality()
-            });
-        }
     }
 }

@@ -14,12 +14,13 @@ import raven.modal.toast.option.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.time.*;
 import java.util.*;
 
 public class FormRegister extends JPanel implements LanguageChangeListener {
 
     private final RegistrationController registrationController = new RegistrationController(
-            ServiceFactory.getPatientService()
+            ServiceFactory.getUSER_SERVICE()
     );
 
     private JLabel lblId = new JLabel();
@@ -51,6 +52,7 @@ public class FormRegister extends JPanel implements LanguageChangeListener {
 
     private JButton btnCancel;
     private JButton btnRegister;
+
     public FormRegister() {
         init();
         I18n.addListener(this);
@@ -211,21 +213,30 @@ public class FormRegister extends JPanel implements LanguageChangeListener {
             }
 
             if (valid) {
-                Patient patient = new Patient(
+                User patient = new User(
+                        null,
                         txtId.getText(),
                         txtName.getText() + " " + txtSurname.getText(),
                         txtEmail.getText(),
-                        pass,
                         txtPhone.getText().isBlank() ? "0000000000" : txtPhone.getText(),
                         txtCellphone.getText(),
-                        cbProvince.getSelectedItem() + " - " + cbCanton.getSelectedItem() + " - " + txtAddress.getText()
+                        cbProvince.getSelectedItem() + " - " + cbCanton.getSelectedItem() + " - " + txtAddress.getText(),
+                        pass,
+                        Role.PATIENT,
+                        Instant.now(),
+                        Instant.now()
                 );
-                if (registrationController.register(patient)) {
-                    ModalBorderAction.getModalBorderAction(this).doAction(SimpleModalBorder.OK_OPTION);
-                    Toast.show(this, Toast.Type.SUCCESS, I18n.t("auth.formRegister.typeSuccess.registerPatient"), ToastLocation.TOP_TRAILING, Constants.getOption());
-                } else {
+                registrationController.registerUser(patient).thenAccept(user -> {
+                    if (user != null) {
+                        ModalBorderAction.getModalBorderAction(this).doAction(SimpleModalBorder.OK_OPTION);
+                        Toast.show(this, Toast.Type.SUCCESS, I18n.t("auth.formRegister.typeSuccess.registerPatient"), ToastLocation.TOP_TRAILING, Constants.getOption());
+                    } else {
+                        Toast.show(this, Toast.Type.ERROR, I18n.t("auth.formRegister.typeError.registerPatient"), ToastLocation.TOP_TRAILING, Constants.getOption());
+                    }
+                }).exceptionally(throwable -> {
                     Toast.show(this, Toast.Type.ERROR, I18n.t("auth.formRegister.typeError.registerPatient"), ToastLocation.TOP_TRAILING, Constants.getOption());
-                }
+                    return null;
+                });
             }
         });
     }

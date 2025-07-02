@@ -8,7 +8,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public class MySQLConnectionPool {
-    private static final HikariDataSource dataSource;
+    private static final HikariDataSource DATA_SOURCE;
 
     static {
         Dotenv dotenv = Dotenv.configure().load();
@@ -28,12 +28,12 @@ public class MySQLConnectionPool {
         config.setIdleTimeout(10000);
         config.setMaxLifetime(300000);
 
-        dataSource = new HikariDataSource(config);
+        DATA_SOURCE = new HikariDataSource(config);
     }
 
     private MySQLConnectionPool() {}
 
-    public static Connection getConnection() throws SQLException {
-        return dataSource.getConnection();
+    public static HikariDataSource getDataSource() {
+        return DATA_SOURCE;
     }
 }

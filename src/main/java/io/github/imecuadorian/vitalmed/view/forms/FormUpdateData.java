@@ -23,10 +23,6 @@ public class FormUpdateData extends Form implements LanguageChangeListener {
     private JLabel lblTitle;
     private JTextPane text;
 
-    private final AdminDashboardController adminDashboardController = new AdminDashboardController(
-            ServiceFactory.getAdminService()
-    );
-
     public FormUpdateData() {
         init();
         I18n.addListener(this);

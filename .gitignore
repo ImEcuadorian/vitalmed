@@ -46,3 +46,6 @@ bin/
 !/vitalmed/doctores.txt
 !/vitalmed/citas.txt
 !/vitalmed/pacientes.txt
+
+.env
+!/logs/

@@ -17,32 +17,12 @@ public class AdminDashboardController implements Serializable {
         this.adminService = adminService;
     }
 
-    public boolean addDoctor(Doctor doctor) {
-        if (doctor.getId().isBlank() || doctor.getFullName().isBlank() || doctor.getEmail().isBlank()
-            || doctor.getPassword().isBlank() || doctor.getSpeciality().isBlank()) {
-            return false;
-        }
-        return adminService.registerDoctor(doctor);
-    }
-
     public List<Patient> getPatients() {
-        return adminService.getAllPatients();
+        return adminService.listAllPatients();
     }
 
     public List<Doctor> getDoctors() {
-        return adminService.getAllDoctors();
-    }
-
-    public boolean resetPassword(String patientId, String newPassword) {
-        return adminService.resetPatientPassword(patientId, newPassword);
-    }
-
-    public boolean assignSchedules(String doctorId, List<Schedule> schedules) {
-        return adminService.assignSchedules(doctorId, schedules);
-    }
-
-    public List<Room> getRooms() {
-        return adminService.getAllRooms();
+        return adminService.listAllDoctors();
     }
 
 }

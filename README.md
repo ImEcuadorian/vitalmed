@@ -47,7 +47,7 @@
 
 ## 🚀 Installation & Running
 
-1. Clone the repository or download the ZIP
+1. Clone the CRUDRepository or download the ZIP
 2. Open in Eclipse or IntelliJ (with Gradle support)
 3. Run:
 
@@ -67,7 +67,7 @@ src/main/java/io/github/imecuadorian/vitalmed/
 │
 ├── model/          # Domain entities
 ├── service/        # Business logic and interfaces
-├── repository/     # Text file-based persistence
+├── CRUDRepository/     # Text file-based persistence
 ├── controller/     # View-to-service interaction logic
 ├── util/           # Validators, constants, helpers
 ├── factory/        # Centralized service injection

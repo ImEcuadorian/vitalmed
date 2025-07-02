@@ -21,9 +21,6 @@ public class FormMedicalHistory extends Form implements LanguageChangeListener {
     private JTextField txtEspecialidad, txtTratamiento, txtMedicamentoAsignado;
     private JButton btnBuscar, btnGuardar;
     private JPanel contentPanel;
-    private final AdminDashboardController adminDashboardController = new AdminDashboardController(
-            ServiceFactory.getAdminService()
-    );
 
     public FormMedicalHistory() {
         init();

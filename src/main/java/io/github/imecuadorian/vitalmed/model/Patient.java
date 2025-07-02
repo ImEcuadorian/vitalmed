@@ -1,22 +1,24 @@
 package io.github.imecuadorian.vitalmed.model;
 
-import io.github.imecuadorian.library.*;
+import lombok.*;
 
-import java.util.*;
+import java.time.*;
 
-public class Patient extends User {
-
-    private final Generic<List<History>, ?> information;
-
-    public Patient(String id, String fullName, String email, String password, String phone, String mobile, String address) {
-        super(id, fullName, email, password, phone, mobile, address, Rol.PATIENT);
-        this.information = new Generic<>(new ArrayList<>(), null);
+@Builder @With
+public record Patient(User user) implements BaseEntity<Integer> {
+    @Override
+    public Integer id() {
+        return user.id();
     }
 
-    public List<History> getConsultations() {
-        return information.getT1();
-    }
-    public void addHistory(History history) {
-        information.getT1().add(history);
-    }
+    public String cedula()      { return user.cedula(); }
+    public String fullName()    { return user.fullName(); }
+    public String email()       { return user.email(); }
+    public String phone()       { return user.phone(); }
+    public String cell()        { return user.cell(); }
+    public String address()     { return user.address(); }
+    public String passwordHash(){ return user.passwordHash(); }
+    public Role role()          { return Role.PATIENT; }
+    public Instant createdAt()  { return user.createdAt(); }
+    public Instant updatedAt()  { return user.updatedAt(); }
 }

@@ -18,10 +18,6 @@ import java.util.*;
 
 public class FormAddDoctor extends JPanel {
 
-    private final AdminDashboardController adminDashboardController = new AdminDashboardController(
-            ServiceFactory.getAdminService()
-    );
-
     private final Runnable success;
 
     public FormAddDoctor(Runnable success) {
@@ -193,27 +189,6 @@ public class FormAddDoctor extends JPanel {
                 Toast.show(txtConfirmPassword, Toast.Type.ERROR, I18n.t("form.admin.form.formAddDoctor.typeError.passwords"), ToastLocation.TOP_TRAILING, Constants.getOption());
             }
 
-            if (valid) {
-                Doctor doctor = new Doctor(
-                        txtId.getText(),
-                        txtName.getText() + " " + txtSurname.getText(),
-                        txtEmail.getText(),
-                        pass,
-                        txtPhone.getText().isBlank() ? "0000000000" : txtPhone.getText(),
-                        txtCellphone.getText(),
-                        cbProvince.getSelectedItem() + " - " + cbCanton.getSelectedItem() + " - " + txtAddress.getText(),
-                        cbSpecialty.getSelectedItem().toString()
-                );
-                if (adminDashboardController.addDoctor(doctor)) {
-                    ModalBorderAction.getModalBorderAction(this).doAction(SimpleModalBorder.OK_OPTION);
-                    Toast.show(this, Toast.Type.SUCCESS, I18n.t("form.admin.form.formAddDoctor.typeSuccess.register"), ToastLocation.TOP_TRAILING, Constants.getOption());
-                    if (success != null) {
-                        success.run();
-                    }
-                } else {
-                    Toast.show(this, Toast.Type.ERROR, I18n.t("form.admin.form.formAddDoctor.typeError.register"), ToastLocation.TOP_TRAILING, Constants.getOption());
-                }
-            }
         });
 
     }

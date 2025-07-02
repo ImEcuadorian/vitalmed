@@ -5,14 +5,40 @@ import io.github.imecuadorian.vitalmed.model.*;
 import java.util.List;
 
 public interface AdminService {
-    boolean registerDoctor(Doctor doctor);
-    boolean assignSchedules(String doctorId, List<Schedule> schedules);
-    boolean resetPatientPassword(String patientId, String newPassword);
-    List<Patient> getAllPatients();
 
-    List<Doctor> getAllDoctors();
-    boolean registerRoom(Room room);
-    boolean updateRoom(String roomId, Room updatedRoom);
-    boolean deleteRoom(String roomId);
-    List<Room> getAllRooms();
+    Doctor createDoctor(Doctor doctor);
+
+    Doctor updateDoctor(String doctorId, Doctor doctor);
+
+    void deleteDoctor(String doctorId);
+
+    List<Doctor> listAllDoctors();
+
+    Patient createPatient(Patient patient);
+
+    Patient updatePatient(String patientId, Patient patient);
+
+    void deletePatient(String patientId);
+
+    List<Patient> listAllPatients();
+
+    List<User> listUsersByRole(Role role);
+
+    Specialty createSpecialty(Specialty specialty);
+
+    Specialty updateSpecialty(Integer id, Specialty specialty);
+
+    void deleteSpecialty(Integer id);
+
+    List<Specialty> listAllSpecialties();
+
+    Room createRoom(Room room);
+
+    Room updateRoom(String roomId, Room room);
+
+    void deleteRoom(String roomId);
+
+    List<Room> listAllRooms();
+
+    void assignWeeklySchedule(String doctorId, List<Schedule> weeklySchedule);
 }
