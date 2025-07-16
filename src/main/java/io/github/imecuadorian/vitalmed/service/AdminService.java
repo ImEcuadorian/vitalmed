@@ -3,34 +3,25 @@ package io.github.imecuadorian.vitalmed.service;
 import io.github.imecuadorian.vitalmed.model.*;
 
 import java.util.List;
+import java.util.concurrent.*;
 
 public interface AdminService {
 
-    Doctor createDoctor(Doctor doctor);
+    CompletableFuture<Doctor> createDoctor(Doctor doctor);
 
-    Doctor updateDoctor(String doctorId, Doctor doctor);
+    CompletableFuture<Doctor> updateDoctor(String doctorId, Doctor doctor);
 
     void deleteDoctor(String doctorId);
 
-    List<Doctor> listAllDoctors();
+    CompletableFuture<List<Doctor>> listAllDoctors();
 
-    Patient createPatient(Patient patient);
+    User createPatient(User patient);
 
-    Patient updatePatient(String patientId, Patient patient);
+    User updatePatient(String patientId, User patient);
 
     void deletePatient(String patientId);
 
-    List<Patient> listAllPatients();
-
-    List<User> listUsersByRole(Role role);
-
-    Specialty createSpecialty(Specialty specialty);
-
-    Specialty updateSpecialty(Integer id, Specialty specialty);
-
-    void deleteSpecialty(Integer id);
-
-    List<Specialty> listAllSpecialties();
+    CompletableFuture<List<User>> listAllPatients();
 
     Room createRoom(Room room);
 
@@ -38,7 +29,9 @@ public interface AdminService {
 
     void deleteRoom(String roomId);
 
-    List<Room> listAllRooms();
+    CompletableFuture<List<Room>> listAllRooms();
 
     void assignWeeklySchedule(String doctorId, List<Schedule> weeklySchedule);
+
+    CompletableFuture<List<Specialty>> listAllSpecialties();
 }

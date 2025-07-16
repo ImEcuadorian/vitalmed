@@ -6,11 +6,13 @@ import io.github.imecuadorian.vitalmed.controller.*;
 import io.github.imecuadorian.vitalmed.factory.*;
 import io.github.imecuadorian.vitalmed.i18n.I18n;
 import io.github.imecuadorian.vitalmed.model.*;
+import io.github.imecuadorian.vitalmed.thread.*;
 import io.github.imecuadorian.vitalmed.util.*;
 import io.github.imecuadorian.vitalmed.view.component.table.*;
 import io.github.imecuadorian.vitalmed.view.forms.admin.form.*;
 import io.github.imecuadorian.vitalmed.view.system.*;
 import net.miginfocom.swing.*;
+import org.slf4j.*;
 import raven.modal.*;
 import raven.modal.component.*;
 import raven.modal.option.*;
@@ -19,14 +21,21 @@ import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
 import java.awt.*;
+import java.util.*;
+import java.util.List;
 
 @SystemForm(name = "Registro de Doctor", description = "Registro de doctor", tags = {"doctor", "registro", "doctor", "register"})
 public class FormRegisterDoctor extends Form {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(FormRegisterDoctor.class);
+    private static final AdminDashboardController adminDashboardController = new AdminDashboardController(
+            ServiceFactory.getADMIN_SERVICE()
+    );
     private DefaultTableModel tableModel;
     private TableRowSorter<DefaultTableModel> sorter;
 
-    public FormRegisterDoctor() {
+    @Override
+    public void formInit() {
         init();
     }
 
@@ -34,6 +43,7 @@ public class FormRegisterDoctor extends Form {
         setLayout(new MigLayout("fillx,wrap", "[fill]", "[][fill,grow]"));
         add(createInfo());
         add(createCustomTable(), "gapx 7 7");
+        reloadTable();
     }
 
     private JPanel createInfo() {
@@ -182,8 +192,54 @@ public class FormRegisterDoctor extends Form {
 
     }
 
-    private void reloadTable() {
-        tableModel.setRowCount(0);
 
+    private void reloadTable() {
+        SwingUtilities.invokeLater(() -> {
+            tableModel.setRowCount(0);
+            tableModel.addRow(new Object[]{
+                    "-", "Cargando...", "", "", "", "", ""
+            });
+        });
+
+        AppExecutors.background().submit(() -> {
+            try {
+                List<Doctor> doctors = adminDashboardController.getDoctors().get();
+
+                SwingUtilities.invokeLater(() -> {
+                    tableModel.setRowCount(0);
+                    if (doctors.isEmpty()) {
+                        tableModel.addRow(new Object[]{
+                                "-", "No hay doctores registrados", "", "", "", "", ""
+                        });
+                        return;
+                    }
+
+                    for (Doctor doctor : doctors) {
+                        User user = doctor.user();
+                        Specialty specialty = doctor.specialty();
+
+                        tableModel.addRow(new Object[]{
+                                tableModel.getRowCount() + 1,
+                                user.cedula(),
+                                user.fullName(),
+                                user.email(),
+                                user.address(),
+                                user.cell(),
+                                specialty.name()
+                        });
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+                LOGGER.error("Error al cargar doctores", e);
+                SwingUtilities.invokeLater(() -> {
+                    tableModel.setRowCount(0);
+                    tableModel.addRow(new Object[]{
+                            "-", "Error al cargar doctores", "", "", "", "", ""
+                    });
+                });
+            }
+        });
     }
+
 }

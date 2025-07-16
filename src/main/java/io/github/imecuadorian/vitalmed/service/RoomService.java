@@ -3,14 +3,15 @@ package io.github.imecuadorian.vitalmed.service;
 import io.github.imecuadorian.vitalmed.model.*;
 
 import java.util.*;
+import java.util.concurrent.*;
 
 public interface RoomService {
-    Room createRoom(Room room);
-    Optional<Room> getRoomById(String roomId);
-    Optional<Room> getRoomByCode(String code);
-    List<Room> getAllRooms();
-    List<Room> getRoomsBySpeciality(String speciality);
-    List<Room> getRoomsByNumber(int number);
-    Room updateRoom(String roomId, Room room);
-    void deleteRoom(String roomId);
+    CompletableFuture<Room> createRoom(Room room);
+    CompletableFuture<Optional<Room>> getRoomById(String roomId);
+    CompletableFuture<Optional<Room>> getRoomByCode(String code);
+    CompletableFuture<List<Room>> getAllRooms();
+    CompletableFuture<List<Room>> getRoomsBySpeciality(String speciality);
+    CompletableFuture<Optional<Room>> getRoomsByNumber(int number);
+    CompletableFuture<Room> updateRoom(String roomId, Room room);
+    CompletableFuture<Void> deleteRoom(String roomId);
 }

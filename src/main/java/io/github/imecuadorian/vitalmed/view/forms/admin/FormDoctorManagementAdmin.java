@@ -6,24 +6,32 @@ import io.github.imecuadorian.vitalmed.controller.*;
 import io.github.imecuadorian.vitalmed.factory.*;
 import io.github.imecuadorian.vitalmed.i18n.*;
 import io.github.imecuadorian.vitalmed.model.*;
+import io.github.imecuadorian.vitalmed.thread.*;
 import io.github.imecuadorian.vitalmed.util.*;
 import io.github.imecuadorian.vitalmed.view.component.table.*;
 import io.github.imecuadorian.vitalmed.view.forms.admin.form.*;
 import io.github.imecuadorian.vitalmed.view.system.*;
 import net.miginfocom.swing.*;
+import org.slf4j.*;
 import raven.modal.*;
 import raven.modal.component.*;
 import raven.modal.option.*;
+import raven.modal.toast.option.*;
 
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
 import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 @SystemForm(name = "Registro de Doctor", description = "Registro de doctor", tags = {"doctor", "registro"})
 public class FormDoctorManagementAdmin extends Form implements LanguageChangeListener {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(FormDoctorManagementAdmin.class);
+    private static final AdminDashboardController adminDashboardController = new AdminDashboardController(
+            ServiceFactory.getADMIN_SERVICE()
+    );
     private transient TableRowSorter<DefaultTableModel> sorter;
     private static final String FILL = "[fill]";
     private DefaultTableModel tableModel;
@@ -32,17 +40,16 @@ public class FormDoctorManagementAdmin extends Form implements LanguageChangeLis
     private JTextPane text;
     private JLabel lblTitleTable;
     private JTextField txtSearch;
+
+    private JTable table;
     private JButton btnCreate;
     private JButton btnDelete;
     private JButton btnEdit;
     private transient Object[] columns;
 
-    public FormDoctorManagementAdmin() {
-        setupLayout();
-    }
-
     @Override
     public void formInit() {
+        setupLayout();
     }
 
     @Override
@@ -55,6 +62,7 @@ public class FormDoctorManagementAdmin extends Form implements LanguageChangeLis
         add(createInfo());
         add(createCustomTable(), "gapx 7 7");
         I18n.addListener(this);
+        reloadTable();
     }
 
     private JPanel createInfo() {
@@ -73,8 +81,7 @@ public class FormDoctorManagementAdmin extends Form implements LanguageChangeLis
         JPanel panel = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", FILL, "[][]0[fill,grow]"));
 
         this.columns = new Object[]{
-                I18n.t("form.formDoctorManagementAdmin.table.col.select"),
-                I18n.t("form.formDoctorManagementAdmin.table.col.number"),
+                "SELECT", "#",
                 I18n.t("form.formDoctorManagementAdmin.table.col.id"),
                 I18n.t("form.formDoctorManagementAdmin.table.col.name"),
                 I18n.t("form.formDoctorManagementAdmin.table.col.email"),
@@ -94,21 +101,42 @@ public class FormDoctorManagementAdmin extends Form implements LanguageChangeLis
             }
         };
 
-        JTable table = new JTable(tableModel);
+        this.table = new JTable(tableModel);
         sorter = new TableRowSorter<>(tableModel);
         table.setRowSorter(sorter);
 
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
 
-        table.getColumnModel().getColumn(0).setMaxWidth(50);
-        table.getColumnModel().getColumn(1).setMaxWidth(50);
+        table.getColumnModel().getColumn(0).setMaxWidth(25);
+        table.getColumnModel().getColumn(1).setMaxWidth(25);
         table.getColumnModel().getColumn(2).setPreferredWidth(150);
         table.getColumnModel().getColumn(3).setPreferredWidth(200);
-        table.getColumnModel().getColumn(4).setPreferredWidth(200);
+        table.getColumnModel().getColumn(4).setPreferredWidth(300);
         table.getColumnModel().getColumn(5).setPreferredWidth(300);
         table.getColumnModel().getColumn(6).setPreferredWidth(100);
         table.getColumnModel().getColumn(7).setPreferredWidth(100);
+
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
+
+        TableColumnModel cm = table.getColumnModel();
+
+        TableColumn selectCol = cm.getColumn(0);
+        selectCol.setMinWidth(25);
+        selectCol.setMaxWidth(25);
+        selectCol.setResizable(false);
+
+        TableColumn numCol = cm.getColumn(1);
+        numCol.setMinWidth(25);
+        numCol.setMaxWidth(25);
+        numCol.setResizable(false);
+
+        cm.getColumn(2).setPreferredWidth(150); // Cédula
+        cm.getColumn(3).setPreferredWidth(200); // Nombre
+        cm.getColumn(4).setPreferredWidth(300); // Correo electrónico
+        cm.getColumn(5).setPreferredWidth(300); // Dirección
+        cm.getColumn(6).setPreferredWidth(100); // Teléfono
+        cm.getColumn(7).setPreferredWidth(100); // Especialidad
 
         table.getColumnModel().getColumn(0).setHeaderRenderer(new CheckBoxTableHeaderRenderer(table, 0));
 
@@ -160,10 +188,10 @@ public class FormDoctorManagementAdmin extends Form implements LanguageChangeLis
 
         return panel;
     }
+
     private void updateTableHeaders() {
         columns = new Object[]{
-                I18n.t("form.formDoctorManagementAdmin.table.col.select"),
-                I18n.t("form.formDoctorManagementAdmin.table.col.number"),
+                "SELECT", "#",
                 I18n.t("form.formDoctorManagementAdmin.table.col.id"),
                 I18n.t("form.formDoctorManagementAdmin.table.col.name"),
                 I18n.t("form.formDoctorManagementAdmin.table.col.email"),
@@ -172,6 +200,9 @@ public class FormDoctorManagementAdmin extends Form implements LanguageChangeLis
                 I18n.t("form.formDoctorManagementAdmin.table.col.specialty")
         };
         tableModel.setColumnIdentifiers(columns);
+        table.getColumnModel()
+                .getColumn(0)
+                .setHeaderRenderer(new CheckBoxTableHeaderRenderer(table, 0));
     }
 
     private Component createHeaderAction() {
@@ -225,6 +256,32 @@ public class FormDoctorManagementAdmin extends Form implements LanguageChangeLis
         panel.add(btnDelete);
 
         btnCreate.addActionListener(e -> showModal());
+        btnDelete.addActionListener(e -> {
+            int[] selectedRows = table.getSelectedRows();
+            if (selectedRows.length == 0) {
+                Toast.show(this, Toast.Type.WARNING,
+                        I18n.t("form.formDoctorManagementAdmin.deleteDoctor.toast.noSelection"),
+                        ToastLocation.TOP_TRAILING, Constants.getOption());
+                return;
+            }
+
+            int confirm = JOptionPane.showConfirmDialog(this,
+                    I18n.t("form.formDoctorManagementAdmin.deleteDoctor.confirmation"),
+                    I18n.t("form.formDoctorManagementAdmin.deleteDoctor.title"),
+                    JOptionPane.YES_NO_OPTION);
+
+            if (confirm == JOptionPane.YES_OPTION) {
+                for (int row : selectedRows) {
+                    boolean isSelected = (Boolean) tableModel.getValueAt(row, 0);
+                    if (isSelected) {
+                        String cedula = (String) tableModel.getValueAt(row, 2);
+                        adminDashboardController.deleteDoctor(cedula);
+                    }
+                }
+                reloadTable();
+            }
+        });
+
         return panel;
     }
 
@@ -248,11 +305,6 @@ public class FormDoctorManagementAdmin extends Form implements LanguageChangeLis
 
     }
 
-    private void reloadTable() {
-        tableModel.setRowCount(0);
-
-    }
-
     @Override
     public void onLanguageChanged(ResourceBundle bundle) {
         lblTitle.setText(I18n.t("form.formDoctorManagementAdmin.doctorRegistration.lblTitle"));
@@ -265,4 +317,56 @@ public class FormDoctorManagementAdmin extends Form implements LanguageChangeLis
 
         updateTableHeaders();
     }
+
+    private void reloadTable() {
+        SwingUtilities.invokeLater(() -> {
+            tableModel.setRowCount(0);
+            tableModel.addRow(new Object[]{
+                    false, "-", "Cargando doctores...", "", "", "", "", ""
+            });
+        });
+
+        AppExecutors.background().submit(() -> {
+            try {
+                List<Doctor> doctors = adminDashboardController.getDoctors().get();
+
+                SwingUtilities.invokeLater(() -> {
+                    tableModel.setRowCount(0);
+
+                    if (doctors.isEmpty()) {
+                        tableModel.addRow(new Object[]{
+                                false, "-", "No hay doctores registrados", "", "", "", "", ""
+                        });
+                        return;
+                    }
+
+                    for (Doctor doctor : doctors) {
+                        User user = doctor.user();
+                        Specialty specialty = doctor.specialty();
+
+                        tableModel.addRow(new Object[]{
+                                false,
+                                tableModel.getRowCount() + 1,
+                                user.cedula(),
+                                user.fullName(),
+                                user.email(),
+                                user.address(),
+                                user.phone(),
+                                specialty.name()
+                        });
+                    }
+                });
+
+            } catch (Exception e) {
+                LOGGER.error("Error al cargar doctores", e);
+                SwingUtilities.invokeLater(() -> {
+                    tableModel.setRowCount(0);
+                    Toast.show(this, Toast.Type.ERROR,
+                            "Error al cargar doctores", ToastLocation.TOP_TRAILING, Constants.getOption());
+                });
+            }
+        });
+
+    }
+
 }

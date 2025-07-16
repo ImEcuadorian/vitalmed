@@ -23,11 +23,11 @@ public class FormMedicalHistory extends Form implements LanguageChangeListener {
     private JPanel contentPanel;
 
     public FormMedicalHistory() {
-        init();
         I18n.addListener(this);
     }
 
-    private void init() {
+    @Override
+    public void formInit() {
         setLayout(new MigLayout("fill, insets 10 10 10 10", "[fill]", "[][grow]"));
         add(createInfo(), "growx, wrap");
 
@@ -107,7 +107,6 @@ public class FormMedicalHistory extends Form implements LanguageChangeListener {
         String tratamiento = txtTratamiento.getText();
         String medicamentoAsignado = txtMedicamentoAsignado.getText();
 
-        // Aquí guardarías en la base de datos o a través de tu servicio
         System.out.println("Guardando historia clínica de: " + cedula);
         JOptionPane.showMessageDialog(this, "Historia clínica guardada correctamente");
     }

@@ -7,23 +7,20 @@ import javax.swing.event.*;
 import javax.swing.table.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.*;
 
 public class CheckBoxTableHeaderRenderer extends JCheckBox implements TableCellRenderer {
 
     private final JTable table;
     private final int column;
-    private final TableCellRenderer oldCellRenderer;
 
     public CheckBoxTableHeaderRenderer(JTable table, int column) {
         this.table = table;
         this.column = column;
-        this.oldCellRenderer = table.getTableHeader().getDefaultRenderer();
-        init();
-    }
-
-    private void init() {
-        putClientProperty(FlatClientProperties.STYLE, "background:null;");
+        setText(""); // 🔸 Important: avoid weird spacing
         setHorizontalAlignment(SwingConstants.CENTER);
+        putClientProperty(FlatClientProperties.STYLE, "background:null;");
+        putClientProperty(FlatClientProperties.STYLE_CLASS, "tableCheckBoxHeader");
 
         table.getTableHeader().addMouseListener(new MouseAdapter() {
             @Override
@@ -34,28 +31,36 @@ public class CheckBoxTableHeaderRenderer extends JCheckBox implements TableCellR
                         putClientProperty(FlatClientProperties.SELECTED_STATE, null);
                         setSelected(!isSelected());
                         selectedTableRow(isSelected());
+                        table.getTableHeader().repaint();
                     }
                 }
             }
         });
 
-        table.getModel().addTableModelListener((tme) -> {
+        table.getModel().addTableModelListener(tme -> {
             if (tme.getColumn() == column || tme.getType() == TableModelEvent.DELETE) {
-                checkRow();
+                SwingUtilities.invokeLater(this::checkRow);
             }
         });
     }
 
     private void checkRow() {
-        boolean initValue = table.getRowCount() != 0 && (boolean) table.getValueAt(0, column);
+        if (table.getRowCount() == 0) {
+            putClientProperty(FlatClientProperties.SELECTED_STATE, null);
+            setSelected(false);
+            table.getTableHeader().repaint();
+            return;
+        }
+
+        boolean initValue = Boolean.TRUE.equals(table.getValueAt(0, column));
         for (int i = 1; i < table.getRowCount(); i++) {
-            boolean v = (boolean) table.getValueAt(i, column);
-            if (initValue != v) {
+            if (!Objects.equals(table.getValueAt(i, column), initValue)) {
                 putClientProperty(FlatClientProperties.SELECTED_STATE, FlatClientProperties.SELECTED_STATE_INDETERMINATE);
                 table.getTableHeader().repaint();
                 return;
             }
         }
+
         putClientProperty(FlatClientProperties.SELECTED_STATE, null);
         setSelected(initValue);
         table.getTableHeader().repaint();
@@ -68,9 +73,14 @@ public class CheckBoxTableHeaderRenderer extends JCheckBox implements TableCellR
     }
 
     @Override
-    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-        JComponent com = (JComponent) oldCellRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-        setBorder(com.getBorder());
+    public Component getTableCellRendererComponent(JTable table, Object value,
+                                                   boolean isSelected, boolean hasFocus, int row, int column) {
+        TableCellRenderer defaultRenderer = table.getTableHeader().getDefaultRenderer();
+        Component headerComp = defaultRenderer.getTableCellRendererComponent(
+                table, value, isSelected, hasFocus, row, column);
+        if (headerComp instanceof JComponent jc) {
+            setBorder(jc.getBorder());
+        }
         return this;
     }
 
@@ -81,4 +91,7 @@ public class CheckBoxTableHeaderRenderer extends JCheckBox implements TableCellR
         }
         super.paintComponent(g);
     }
+
+
 }
+

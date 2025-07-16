@@ -16,10 +16,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.time.*;
 import java.util.*;
+import java.util.concurrent.*;
 
 public class FormRegister extends JPanel implements LanguageChangeListener {
 
-    private final RegistrationController registrationController = new RegistrationController(
+    private final transient RegistrationController registrationController = new RegistrationController(
             ServiceFactory.getUSER_SERVICE()
     );
 
@@ -182,7 +183,7 @@ public class FormRegister extends JPanel implements LanguageChangeListener {
         InputValidator.applyPhoneValidation(txtCellphone);
         InputValidator.applyPhoneValidation(txtPhone);
 
-        btnRegister.addActionListener(actionEvent -> {
+        btnRegister.addActionListener(_ -> {
             boolean valid = true;
 
             valid &= InputValidator.isNotEmpty(txtId, I18n.t("auth.formRegister.errorMessage.txtId.notEmpty"));
@@ -209,35 +210,64 @@ public class FormRegister extends JPanel implements LanguageChangeListener {
             if (!pass.equals(confirm)) {
                 valid = false;
                 InputValidator.markAsError(txtConfirmPassword);
-                Toast.show(txtConfirmPassword, Toast.Type.ERROR, I18n.t("auth.formRegister.typeError.txtConfirmPassword"), ToastLocation.TOP_TRAILING, Constants.getOption());
+                Toast.show(
+                        txtConfirmPassword,
+                        Toast.Type.ERROR,
+                        I18n.t("auth.formRegister.typeError.txtConfirmPassword"),
+                        ToastLocation.TOP_TRAILING,
+                        Constants.getOption()
+                );
             }
 
-            if (valid) {
-                User patient = new User(
-                        null,
-                        txtId.getText(),
-                        txtName.getText() + " " + txtSurname.getText(),
-                        txtEmail.getText(),
-                        txtPhone.getText().isBlank() ? "0000000000" : txtPhone.getText(),
-                        txtCellphone.getText(),
-                        cbProvince.getSelectedItem() + " - " + cbCanton.getSelectedItem() + " - " + txtAddress.getText(),
-                        pass,
-                        Role.PATIENT,
-                        Instant.now(),
-                        Instant.now()
-                );
-                registrationController.registerUser(patient).thenAccept(user -> {
-                    if (user != null) {
-                        ModalBorderAction.getModalBorderAction(this).doAction(SimpleModalBorder.OK_OPTION);
-                        Toast.show(this, Toast.Type.SUCCESS, I18n.t("auth.formRegister.typeSuccess.registerPatient"), ToastLocation.TOP_TRAILING, Constants.getOption());
-                    } else {
-                        Toast.show(this, Toast.Type.ERROR, I18n.t("auth.formRegister.typeError.registerPatient"), ToastLocation.TOP_TRAILING, Constants.getOption());
-                    }
-                }).exceptionally(throwable -> {
-                    Toast.show(this, Toast.Type.ERROR, I18n.t("auth.formRegister.typeError.registerPatient"), ToastLocation.TOP_TRAILING, Constants.getOption());
-                    return null;
-                });
-            }
+            if (!valid) return;
+
+            User patient = new User(
+                    null,
+                    txtId.getText(),
+                    txtName.getText() + " " + txtSurname.getText(),
+                    txtEmail.getText(),
+                    txtPhone.getText().isBlank() ? "0000000000" : txtPhone.getText(),
+                    txtCellphone.getText(),
+                    cbProvince.getSelectedItem() + " - " +
+                    cbCanton.getSelectedItem() + " - " +
+                    txtAddress.getText(),
+                    pass,
+                    Role.PATIENT,
+                    Instant.now(),
+                    Instant.now()
+            );
+
+            registrationController.registerUser(patient)
+                    .handle((_, throwable) -> {
+                        if (throwable != null) {
+                            Throwable cause = (throwable instanceof CompletionException)
+                                    ? throwable.getCause()
+                                    : throwable;
+                            SwingUtilities.invokeLater(() ->
+                                    Toast.show(
+                                            this,
+                                            Toast.Type.ERROR,
+                                            cause.getMessage(),
+                                            ToastLocation.TOP_TRAILING,
+                                            Constants.getOption()
+                                    )
+                            );
+                        } else {
+                            SwingUtilities.invokeLater(() -> {
+                                ModalBorderAction
+                                        .getModalBorderAction(this)
+                                        .doAction(SimpleModalBorder.OK_OPTION);
+                                Toast.show(
+                                        this,
+                                        Toast.Type.SUCCESS,
+                                        I18n.t("auth.formRegister.typeSuccess.registerPatient"),
+                                        ToastLocation.TOP_TRAILING,
+                                        Constants.getOption()
+                                );
+                            });
+                        }
+                        return null;
+                    });
         });
     }
 

@@ -3,23 +3,28 @@ package io.github.imecuadorian.vitalmed.view.forms.admin;
 import com.formdev.flatlaf.FlatClientProperties;
 import io.github.imecuadorian.vitalmed.controller.AdminDashboardController;
 import io.github.imecuadorian.vitalmed.factory.ServiceFactory;
-import io.github.imecuadorian.vitalmed.i18n.I18n;
+import io.github.imecuadorian.vitalmed.i18n.*;
 import io.github.imecuadorian.vitalmed.model.*;
 import io.github.imecuadorian.vitalmed.util.*;
 import io.github.imecuadorian.vitalmed.view.system.Form;
 import net.miginfocom.swing.MigLayout;
+import org.slf4j.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 
 @SystemForm(name = "Asignar turno", description = "Formulario para asignar turnos a doctores", tags = {"turnos", "horario", "doctor"})
-public class FormScheduleAssignment extends Form {
+public class FormScheduleAssignment extends Form implements LanguageChangeListener {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(FormScheduleAssignment.class);
+    private static final AdminDashboardController adminDashboardController = new AdminDashboardController(
+            ServiceFactory.getADMIN_SERVICE()
+    );
     private JComboBox<Doctor> cmbDoctor;
     private JComboBox<Room> cmbRoom;
     private final String[] days = {I18n.t("form.formScheduleAssignment.monday.days"), I18n.t("form.formScheduleAssignment.tuesday.days"),
@@ -28,12 +33,12 @@ public class FormScheduleAssignment extends Form {
     private final JTable[] tables = new JTable[5];
 
     public FormScheduleAssignment() {
-        init();
+        I18n.addListener(this);
     }
 
-    private void init() {
+    @Override
+    public void formInit() {
         setLayout(new MigLayout("fillx,wrap", "[fill]", "[][grow][]"));
-
         add(createHeaderPanel());
         add(createSchedulePanel(), "grow");
         add(createSaveButton(), "right");
@@ -60,6 +65,23 @@ public class FormScheduleAssignment extends Form {
         JLabel lblRoom = new JLabel(I18n.t("form.formScheduleAssignment.room.label"));
         cmbRoom = new JComboBox<>();
 
+        adminDashboardController.getDoctors().thenAccept(doctors -> {
+            cmbDoctor.setModel(new DefaultComboBoxModel<>(doctors.toArray(new Doctor[0])));
+        }).exceptionally(ex -> {
+            LOGGER.error("Error loading doctors", ex);
+            JOptionPane.showMessageDialog(this, I18n.t("form.formScheduleAssignment.error.loadDoctors"));
+            return null;
+        });
+
+        adminDashboardController.getRooms().thenAccept(rooms -> {
+            cmbRoom.setModel(new DefaultComboBoxModel<>(rooms.toArray(new Room[0])));
+        }).exceptionally(ex -> {
+            LOGGER.error("Error loading rooms", ex);
+            JOptionPane.showMessageDialog(this, I18n.t("form.formScheduleAssignment.error.loadRooms"));
+            return null;
+        });
+
+
         panel.add(lblDoctor);
         panel.add(cmbDoctor, "growx");
         panel.add(lblRoom);
@@ -68,26 +90,47 @@ public class FormScheduleAssignment extends Form {
         return panel;
     }
 
-    private JScrollPane createSchedulePanel() {
-        JPanel daysPanel = new JPanel(new MigLayout("wrap 1, fillx", "[grow]"));
-        for (int i = 0; i < days.length; i++) {
-            DefaultTableModel model = new DefaultTableModel(new Object[]{I18n.t("form.formScheduleAssigment.startTime.tableModel"),
-                    I18n.t("form.formScheduleAssigment.endTime.tableModel")}, 4);
-            JTable table = new JTable(model);
-            tables[i] = table;
+    private JTabbedPane createSchedulePanel() {
+        JTabbedPane tabs = new JTabbedPane();
+        for (String day : days) {
+            JPanel dayPanel = new JPanel();
+            dayPanel.setLayout(new BoxLayout(dayPanel, BoxLayout.Y_AXIS));
+            dayPanel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 
-            JScrollPane scroll = new JScrollPane(table);
-            scroll.setBorder(BorderFactory.createEmptyBorder());
-            scroll.getVerticalScrollBar().putClientProperty(FlatClientProperties.STYLE, "trackArc:$ScrollBar.thumbArc;trackInsets:3,3,3,3;thumbInsets:3,3,3,3;");
+            JPanel shiftsContainer = new JPanel();
+            shiftsContainer.setLayout(new BoxLayout(shiftsContainer, BoxLayout.Y_AXIS));
 
-            JPanel dayPanel = new JPanel(new MigLayout("fill"));
-            dayPanel.setBorder(BorderFactory.createTitledBorder(days[i]));
-            dayPanel.add(scroll, "grow, h 100::150");
+            JButton addBtn = new JButton("Añadir turno");
+            addBtn.putClientProperty( FlatClientProperties.STYLE, "icon:"  );
+            addBtn.addActionListener(e -> {
+                JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 4));
 
-            daysPanel.add(dayPanel);
+                JButton remove = new JButton();
+                remove.putClientProperty( FlatClientProperties.STYLE, "icon:"  );
+                remove.addActionListener(ev -> {
+                    shiftsContainer.remove(row);
+                    shiftsContainer.revalidate();
+                    shiftsContainer.repaint();
+                });
+
+                row.add(new JLabel("De"));
+                row.add(new JLabel("a"));
+                row.add(remove);
+
+                shiftsContainer.add(row);
+                shiftsContainer.revalidate();
+                shiftsContainer.repaint();
+            });
+
+            dayPanel.add(addBtn);
+            dayPanel.add(Box.createRigidArea(new Dimension(0,8)));
+            dayPanel.add(shiftsContainer);
+
+            tabs.addTab(day, dayPanel);
         }
-        return new JScrollPane(daysPanel);
+        return tabs;
     }
+
 
     private JButton createSaveButton() {
         JButton button = new JButton(I18n.t("form.formScheduleAssignment.saveShifts.button"));
@@ -129,5 +172,10 @@ public class FormScheduleAssignment extends Form {
         } else {
             JOptionPane.showMessageDialog(this, I18n.t("form.formScheduleAssignment.error.shiftsNotSaved"));
         }
+    }
+
+    @Override
+    public void onLanguageChanged(ResourceBundle bundle) {
+
     }
 }

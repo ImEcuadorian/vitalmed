@@ -2,6 +2,9 @@ package io.github.imecuadorian.vitalmed;
 
 import com.formdev.flatlaf.*;
 import com.formdev.flatlaf.themes.*;
+import io.github.imecuadorian.vitalmed.factory.*;
+import io.github.imecuadorian.vitalmed.model.*;
+import io.github.imecuadorian.vitalmed.service.impl.*;
 import io.github.imecuadorian.vitalmed.util.*;
 import io.github.imecuadorian.vitalmed.view.forms.auth.*;
 import net.miginfocom.swing.*;
@@ -10,6 +13,7 @@ import org.slf4j.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.*;
+import java.time.*;
 
 public class Vitalmed extends JFrame {
 
@@ -30,6 +34,7 @@ public class Vitalmed extends JFrame {
                 JOptionPane.showMessageDialog(null, "Error initializing the application: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
+
     }
 
     public Vitalmed() {

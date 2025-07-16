@@ -6,6 +6,7 @@ import io.github.imecuadorian.vitalmed.controller.*;
 import io.github.imecuadorian.vitalmed.factory.*;
 import io.github.imecuadorian.vitalmed.i18n.I18n;
 import io.github.imecuadorian.vitalmed.model.*;
+import io.github.imecuadorian.vitalmed.thread.*;
 import io.github.imecuadorian.vitalmed.util.*;
 import io.github.imecuadorian.vitalmed.view.component.table.*;
 import io.github.imecuadorian.vitalmed.view.modal.*;
@@ -23,19 +24,27 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
+import org.slf4j.*;
+
 import static io.github.imecuadorian.vitalmed.util.Constants.*;
 
 @SystemForm(name = "Gestión de Pacientes", description = "Gestión de pacientes", tags = {"pacientes", "gestión", "patient", "management"})
 public class FormPatientManagement extends Form {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(FormPatientManagement.class);
+    private static final AdminDashboardController adminDashboardController = new AdminDashboardController(
+            ServiceFactory.getADMIN_SERVICE()
+    );
     private DefaultTableModel tableModel;
     private TableRowSorter<DefaultTableModel> sorter;
 
-    public FormPatientManagement() {
-        init();
+    @Override
+    public void formRefresh() {
+        reloadTable();
     }
 
-    private void init() {
+    @Override
+    public void formInit() {
         setLayout(new MigLayout("fillx,wrap", "[fill]", "[][fill,grow]"));
         add(createInfo());
         add(createCustomTable(), "gapx 7 7");
@@ -73,7 +82,16 @@ public class FormPatientManagement extends Form {
             }
         };
 
-        JTable table = new JTable(tableModel);
+        JTable table = new JTable(tableModel) {
+            @Override
+            public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+                if (row < 0 || column < 0 || row >= getRowCount() || column >= getColumnCount()) {
+                    return new JLabel();
+                }
+                return super.prepareRenderer(renderer, row, column);
+            }
+        };
+
         sorter = new TableRowSorter<>(tableModel);
         table.setRowSorter(sorter);
 
@@ -125,7 +143,7 @@ public class FormPatientManagement extends Form {
 
         panel.add(createHeaderAction());
         panel.add(scrollPane);
-
+        reloadTable();
         return panel;
     }
 
@@ -177,8 +195,6 @@ public class FormPatientManagement extends Form {
 
             showModal(selectedIds);
         });
-        ;
-
 
         panel.add(txtSearch);
         panel.add(cmdCreate);
@@ -196,6 +212,7 @@ public class FormPatientManagement extends Form {
         ModalDialog.showModal(this, new SimpleMessageModal(SimpleMessageModal.Type.WARNING, message, I18n.t("form.formPatientManagement.resetPassword.typeWarning"), SimpleModalBorder.YES_NO_OPTION, (controller, action) -> {
             if (action == SimpleModalBorder.YES_OPTION) {
                 for (String id : selectedIds) {
+
                 }
                 Toast.show(this, Toast.Type.SUCCESS, I18n.t("form.formPatientManagement.resetPassword.typeSuccess"), ToastLocation.TOP_TRAILING, Constants.getOption());
                 for (int i = 0; i < tableModel.getRowCount(); i++) {
@@ -204,5 +221,51 @@ public class FormPatientManagement extends Form {
             }
         }), getSelectedOption());
     }
+
+    private void reloadTable() {
+        SwingUtilities.invokeLater(() -> {
+            tableModel.setRowCount(0);
+            tableModel.addRow(new Object[]{
+                    false, "-", "Cargando pacientes...", "", "", "", ""
+            });
+        });
+
+        AppExecutors.background().submit(() -> {
+            try {
+                List<User> patients = adminDashboardController.getPatients().get();
+
+                SwingUtilities.invokeLater(() -> {
+                    tableModel.setRowCount(0);
+                    if (patients.isEmpty()) {
+                        tableModel.addRow(new Object[]{
+                                false, "-", "No hay pacientes registrados", "", "", "", ""
+                        });
+                        return;
+                    }
+
+                    for (User patient : patients) {
+                        tableModel.addRow(new Object[]{
+                                false,
+                                tableModel.getRowCount() + 1,
+                                patient.cedula(),
+                                patient.fullName(),
+                                patient.email(),
+                                patient.address(),
+                                patient.cell()
+                        });
+                    }
+                });
+
+            } catch (Exception e) {
+                LOGGER.error("Error cargando pacientes", e);
+                SwingUtilities.invokeLater(() -> {
+                    tableModel.setRowCount(0);
+                    Toast.show(this, Toast.Type.ERROR,
+                            "Error al cargar pacientes", ToastLocation.TOP_TRAILING, Constants.getOption());
+                });
+            }
+        });
+    }
+
 
 }

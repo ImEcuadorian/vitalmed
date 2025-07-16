@@ -9,7 +9,6 @@ public interface AppointmentService {
     Appointment bookAppointment(Appointment appointment);
     Optional<Appointment> getAppointmentById(String appointmentId);
     List<Appointment> getAllAppointments();
-
     List<Appointment> getAppointmentsByPatient(String patientId);
     List<Appointment> getAppointmentsByDoctor(String doctorId);
     List<Appointment> getAppointmentsByDate(LocalDate date);

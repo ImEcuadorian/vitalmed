@@ -1,31 +1,30 @@
 package io.github.imecuadorian.vitalmed.view.forms.auth;
 
-import com.formdev.flatlaf.FlatClientProperties;
-import io.github.imecuadorian.vitalmed.controller.LoginController;
-import io.github.imecuadorian.vitalmed.factory.ServiceFactory;
-import io.github.imecuadorian.vitalmed.i18n.I18n;
-import io.github.imecuadorian.vitalmed.model.User;
-import io.github.imecuadorian.vitalmed.util.Constants;
-import io.github.imecuadorian.vitalmed.util.InputValidator;
-import io.github.imecuadorian.vitalmed.view.MainDashboard;
-import io.github.imecuadorian.vitalmed.view.menu.MyDrawerBuilder;
-import io.github.imecuadorian.vitalmed.view.modal.SimpleMessageModal;
-import io.github.imecuadorian.vitalmed.view.system.FormManager;
-import net.miginfocom.swing.MigLayout;
+import com.formdev.flatlaf.*;
+import io.github.imecuadorian.vitalmed.controller.*;
+import io.github.imecuadorian.vitalmed.factory.*;
+import io.github.imecuadorian.vitalmed.i18n.*;
+import io.github.imecuadorian.vitalmed.util.*;
+import io.github.imecuadorian.vitalmed.view.*;
+import io.github.imecuadorian.vitalmed.view.menu.*;
+import io.github.imecuadorian.vitalmed.view.modal.*;
+import io.github.imecuadorian.vitalmed.view.system.*;
+import net.miginfocom.swing.*;
+import org.slf4j.*;
 import raven.modal.*;
-import raven.modal.component.SimpleModalBorder;
-import raven.modal.toast.option.ToastLocation;
+import raven.modal.component.*;
+import raven.modal.toast.option.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.awt.event.*;
+import java.util.*;
 
-import static javax.swing.SwingConstants.CENTER;
+import static javax.swing.SwingConstants.*;
 
 public class FormLogin extends JPanel implements io.github.imecuadorian.vitalmed.i18n.LanguageChangeListener {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(FormLogin.class);
     private static final int LOGO_WIDTH = 450;
     private static final int LOGO_HEIGHT = 120;
     private static final String LOGO_PATH = "/io/github/imecuadorian/vitalmed/images/vitalmed-main-logo.png";
@@ -123,18 +122,28 @@ public class FormLogin extends JPanel implements io.github.imecuadorian.vitalmed
 
         if (!valid) return;
 
-        User user = loginController.login(txtEmail.getText(), new String(txtPassword.getPassword()));
-        if (user == null) {
-            Toast.show(this, Toast.Type.ERROR,
-                    I18n.t("auth.formLogin.typeError.credentialsIncorrect"),
-                    ToastLocation.TOP_TRAILING,
-                    Constants.getOption());
-        } else {
-            frame.dispose();
-            new MainDashboard().setVisible(true);
-            MyDrawerBuilder.getInstance().setUser(user);
-            FormManager.login();
-        }
+        loginController.login(txtEmail.getText(), new String(txtPassword.getPassword()))
+                .thenAccept(userOpt -> {
+                    if (userOpt.isEmpty()) {
+                        Toast.show(this, Toast.Type.ERROR,
+                                I18n.t("auth.formLogin.typeError.credentialsIncorrect"),
+                                ToastLocation.TOP_TRAILING,
+                                Constants.getOption());
+                    } else {
+                        frame.dispose();
+                        new MainDashboard().setVisible(true);
+                        MyDrawerBuilder.getInstance().setUser(userOpt.get());
+                        FormManager.login();
+                    }
+                })
+                .exceptionally(ex -> {
+                    LOGGER.error("Login failed", ex);
+                    Toast.show(this, Toast.Type.ERROR,
+                            I18n.t("auth.formLogin.typeError.unexpectedError"),
+                            ToastLocation.TOP_TRAILING,
+                            Constants.getOption());
+                    return null;
+                });
     }
 
     private void createAccountActionPerformed(ActionEvent e) {

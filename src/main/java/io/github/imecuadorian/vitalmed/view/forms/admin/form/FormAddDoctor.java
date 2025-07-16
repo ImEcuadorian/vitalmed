@@ -3,9 +3,11 @@ package io.github.imecuadorian.vitalmed.view.forms.admin.form;
 import com.formdev.flatlaf.*;
 import io.github.imecuadorian.vitalmed.controller.*;
 import io.github.imecuadorian.vitalmed.factory.*;
-import io.github.imecuadorian.vitalmed.i18n.I18n;
+import io.github.imecuadorian.vitalmed.i18n.*;
 import io.github.imecuadorian.vitalmed.model.*;
 import io.github.imecuadorian.vitalmed.model.country.*;
+import io.github.imecuadorian.vitalmed.repository.impl.*;
+import io.github.imecuadorian.vitalmed.repository.interfaces.*;
 import io.github.imecuadorian.vitalmed.util.*;
 import net.miginfocom.swing.*;
 import raven.modal.*;
@@ -15,14 +17,18 @@ import raven.modal.toast.option.*;
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
+import java.util.List;
 
-public class FormAddDoctor extends JPanel {
+public class FormAddDoctor extends JPanel implements LanguageChangeListener {
 
+
+    private static final AdminDashboardController ADMIN_DASHBOARD_CONTROLLER = new AdminDashboardController(ServiceFactory.getADMIN_SERVICE());
     private final Runnable success;
 
     public FormAddDoctor(Runnable success) {
         this.success = success;
         init();
+        I18n.addListener(this);
     }
 
     private void init() {
@@ -118,14 +124,31 @@ public class FormAddDoctor extends JPanel {
         lbSpecialty.setIconTextGap(10); // espacio entre ícono y texto
         add(lbSpecialty, "span 2, gapy 10 10, wrap");
 
-        JComboBox<String> cbSpecialty = new JComboBox<>();
+        JComboBox<Specialty> cbSpecialty = new JComboBox<>();
         cbSpecialty.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, I18n.t("form.admin.form.formAddDoctor.specialty.placeHolder"));
-        cbSpecialty.addItem(I18n.t("form.admin.form.formAddDoctor.generalMedicine.selectedIterm"));
-        cbSpecialty.addItem(I18n.t("form.admin.form.formAddDoctor.pediatrics.selectedIterm"));
-        cbSpecialty.addItem(I18n.t("form.admin.form.formAddDoctor.gynecology.selectedIterm"));
-        cbSpecialty.addItem(I18n.t("form.admin.form.formAddDoctor.dentistry.selectedIterm"));
-        cbSpecialty.addItem(I18n.t("form.admin.form.formAddDoctor.dermatology.selectedIterm"));
-        cbSpecialty.addItem(I18n.t("form.admin.form.formAddDoctor.laboratory.selectedIterm"));
+        cbSpecialty.setEnabled(false);
+        cbSpecialty.addItem(new Specialty(-1, "Cargando especialidades..."));
+
+        ADMIN_DASHBOARD_CONTROLLER.getSpecialties().thenAccept(specialties -> {
+            SwingUtilities.invokeLater(() -> {
+                cbSpecialty.removeAllItems();
+                List<Specialty> sortedSpecialties = specialties.stream()
+                        .sorted(Comparator.comparing(Specialty::name, String.CASE_INSENSITIVE_ORDER))
+                        .toList();
+                for (Specialty s : sortedSpecialties) {
+                    cbSpecialty.addItem(s);
+                }
+                cbSpecialty.setEnabled(true);
+            });
+        }).exceptionally(ex -> {
+            SwingUtilities.invokeLater(() -> {
+                cbSpecialty.removeAllItems();
+                cbSpecialty.addItem(new Specialty(-1, I18n.t("error.loading.specialties")));
+                cbSpecialty.setEnabled(false);
+            });
+            ex.printStackTrace();
+            return null;
+        });
 
         add(cbSpecialty, "span 2, growx, wrap");
 
@@ -189,7 +212,59 @@ public class FormAddDoctor extends JPanel {
                 Toast.show(txtConfirmPassword, Toast.Type.ERROR, I18n.t("form.admin.form.formAddDoctor.typeError.passwords"), ToastLocation.TOP_TRAILING, Constants.getOption());
             }
 
+            if (!valid) return;
+
+            String address = cbProvince.getSelectedItem() + " - " + cbCanton.getSelectedItem() + " - " + txtAddress.getText();
+
+            User user = User.builder()
+                    .cedula(txtId.getText())
+                    .fullName(txtName.getText() + " " + txtSurname.getText())
+                    .email(txtEmail.getText())
+                    .passwordHash(pass)
+                    .phone(txtPhone.getText().isBlank() ? "0000000000" : txtPhone.getText())
+                    .cell(txtCellphone.getText())
+                    .address(address)
+                    .role(Role.DOCTOR)
+                    .build();
+
+            Specialty selectedSpecialty = (Specialty) cbSpecialty.getSelectedItem();
+            if (selectedSpecialty == null || selectedSpecialty.id() == -1) {
+                Toast.show(this, Toast.Type.ERROR, "Debe seleccionar una especialidad", ToastLocation.TOP_TRAILING, Constants.getOption());
+                return;
+            }
+
+            Doctor doctor = Doctor.builder()
+                    .user(user)
+                    .specialty(selectedSpecialty)
+                    .build();
+
+
+            ADMIN_DASHBOARD_CONTROLLER.createDoctor(doctor).thenAccept(result -> {
+                if (result != null) {
+                    SwingUtilities.invokeLater(() -> {
+                        Toast.show(this, Toast.Type.SUCCESS, "Doctor registrado correctamente", ToastLocation.TOP_TRAILING, Constants.getOption());
+                        success.run(); // ← actualiza tabla del formulario padre
+                        ModalBorderAction.getModalBorderAction(this).doAction(SimpleModalBorder.CLOSE_OPTION);
+                    });
+                } else {
+                    SwingUtilities.invokeLater(() -> {
+                        Toast.show(this, Toast.Type.ERROR, "El doctor ya existe", ToastLocation.TOP_TRAILING, Constants.getOption());
+                    });
+                }
+            }).exceptionally(ex -> {
+                ex.printStackTrace();
+                SwingUtilities.invokeLater(() -> {
+                    Toast.show(this, Toast.Type.ERROR, "Error al registrar doctor", ToastLocation.TOP_TRAILING, Constants.getOption());
+                });
+                return null;
+            });
+
         });
+
+    }
+
+    @Override
+    public void onLanguageChanged(ResourceBundle bundle) {
 
     }
 }

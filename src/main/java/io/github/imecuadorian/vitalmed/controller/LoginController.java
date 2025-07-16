@@ -2,20 +2,15 @@ package io.github.imecuadorian.vitalmed.controller;
 
 import io.github.imecuadorian.vitalmed.model.*;
 import io.github.imecuadorian.vitalmed.service.*;
-import io.github.imecuadorian.vitalmed.util.*;
+
+import java.util.*;
+import java.util.concurrent.*;
 
 
-public class LoginController {
-    private final UserService userService;
+public record LoginController(UserService userService) {
 
-    public LoginController(UserService userService) {
-        this.userService = userService;
-    }
-
-    public User login(String email, String password) {
-        return userService.authenticate(email, password)
-                .thenApply(optionalUser -> optionalUser.orElseThrow(() -> new RuntimeException("Invalid credentials")))
-                .join();
+    public CompletableFuture<Optional<User>> login(String email, String password) {
+        return userService.authenticate(email, password);
     }
 
 }

@@ -8,5 +8,5 @@ import java.util.*;
 public interface RoomRepository extends CRUDRepository<String, Room> {
 
     List<Room> findBySpeciality(String speciality);
-    List<Room> findByNumber(int number);
+    Optional<Room> findByNumber(int number);
 }

@@ -116,25 +116,6 @@ public class JdbcUserRepository implements UserRepository {
     }
 
     @Override
-    public List<User> findByRole(Role role) {
-        var sql = "SELECT * FROM users WHERE role = ?";
-        var list = new ArrayList<User>();
-        try (var conn = dataSource.getConnection();
-             var ps = conn.prepareStatement(sql)) {
-            ps.setString(1, role.name());
-            try (var rs = ps.executeQuery()) {
-                while (rs.next()) list.add(mapRow(rs));
-            }
-            return list;
-        } catch (SQLException e) {
-            logger.error("Error finding users by role: {}", e.getMessage(), e);
-        } finally {
-            logger.info("User search completed for role: {}", role.name());
-        }
-        return Collections.emptyList();
-    }
-
-    @Override
     public void updatePassword(String userId, String hash) {
         var sql = "UPDATE users SET password_hash = ? WHERE id = ?";
         try (var conn = dataSource.getConnection();
@@ -151,7 +132,7 @@ public class JdbcUserRepository implements UserRepository {
 
     @Override
     public List<User> findAll() {
-        var sql = "SELECT * FROM users";
+        var sql = "SELECT * FROM users WHERE role = 'PATIENT'";
         var list = new ArrayList<User>();
         try (var conn = dataSource.getConnection();
              var st = conn.createStatement();
@@ -170,18 +151,14 @@ public class JdbcUserRepository implements UserRepository {
     public void update(String id, User u) {
         var sql = """
                 UPDATE users
-                   SET fullname=?, email=?, password_hash=?, phone=?, cell=?, address=?, role=?
+                   SET phone=?, cell=?, address=?
                  WHERE id=?
                 """;
         try (var conn = dataSource.getConnection();
              var ps = conn.prepareStatement(sql)) {
-            ps.setString(1, u.fullName());
-            ps.setString(2, u.email());
-            ps.setString(3, u.passwordHash());
             ps.setString(4, u.phone());
             ps.setString(5, u.cell());
             ps.setString(6, u.address());
-            ps.setString(7, u.role().name());
             ps.setInt(8, Integer.parseInt(id));
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -211,7 +188,7 @@ public class JdbcUserRepository implements UserRepository {
                 .cedula(rs.getString("cedula"))
                 .fullName(rs.getString("fullname"))
                 .email(rs.getString("email"))
-                .passwordHash("")
+                .passwordHash(rs.getString("password_hash"))
                 .phone(rs.getString("phone"))
                 .cell(rs.getString("cell"))
                 .address(rs.getString("address"))

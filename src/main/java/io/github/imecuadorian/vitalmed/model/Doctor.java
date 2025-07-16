@@ -1,12 +1,13 @@
 package io.github.imecuadorian.vitalmed.model;
 
 import lombok.*;
+import org.jetbrains.annotations.*;
 
 import java.time.*;
 
 @Builder
 @With
-public record Doctor(User user, String specialty) implements BaseEntity<Integer> {
+public record Doctor(User user, Specialty specialty) implements BaseEntity<Integer> {
     @Override
     public Integer id() {
         return user.id();
@@ -50,5 +51,10 @@ public record Doctor(User user, String specialty) implements BaseEntity<Integer>
 
     public Instant updatedAt() {
         return user.updatedAt();
+    }
+
+    @Override
+    public @NotNull String toString() {
+        return fullName() + " (" + cedula() + ") - " + specialty.name();
     }
 }
