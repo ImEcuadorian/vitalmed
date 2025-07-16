@@ -7,8 +7,8 @@ import java.time.*;
 @Builder @With
 public record Appointment(
         Integer id,
-        Integer patientId,
-        Integer doctorId,
+        User patient,
+        Doctor doctor,
         AppointmentSlot slot,
         LocalDate appointmentDate,
         AppointmentStatus status,

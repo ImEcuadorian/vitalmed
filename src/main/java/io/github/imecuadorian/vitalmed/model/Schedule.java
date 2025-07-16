@@ -9,7 +9,7 @@ import java.time.*;
 @With
 public record Schedule(
         Integer id,
-        Integer doctorId,
+        Doctor doctor,
         Room room,
         DayOfWeek dayOfWeek,
         int shiftNumber,

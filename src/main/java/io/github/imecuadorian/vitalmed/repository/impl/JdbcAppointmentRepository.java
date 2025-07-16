@@ -24,8 +24,8 @@ public class JdbcAppointmentRepository implements AppointmentRepository {
                 """;
         try (var conn = ds.getConnection();
              var ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setInt(1, a.patientId());
-            ps.setInt(2, a.doctorId());
+            ps.setInt(1, a.patient().id());
+            ps.setInt(2, a.doctor().id());
             ps.setInt(3, a.slot().id());
             ps.setDate(4, Date.valueOf(a.appointmentDate()));
             ps.setString(5, a.status().name());
@@ -82,8 +82,8 @@ public class JdbcAppointmentRepository implements AppointmentRepository {
                 """;
         try (var conn = ds.getConnection();
              var ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, a.patientId());
-            ps.setInt(2, a.doctorId());
+            ps.setInt(1, a.patient().id());
+            ps.setInt(2, a.doctor().id());
             ps.setInt(3, a.slot().id());
             ps.setDate(4, Date.valueOf(a.appointmentDate()));
             ps.setString(5, a.status().name());
@@ -216,8 +216,8 @@ public class JdbcAppointmentRepository implements AppointmentRepository {
     private Appointment mapRow(ResultSet rs) throws SQLException {
         return Appointment.builder()
                 .id(rs.getInt("id"))
-                .patientId(rs.getInt("patient_id"))
-                .doctorId(rs.getInt("doctor_id"))
+                .patient(rs.getInt("patient_id"))
+                .doctor(rs.getInt("doctor_id"))
                 .slot(new AppointmentSlot(
                         rs.getInt("slot_id"),
                         null,
