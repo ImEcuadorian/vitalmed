@@ -21,7 +21,6 @@ public class ServiceFactory {
     private static final AdminService ADMIN_SERVICE = new AdminServiceImpl(JDBC_USER_REPOSITORY, JDBC_DOCTOR_REPOSITORY, JDBC_SPECIALTY_REPOSITORY, JDBC_ROOM_REPOSITORY);
     @Getter
     private static final RoomService ROOM_SERVICE = new RoomServiceImpl(JDBC_ROOM_REPOSITORY);
-
     private ServiceFactory() {
         throw new UnsupportedOperationException("ServiceFactory is a utility class and cannot be instantiated.");
     }
