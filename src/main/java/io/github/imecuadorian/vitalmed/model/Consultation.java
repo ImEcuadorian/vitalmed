@@ -16,7 +16,6 @@ public record Consultation(
         Instant createdAt
 ) {
     public Consultation {
-        // you can validate non-null fields here
         Objects.requireNonNull(appointmentId);
         Objects.requireNonNull(diagnosis);
     }

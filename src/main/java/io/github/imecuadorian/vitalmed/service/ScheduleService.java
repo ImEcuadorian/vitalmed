@@ -4,18 +4,17 @@ import io.github.imecuadorian.vitalmed.model.*;
 
 import java.time.*;
 import java.util.*;
+import java.util.concurrent.*;
 
 public interface ScheduleService {
-    Schedule createSchedule(Schedule schedule);
-    Optional<Schedule> getScheduleById(String scheduleId);
-    List<Schedule> getAllSchedules();
-
-    List<Schedule> getSchedulesByDoctor(String doctorId);
-    List<Schedule> getSchedulesByDay(DayOfWeek day);
-    List<Schedule> getSchedulesByRoom(String roomId);
-    List<Schedule> getSchedulesByDoctorAndWeek(String doctorId, LocalDate weekStart);
-    List<Schedule> getSchedulesByDayAndRoom(DayOfWeek day, String roomId);
-
-    Schedule updateSchedule(String scheduleId, Schedule schedule);
-    void deleteSchedule(String scheduleId);
+    CompletableFuture<Schedule> createSchedule(Schedule schedule);
+    CompletableFuture<Optional<Schedule>> getScheduleById(String scheduleId);
+   CompletableFuture<List<Schedule>> getAllSchedules();
+    CompletableFuture<List<Schedule>> getSchedulesByDoctor(String doctorId);
+    CompletableFuture<List<Schedule>> getSchedulesByDay(DayOfWeek day);
+    CompletableFuture<List<Schedule>> getSchedulesByRoom(String roomId);
+    CompletableFuture<List<Schedule>> getSchedulesByDoctorAndWeek(String doctorId, LocalDate weekStart);
+    CompletableFuture<List<Schedule>> getSchedulesByDayAndRoom(DayOfWeek day, String roomId);
+    CompletableFuture<Schedule> updateSchedule(String scheduleId, Schedule schedule);
+    CompletableFuture<Void> deleteSchedule(String scheduleId);
 }

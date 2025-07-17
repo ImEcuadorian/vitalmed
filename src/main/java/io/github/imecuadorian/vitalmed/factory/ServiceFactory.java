@@ -8,9 +8,13 @@ import lombok.*;
 
 public class ServiceFactory {
     private static final UserRepository JDBC_USER_REPOSITORY = new JdbcUserRepository();
-    private static final DoctorRepository JDBC_DOCTOR_REPOSITORY = new JdbcDoctorRepository();
     private static final SpecialtyRepository JDBC_SPECIALTY_REPOSITORY = new JdbcSpecialtyRepository();
     private static final RoomRepository JDBC_ROOM_REPOSITORY = new JdbcRoomRepository();
+    private static final HistoryRepository JDBC_HISTORY_REPOSITORY = new JdbcHistoryRepository();
+    private static final ScheduleRepository JDBC_SCHEDULE_REPOSITORY = new JdbcScheduleRepository();
+    private static final AppointmentSlotRepository JDBC_APPOINTMENT_SLOT_REPOSITORY = new JdbcAppointmentSlotRepository(JDBC_SCHEDULE_REPOSITORY);
+    private static final AppointmentRepository JDBC_APPOINTMENT_REPOSITORY = new JdbcAppointmentRepository(JDBC_USER_REPOSITORY, JDBC_SPECIALTY_REPOSITORY, JDBC_SCHEDULE_REPOSITORY);
+    private static final DoctorRepository JDBC_DOCTOR_REPOSITORY = new JdbcDoctorRepository(JDBC_SCHEDULE_REPOSITORY, JDBC_APPOINTMENT_SLOT_REPOSITORY, JDBC_APPOINTMENT_REPOSITORY, JDBC_HISTORY_REPOSITORY);
     @Getter
     private static final UserService USER_SERVICE = new UserServiceImpl(JDBC_USER_REPOSITORY);
     @Getter

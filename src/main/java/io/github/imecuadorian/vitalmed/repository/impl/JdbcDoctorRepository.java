@@ -7,12 +7,30 @@ import org.slf4j.*;
 
 import javax.sql.*;
 import java.sql.*;
+import java.time.*;
 import java.util.*;
 
 public class JdbcDoctorRepository implements DoctorRepository {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JdbcDoctorRepository.class);
     private final DataSource dataSource = MySQLConnectionPool.getDataSource();
+
+    private final ScheduleRepository       scheduleRepo;
+    private final AppointmentSlotRepository slotRepo;
+    private final AppointmentRepository     apptRepo;
+    private final HistoryRepository historyRepo;
+
+    public JdbcDoctorRepository(
+            ScheduleRepository scheduleRepo,
+            AppointmentSlotRepository slotRepo,
+            AppointmentRepository apptRepo,
+            HistoryRepository historyRepo
+    ) {
+        this.scheduleRepo  = scheduleRepo;
+        this.slotRepo      = slotRepo;
+        this.apptRepo      = apptRepo;
+        this.historyRepo   = historyRepo;
+    }
 
     @Override
     public void save(Doctor value) {
@@ -158,6 +176,49 @@ public class JdbcDoctorRepository implements DoctorRepository {
             }
         } catch (SQLException e) {
             LOGGER.error("Error deleting doctor: {}", e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public List<Schedule> findWeeklyScheduleByDoctorId(String doctorId, LocalDate weekStart) {
+        return scheduleRepo.findByDoctorAndWeek(Integer.parseInt(doctorId), weekStart);
+    }
+
+    @Override
+    public List<AppointmentSlot> findAvailableSlotsByDoctorAndDate(String doctorId, LocalDate date) {
+        return slotRepo.findAvailableByDoctorAndDate(Integer.parseInt(doctorId), date);
+    }
+
+    @Override
+    public List<Appointment> findAppointmentsForWeek(String doctorId, LocalDate weekStart) {
+        return apptRepo.findByDoctorAndWeek(Integer.parseInt(doctorId), weekStart);
+    }
+
+    @Override
+    public Appointment updateAppointmentStatus(String appointmentId, AppointmentStatus newStatus) {
+        // 1) Leer la cita
+        Appointment a = apptRepo.findById(appointmentId)
+                .orElseThrow(() -> new IllegalArgumentException("Appointment not found: " + appointmentId));
+        // 2) Cambiar el estado
+        Appointment updated = a.withStatus(newStatus);
+        // 3) Persistir
+        apptRepo.update(appointmentId, updated);
+        return updated;
+    }
+
+    @Override
+    public List<ClinicalHistory> getPatientHistory(String patientId) {
+        return historyRepo.findByPatientId(patientId);
+    }
+
+    @Override
+    public ClinicalHistory upsertClinicalHistory(ClinicalHistory history) {
+        if (history.id() != null) {
+            historyRepo.update(history.id().toString(), history);
+            return history;
+        } else {
+            historyRepo.save(history);
+            return history;
         }
     }
 }

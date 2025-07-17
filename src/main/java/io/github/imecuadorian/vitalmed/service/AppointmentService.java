@@ -4,17 +4,18 @@ import io.github.imecuadorian.vitalmed.model.*;
 
 import java.time.*;
 import java.util.*;
+import java.util.concurrent.*;
 
 public interface AppointmentService {
-    Appointment bookAppointment(Appointment appointment);
-    Optional<Appointment> getAppointmentById(String appointmentId);
-    List<Appointment> getAllAppointments();
-    List<Appointment> getAppointmentsByPatient(String patientId);
-    List<Appointment> getAppointmentsByDoctor(String doctorId);
-    List<Appointment> getAppointmentsByDate(LocalDate date);
-    List<Appointment> getAppointmentsByDoctorAndWeek(String doctorId, LocalDate weekStart);
-    List<Appointment> getAppointmentsByStatusAndDoctor(AppointmentStatus status, String doctorId);
+    CompletableFuture<Appointment> bookAppointment(Appointment appointment);
+    CompletableFuture<Optional<Appointment>> getAppointmentById(String appointmentId);
+    CompletableFuture<List<Appointment>> getAllAppointments();
+    CompletableFuture<List<Appointment>> getAppointmentsByPatient(Integer patientId);
+    CompletableFuture<List<Appointment>> getAppointmentsByDoctor(Integer doctorId);
+    CompletableFuture<List<Appointment>> getAppointmentsByDate(LocalDate date);
+    CompletableFuture<List<Appointment>> getAppointmentsByDoctorAndWeek(String doctorId, LocalDate weekStart);
+    CompletableFuture<List<Appointment>> getAppointmentsByStatusAndDoctor(AppointmentStatus status, String doctorId);
 
-    Appointment updateAppointment(String appointmentId, Appointment appointment);
-    void cancelAppointment(String appointmentId);
+    CompletableFuture<Appointment> updateAppointment(String appointmentId, Appointment appointment);
+    CompletableFuture<Void> cancelAppointment(String appointmentId);
 }

@@ -4,13 +4,14 @@ import io.github.imecuadorian.vitalmed.model.*;
 
 import java.time.*;
 import java.util.*;
+import java.util.concurrent.*;
 
 public interface AppointmentSlotService {
-    AppointmentSlot createSlot(AppointmentSlot slot);
-    Optional<AppointmentSlot> getSlotById(String slotId);
-    List<AppointmentSlot> getAllSlots();
-    List<AppointmentSlot> getAvailableSlots(String doctorId, LocalDate date);
-    void reserveSlot(String slotId);
-    AppointmentSlot updateSlot(String slotId, AppointmentSlot slot);
-    void deleteSlot(String slotId);
+    CompletableFuture<AppointmentSlot> createSlot(AppointmentSlot slot);
+    CompletableFuture<Optional<AppointmentSlot>> getSlotById(String slotId);
+    CompletableFuture<List<AppointmentSlot>> getAllSlots();
+    CompletableFuture<List<AppointmentSlot>> getAvailableSlots(String doctorId, LocalDate date);
+    CompletableFuture<Void> reserveSlot(String slotId);
+    CompletableFuture<AppointmentSlot> updateSlot(String slotId, AppointmentSlot slot);
+    CompletableFuture<Void> deleteSlot(String slotId);
 }
