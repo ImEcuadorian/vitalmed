@@ -1,108 +1,223 @@
 package io.github.imecuadorian.vitalmed.view.forms.patient;
 
-import com.formdev.flatlaf.*;
-import com.formdev.flatlaf.ui.*;
-import com.formdev.flatlaf.util.*;
-import io.github.imecuadorian.vitalmed.i18n.I18n;
+import com.formdev.flatlaf.FlatClientProperties;
+import io.github.imecuadorian.vitalmed.controller.AppointmentController;
+import io.github.imecuadorian.vitalmed.controller.PatientController;
+import io.github.imecuadorian.vitalmed.factory.ServiceFactory;
+import io.github.imecuadorian.vitalmed.i18n.*;
+import io.github.imecuadorian.vitalmed.model.Appointment;
+import io.github.imecuadorian.vitalmed.model.Patient;
 import io.github.imecuadorian.vitalmed.util.*;
-import io.github.imecuadorian.vitalmed.view.component.*;
-import io.github.imecuadorian.vitalmed.view.forms.auth.*;
-import io.github.imecuadorian.vitalmed.view.system.*;
-import net.miginfocom.layout.*;
-import net.miginfocom.swing.*;
-import raven.extras.*;
-import raven.modal.slider.*;
+import io.github.imecuadorian.vitalmed.util.PDFUtil;
+import io.github.imecuadorian.vitalmed.view.system.Form;
+import net.miginfocom.swing.MigLayout;
+import org.jdesktop.swingx.JXDatePicker;
 
 import javax.swing.*;
-import javax.swing.border.*;
 import java.awt.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
+import java.util.ResourceBundle;
 
-@SystemForm(name = "Agendamiento de Citas", description = "Agendamiento de citas", tags = {"agendamiento, citas"})
-public class FormAppointmentScheduling extends Form {
+@SystemForm(
+        name = "Agendamiento de Citas",
+        description = "Wizard de agendamiento para pacientes",
+        tags = {"agendamiento","citas"}
+)
+public class FormAppointmentScheduling extends Form implements LanguageChangeListener {
+    private CardLayout cards = new CardLayout();
+    private JPanel pnlCards = new JPanel(cards);
+    private JButton btnNext = new JButton("Siguiente"), btnBack = new JButton("Atrás");
 
-    public FormAppointmentScheduling() {
-        init();
+    // Etapa 1
+    private JTextField regName, regCedula, regEmail, regPhone, regPass, regPassConf;
+    private JButton btnRegister, btnLogin;
+
+    // Etapa 2
+    private JComboBox<String> cmbSpecialty, cmbDoctor;
+    private JXDatePicker dpDate;
+    private JList<LocalTime> lstTimes;
+    private DefaultListModel<LocalTime> timesModel;
+
+    // Etapa 3
+    private JTextArea txtSummary;
+    private JButton btnGeneratePdf;
+
+    private final PatientController patientCtrl =
+            new PatientController(ServiceFactory.getPATIENT_SERVICE());
+    private final AppointmentController appCtrl =
+            new AppointmentController(ServiceFactory.getAPPOINTMENT_SERVICE());
+
+    private Patient currentPatient;
+
+    @Override
+    public void formInit() {
+        setLayout(new MigLayout("fill","[grow]","[grow][]"));
+        pnlCards.add(buildStep1(), "step1");
+        pnlCards.add(buildStep2(), "step2");
+        pnlCards.add(buildStep3(), "step3");
+        add(pnlCards,"grow, wrap");
+
+        JPanel nav = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        nav.add(btnBack); nav.add(btnNext);
+        add(nav,"growx");
+
+        btnBack.setEnabled(false);
+        btnNext.addActionListener(e->onNext());
+        btnBack.addActionListener(e->onBack());
+        cards.show(pnlCards,"step1");
     }
 
-    private void init() {
-        setLayout(new MigLayout("wrap,fillx", "[fill]", "[][grow,fill]"));
-        add(createInfo());
-        add(createOptions());
-        add(createTestButton(), "growx");
-    }
-    private JPanel createInfo() {
-        JPanel panel = new JPanel(new MigLayout("fillx,wrap", "[fill]"));
-        JLabel title = new JLabel(I18n.t("form.formAppointmentScheduling.appointmentScheduling.title"));
-        JTextPane text = new JTextPane();
-        text.setText("SlidePane is a custom Java Swing component that enables smooth transitions between panels with animated sliding effects.");
-        text.setEditable(false);
-        text.setBorder(BorderFactory.createEmptyBorder());
-        title.putClientProperty(FlatClientProperties.STYLE, "" +
-                "font:bold +3");
+    private JPanel buildStep1() {
+        JPanel p = new JPanel(new MigLayout("wrap 2, gap 10","[][grow]"));
+        p.add(new JLabel(I18n.t("form.appSched.step1.title")),"span 2");
+        regName = new JTextField(); regCedula = new JTextField();
+        regEmail = new JTextField(); regPhone = new JTextField();
+        regPass = new JPasswordField(); regPassConf = new JPasswordField();
+        p.add(new JLabel(I18n.t("form.appSched.label.name")));      p.add(regName,"growx");
+        p.add(new JLabel(I18n.t("form.appSched.label.cedula")));    p.add(regCedula,"growx");
+        p.add(new JLabel(I18n.t("form.appSched.label.email")));     p.add(regEmail,"growx");
+        p.add(new JLabel(I18n.t("form.appSched.label.phone")));     p.add(regPhone,"growx");
+        p.add(new JLabel(I18n.t("form.appSched.label.password")));  p.add(regPass,"growx");
+        p.add(new JLabel(I18n.t("form.appSched.label.passConf")));  p.add(regPassConf,"growx");
 
-        panel.add(title);
-        panel.add(text, "width 500");
-        return panel;
-    }
+        btnRegister = new JButton(I18n.t("form.appSched.button.register"));
+        btnLogin    = new JButton(I18n.t("form.appSched.button.login"));
+        p.add(btnRegister); p.add(btnLogin);
 
-    private Component createOptions() {
-        JPanel panel = new JPanel(new MigLayout("wrap 2,fillx", "[grow 0,fill][fill]", "[fill][][grow,fill]"));
-        panel.add(createExample(), "span 2");
-        return panel;
-    }
-
-
-    private Component createTestButton() {
-        JPanel panel = new JPanel(new MigLayout());
-        panel.setBorder(new TitledBorder("Show slide"));
-        LabelButton lbTest1 = new LabelButton("Show slide-1");
-        LabelButton lbTest2 = new LabelButton("Show slide-2");
-
-        lbTest1.addOnClick(o -> {
-            slidePane.addSlide(new FormRegister(), SlidePaneTransition.Type.FORWARD);
+        // listeners:
+        btnRegister.addActionListener(e->{
+            if (!regPass.getText().equals(regPassConf.getText())) {
+                JOptionPane.showMessageDialog(this,I18n.t("form.appSched.error.passMatch"));
+                return;
+            }
+            patientCtrl.register(
+                    new Patient(regName.getText(),regCedula.getText(),regEmail.getText(),regPhone.getText(),regPass.getText())
+            ).thenAccept(pat-> SwingUtilities.invokeLater(()->{
+                currentPatient = pat;
+                btnNext.setEnabled(true);
+                JOptionPane.showMessageDialog(this,I18n.t("form.appSched.success.register"));
+            })).exceptionally(ex->{
+                JOptionPane.showMessageDialog(this,I18n.t("form.appSched.error.register"));
+                return null;
+            });
         });
-        lbTest2.addOnClick(o -> {
-            slidePane.addSlide(new FormRegister(), SlidePaneTransition.Type.FORWARD);
+        btnLogin.addActionListener(e->{
+            patientCtrl.login(regEmail.getText(),regPass.getText())
+                    .thenAccept(pat-> SwingUtilities.invokeLater(()->{
+                        currentPatient = pat;
+                        btnNext.setEnabled(true);
+                        JOptionPane.showMessageDialog(this,I18n.t("form.appSched.success.login"));
+                    })).exceptionally(ex->{
+                        JOptionPane.showMessageDialog(this,I18n.t("form.appSched.error.login"));
+                        return null;
+                    });
         });
 
-        panel.add(lbTest1);
-        panel.add(lbTest2);
-        return panel;
+        return p;
     }
 
-    private Component createExample() {
-        JPanel panel = new JPanel(new MigLayout("wrap,al center", "[fill,700]"));
-        panel.setBorder(new TitledBorder("Example"));
-        PanelSlider.PaneSliderLayoutSize layoutSize = (container, component) -> {
-                return minSize(container, component);
-        };
-        slidePane = new SlidePane(layoutSize);
-        slidePane.addSlide(new FormRegister());
-        panel.add(slidePane);
-        return panel;
+    private JPanel buildStep2() {
+        JPanel p = new JPanel(new MigLayout("wrap 2, gap 10","[][grow]"));
+        p.add(new JLabel(I18n.t("form.appSched.step2.title")),"span 2");
+        cmbSpecialty = new JComboBox<>(); cmbDoctor = new JComboBox<>();
+        dpDate = new JXDatePicker();
+        timesModel = new DefaultListModel<>();
+        lstTimes = new JList<>(timesModel);
+
+        p.add(new JLabel(I18n.t("form.appSched.label.specialty"))); p.add(cmbSpecialty,"growx");
+        p.add(new JLabel(I18n.t("form.appSched.label.doctor")));    p.add(cmbDoctor,"growx");
+        p.add(new JLabel(I18n.t("form.appSched.label.date")));      p.add(dpDate,"growx");
+        p.add(new JLabel(I18n.t("form.appSched.label.time")));      p.add(new JScrollPane(lstTimes),"growx, h 80");
+
+        // carga especialidades
+        patientCtrl.getSpecialties()
+                .thenAccept(list-> SwingUtilities.invokeLater(()->{
+                    list.forEach(cmbSpecialty::addItem);
+                }));
+
+        cmbSpecialty.addActionListener(e->{
+            String esp = (String)cmbSpecialty.getSelectedItem();
+            appCtrl.getDoctorsBySpecialty(esp)
+                    .thenAccept(list-> SwingUtilities.invokeLater(()->{
+                        cmbDoctor.removeAllItems();
+                        list.forEach(d->cmbDoctor.addItem(d.getFullName()));
+                    }));
+        });
+
+        dpDate.addActionListener(e-> loadTimesForSelected());
+
+        return p;
     }
 
-    private Dimension minSize(Container container, Component component) {
-        Container parent = container.getParent();
-        Dimension comSize = component.getPreferredSize();
-        Dimension parentSize = parent.getSize();
-        Insets parentInsets = FlatUIUtils.addInsets(parent.getInsets(), getMiglayoutDefaultInsets());
-        int width = Math.min(comSize.width, parentSize.width - (parentInsets.left + parentInsets.right));
-        int height = Math.min(comSize.height, parentSize.height - (parentInsets.top + parentInsets.bottom));
-        return new Dimension(width, height);
+    private void loadTimesForSelected() {
+        String docName = (String)cmbDoctor.getSelectedItem();
+        LocalDate date = dpDate.getDate().toInstant()
+                .atZone(java.time.ZoneId.systemDefault())
+                .toLocalDate();
+        timesModel.clear();
+        appCtrl.getAvailableSlots(docName, date)
+                .thenAccept(slots-> SwingUtilities.invokeLater(()->{
+                    slots.forEach(timesModel::addElement);
+                }));
     }
 
-    private Insets getMiglayoutDefaultInsets() {
-        int top = (int) PlatformDefaults.getPanelInsets(0).getValue();
-        int left = (int) PlatformDefaults.getPanelInsets(1).getValue();
-        int bottom = (int) PlatformDefaults.getPanelInsets(2).getValue();
-        int right = (int) PlatformDefaults.getPanelInsets(3).getValue();
-        return UIScale.scale(new Insets(top, left, bottom, right));
+    private JPanel buildStep3() {
+        JPanel p = new JPanel(new MigLayout("wrap 1","[grow]","[][grow]"));
+        p.add(new JLabel(I18n.t("form.appSched.step3.title")));
+        txtSummary = new JTextArea(); txtSummary.setEditable(false);
+        p.add(new JScrollPane(txtSummary),"grow, push, h 120");
+        btnGeneratePdf = new JButton(I18n.t("form.appSched.button.generatePdf"));
+        p.add(btnGeneratePdf,"center");
+        btnGeneratePdf.addActionListener(e->{
+            Appointment appt = new Appointment(
+                    currentPatient,
+                    (String)cmbSpecialty.getSelectedItem(),
+                    (String)cmbDoctor.getSelectedItem(),
+                    dpDate.getDate().toInstant()
+                            .atZone(java.time.ZoneId.systemDefault())
+                            .toLocalDate(),
+                    lstTimes.getSelectedValue()
+            );
+            PDFUtil.generateAppointmentPDF(appt, "./cita_"+currentPatient.getCedula()+".pdf");
+            JOptionPane.showMessageDialog(this, I18n.t("form.appSched.success.pdf"));
+        });
+        return p;
     }
 
-    private SlidePane slidePane;
+    private void onNext() {
+        if (cards.current(pnlCards)==pnlCards.getComponent(0)) {
+            // validamos step1 completado
+            cards.next(pnlCards);
+            btnBack.setEnabled(true);
+        } else if (cards.current(pnlCards)==pnlCards.getComponent(1)) {
+            // confirmamos que haya hora seleccionada
+            if (lstTimes.getSelectedValue()==null) {
+                JOptionPane.showMessageDialog(this,I18n.t("form.appSched.error.selectTime"));
+                return;
+            }
+            // resumo en textarea
+            txtSummary.setText(
+                    I18n.t("form.appSched.summary.patient")+" "+currentPatient.getFullName()+"\n"+
+                    I18n.t("form.appSched.summary.specialty")+" "+cmbSpecialty.getSelectedItem()+"\n"+
+                    I18n.t("form.appSched.summary.doctor")+" "+cmbDoctor.getSelectedItem()+"\n"+
+                    I18n.t("form.appSched.summary.date")+" "+dpDate.getDate()+"\n"+
+                    I18n.t("form.appSched.summary.time")+" "+lstTimes.getSelectedValue()
+            );
+            cards.next(pnlCards);
+            btnNext.setEnabled(false);
+        }
+    }
 
-    private JRadioButton jrContainerSize;
-    private JRadioButton jrComponentPreferredSize;
+    private void onBack() {
+        cards.previous(pnlCards);
+        btnNext.setEnabled(true);
+        if (cards.current(pnlCards)==pnlCards.getComponent(0)) btnBack.setEnabled(false);
+    }
 
+    @Override
+    public void onLanguageChanged(ResourceBundle bundle) {
+        // aquí recargas todos los labels con bundle.getString(...)
+    }
 }

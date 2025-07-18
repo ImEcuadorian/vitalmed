@@ -30,7 +30,8 @@ public class FormDoctorManagementAdmin extends Form implements LanguageChangeLis
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FormDoctorManagementAdmin.class);
     private static final AdminDashboardController adminDashboardController = new AdminDashboardController(
-            ServiceFactory.getADMIN_SERVICE()
+            ServiceFactory.getADMIN_SERVICE(),
+            ServiceFactory.getUSER_SERVICE()
     );
     private transient TableRowSorter<DefaultTableModel> sorter;
     private static final String FILL = "[fill]";

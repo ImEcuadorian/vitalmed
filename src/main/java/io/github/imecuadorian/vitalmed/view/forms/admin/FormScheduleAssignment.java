@@ -4,178 +4,255 @@ import com.formdev.flatlaf.FlatClientProperties;
 import io.github.imecuadorian.vitalmed.controller.AdminDashboardController;
 import io.github.imecuadorian.vitalmed.factory.ServiceFactory;
 import io.github.imecuadorian.vitalmed.i18n.*;
-import io.github.imecuadorian.vitalmed.model.*;
+import io.github.imecuadorian.vitalmed.model.Room;
+import io.github.imecuadorian.vitalmed.model.Schedule;
+import io.github.imecuadorian.vitalmed.model.Doctor;
 import io.github.imecuadorian.vitalmed.util.*;
 import io.github.imecuadorian.vitalmed.view.system.Form;
 import net.miginfocom.swing.MigLayout;
-import org.slf4j.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.MaskFormatter;
 import java.awt.*;
+import java.text.ParseException;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
-import java.util.*;
 import java.util.List;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.regex.Pattern;
 
-@SystemForm(name = "Asignar turno", description = "Formulario para asignar turnos a doctores", tags = {"turnos", "horario", "doctor"})
+@SystemForm(
+        name        = "Asignar turno",
+        description = "Formulario para asignar turnos a doctores",
+        tags        = {"turnos","horario","doctor"}
+)
 public class FormScheduleAssignment extends Form implements LanguageChangeListener {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(FormScheduleAssignment.class);
-    private static final AdminDashboardController adminDashboardController = new AdminDashboardController(
-            ServiceFactory.getADMIN_SERVICE()
-    );
-    private JComboBox<Doctor> cmbDoctor;
-    private JComboBox<Room> cmbRoom;
-    private final String[] days = {I18n.t("form.formScheduleAssignment.monday.days"), I18n.t("form.formScheduleAssignment.tuesday.days"),
-            I18n.t("form.formScheduleAssignment.wednesday.days"), I18n.t("form.formScheduleAssignment.thursday.days"),
-            I18n.t("form.formScheduleAssignment.friday.days")};
-    private final JTable[] tables = new JTable[5];
+    private static final AdminDashboardController adminDashboardController =
+            new AdminDashboardController(
+                    ServiceFactory.getADMIN_SERVICE(),
+                    ServiceFactory.getUSER_SERVICE()
+            );
 
-    public FormScheduleAssignment() {
-        I18n.addListener(this);
-    }
+    private JComboBox<Doctor> cmbDoctor;
+    private JComboBox<Room>  cmbRoom;
+    private final Map<DayOfWeek, JTable> tableMap = new EnumMap<>(DayOfWeek.class);
+    private static final Pattern TIME_PATTERN = Pattern.compile("([01]\\d|2[0-3]):[0-5]\\d");
 
     @Override
     public void formInit() {
-        setLayout(new MigLayout("fillx,wrap", "[fill]", "[][grow][]"));
-        add(createHeaderPanel());
-        add(createSchedulePanel(), "grow");
-        add(createSaveButton(), "right");
+        setLayout(new MigLayout("fillx, insets 10","[grow]","[][grow][]"));
+        add(createHeaderPanel(), "growx, wrap");
+        add(createSchedulePanel(), "grow, wrap");
+        add(createSaveButton(), "tag right");
+        loadDoctorsAndRooms();
     }
 
     private JPanel createHeaderPanel() {
-        JPanel panel = new JPanel(new MigLayout("fillx,wrap", "[grow]"));
-
+        JPanel p = new JPanel(new MigLayout("fillx, wrap","[grow][grow]"));
         JLabel title = new JLabel(I18n.t("form.formScheduleAssignment.turnAssignment.title"));
         title.putClientProperty(FlatClientProperties.STYLE, "font:bold +3");
+        JTextPane desc = new JTextPane();
+        desc.setText(I18n.t("form.formScheduleAssignment.description"));
+        desc.setEditable(false);
+        desc.setOpaque(false);
+        desc.setBorder(null);
 
-        JTextPane text = new JTextPane();
-        text.setText(I18n.t("form.formScheduleAssignment.description"));
-        text.setEditable(false);
-        text.setOpaque(false);
-        text.setBorder(BorderFactory.createEmptyBorder());
+        p.add(title, "span 2, center");
+        p.add(desc,  "span 2, growx, wrap");
 
-        panel.add(title, "span 2");
-        panel.add(text);
-
-        JLabel lblDoctor = new JLabel(I18n.t("form.formScheduleAssignment.doctor.label"));
+        p.add(new JLabel(I18n.t("form.formScheduleAssignment.doctor.label")));
         cmbDoctor = new JComboBox<>();
+        p.add(cmbDoctor, "growx, split 2");
 
-        JLabel lblRoom = new JLabel(I18n.t("form.formScheduleAssignment.room.label"));
+        p.add(new JLabel(I18n.t("form.formScheduleAssignment.room.label")));
         cmbRoom = new JComboBox<>();
+        p.add(cmbRoom, "growx");
 
-        adminDashboardController.getDoctors().thenAccept(doctors -> {
-            cmbDoctor.setModel(new DefaultComboBoxModel<>(doctors.toArray(new Doctor[0])));
-        }).exceptionally(ex -> {
-            LOGGER.error("Error loading doctors", ex);
-            JOptionPane.showMessageDialog(this, I18n.t("form.formScheduleAssignment.error.loadDoctors"));
-            return null;
-        });
+        cmbDoctor.addActionListener(e -> loadExistingSchedules());
+        cmbRoom.addActionListener(e -> loadExistingSchedules());
 
-        adminDashboardController.getRooms().thenAccept(rooms -> {
-            cmbRoom.setModel(new DefaultComboBoxModel<>(rooms.toArray(new Room[0])));
-        }).exceptionally(ex -> {
-            LOGGER.error("Error loading rooms", ex);
-            JOptionPane.showMessageDialog(this, I18n.t("form.formScheduleAssignment.error.loadRooms"));
-            return null;
-        });
-
-
-        panel.add(lblDoctor);
-        panel.add(cmbDoctor, "growx");
-        panel.add(lblRoom);
-        panel.add(cmbRoom, "growx");
-
-        return panel;
+        return p;
     }
 
-    private JTabbedPane createSchedulePanel() {
-        JTabbedPane tabs = new JTabbedPane();
-        for (String day : days) {
-            JPanel dayPanel = new JPanel();
-            dayPanel.setLayout(new BoxLayout(dayPanel, BoxLayout.Y_AXIS));
-            dayPanel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+    private JPanel createSchedulePanel() {
+        JPanel p = new JPanel(new GridLayout(5,1,5,5));
+        DayOfWeek[] days = {
+                DayOfWeek.MONDAY, DayOfWeek.TUESDAY,
+                DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY
+        };
 
-            JPanel shiftsContainer = new JPanel();
-            shiftsContainer.setLayout(new BoxLayout(shiftsContainer, BoxLayout.Y_AXIS));
+        for (DayOfWeek dow : days) {
+            String title = dow.getDisplayName(
+                    java.time.format.TextStyle.FULL, Locale.getDefault()
+            );
+            JPanel dayPanel = new JPanel(new BorderLayout());
+            dayPanel.setBorder(BorderFactory.createTitledBorder(title));
 
-            JButton addBtn = new JButton("Añadir turno");
-            addBtn.putClientProperty( FlatClientProperties.STYLE, "icon:"  );
-            addBtn.addActionListener(e -> {
-                JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 4));
+            // Modelo con 4 filas y 2 columnas: Inicio / Fin
+            DefaultTableModel model = new DefaultTableModel(
+                    new String[]{ I18n.t("form.formScheduleAssignment.start"), I18n.t("form.formScheduleAssignment.end") },
+                    4
+            ) {
+                @Override public boolean isCellEditable(int r,int c){ return true; }
+            };
 
-                JButton remove = new JButton();
-                remove.putClientProperty( FlatClientProperties.STYLE, "icon:"  );
-                remove.addActionListener(ev -> {
-                    shiftsContainer.remove(row);
-                    shiftsContainer.revalidate();
-                    shiftsContainer.repaint();
-                });
+            JTable table = new JTable(model);
+            // Use MaskFormatter para HH:mm
+            try {
+                MaskFormatter mf = new MaskFormatter("##:##");
+                mf.setPlaceholderCharacter('0');
+                DefaultCellEditor editor = new DefaultCellEditor(
+                        new JFormattedTextField(mf)
+                );
+                table.getColumnModel().getColumn(0).setCellEditor(editor);
+                table.getColumnModel().getColumn(1).setCellEditor(editor);
+            } catch (ParseException ex) {
+                LOGGER.warn("No se pudo aplicar MaskFormatter", ex);
+            }
 
-                row.add(new JLabel("De"));
-                row.add(new JLabel("a"));
-                row.add(remove);
-
-                shiftsContainer.add(row);
-                shiftsContainer.revalidate();
-                shiftsContainer.repaint();
-            });
-
-            dayPanel.add(addBtn);
-            dayPanel.add(Box.createRigidArea(new Dimension(0,8)));
-            dayPanel.add(shiftsContainer);
-
-            tabs.addTab(day, dayPanel);
+            tableMap.put(dow, table);
+            dayPanel.add(new JScrollPane(table), BorderLayout.CENTER);
+            p.add(dayPanel);
         }
-        return tabs;
-    }
 
+        return p;
+    }
 
     private JButton createSaveButton() {
-        JButton button = new JButton(I18n.t("form.formScheduleAssignment.saveShifts.button"));
-        button.addActionListener(e -> saveSchedules());
-        return button;
+        JButton btn = new JButton(I18n.t("form.formScheduleAssignment.saveShifts.button"));
+        btn.addActionListener(e -> saveSchedules());
+        return btn;
+    }
+
+    private void loadDoctorsAndRooms() {
+        adminDashboardController.getDoctors()
+                .thenAccept(list -> SwingUtilities.invokeLater(() ->
+                        cmbDoctor.setModel(
+                                new DefaultComboBoxModel<>(list.toArray(new Doctor[0]))
+                        )
+                ))
+                .exceptionally(ex -> {
+                    LOGGER.error("Error cargando doctores", ex);
+                    JOptionPane.showMessageDialog(this,
+                            I18n.t("form.formScheduleAssignment.error.loadDoctors"));
+                    return null;
+                });
+
+        adminDashboardController.getRooms()
+                .thenAccept(list -> SwingUtilities.invokeLater(() ->
+                        cmbRoom.setModel(
+                                new DefaultComboBoxModel<>(list.toArray(new Room[0]))
+                        )
+                ))
+                .exceptionally(ex -> {
+                    LOGGER.error("Error cargando salas", ex);
+                    JOptionPane.showMessageDialog(this,
+                            I18n.t("form.formScheduleAssignment.error.loadRooms"));
+                    return null;
+                });
+    }
+
+    private void loadExistingSchedules() {
+        Doctor d = (Doctor)cmbDoctor.getSelectedItem();
+        Room r   = (Room)cmbRoom.getSelectedItem();
+        if (d == null || r == null) return;
+
+        new SwingWorker<List<Schedule>,Void>() {
+            @Override
+            protected List<Schedule> doInBackground() {
+                // carga semanal de horarios (uso de threads)
+                return adminDashboardController
+                        .getWeeklySchedules(d, r)
+                        .join();
+            }
+            @Override
+            protected void done() {
+                try {
+                    List<Schedule> list = get();
+                    // limpio cada tabla
+                    tableMap.forEach((dow, tbl) ->
+                            ((DefaultTableModel)tbl.getModel()).setRowCount(4)
+                    );
+                    // relleno de acuerdo al día
+                    for (Schedule s : list) {
+                        DefaultTableModel m = (DefaultTableModel)
+                                tableMap.get(s.getDayOfWeek()).getModel();
+                        // busco fila libre
+                        for (int row = 0; row < m.getRowCount(); row++) {
+                            if (m.getValueAt(row,0)==null) {
+                                m.setValueAt(s.getStart().toString(), row, 0);
+                                m.setValueAt(s.getEnd().toString(),   row, 1);
+                                break;
+                            }
+                        }
+                    }
+                } catch (InterruptedException|ExecutionException ex) {
+                    LOGGER.error("Error al poblar horarios", ex);
+                    JOptionPane.showMessageDialog(FormScheduleAssignment.this,
+                            I18n.t("form.formScheduleAssignment.error.loadSchedules"));
+                }
+            }
+        }.execute();
     }
 
     private void saveSchedules() {
-        Doctor doctor = (Doctor) cmbDoctor.getSelectedItem();
-        Room room = (Room) cmbRoom.getSelectedItem();
-
-        if (doctor == null || room == null) {
-            JOptionPane.showMessageDialog(this, I18n.t("form.formScheduleAssignment.error.selectDoctorAndRoom"));
+        Doctor d = (Doctor)cmbDoctor.getSelectedItem();
+        Room r   = (Room)cmbRoom.getSelectedItem();
+        if (d == null || r == null) {
+            JOptionPane.showMessageDialog(this,
+                    I18n.t("form.formScheduleAssignment.error.selectDoctorAndRoom"));
             return;
         }
 
-        List<Schedule> schedules = new ArrayList<>();
+        List<Schedule> toSave = new ArrayList<>();
+        for (Map.Entry<DayOfWeek, JTable> e : tableMap.entrySet()) {
+            DayOfWeek dow = e.getKey();
+            JTable tbl = e.getValue();
+            DefaultTableModel m = (DefaultTableModel)tbl.getModel();
 
-        for (int i = 0; i < days.length; i++) {
-            JTable table = tables[i];
-            for (int j = 0; j < 4; j++) {
-                String startStr = (String) table.getValueAt(j, 0);
-                String endStr = (String) table.getValueAt(j, 1);
-                if (startStr != null && endStr != null && !startStr.isEmpty() && !endStr.isEmpty()) {
-                    try {
-                        LocalTime start = LocalTime.parse(startStr);
-                        LocalTime end = LocalTime.parse(endStr);
-                    } catch (Exception ex) {
-                        JOptionPane.showMessageDialog(this, I18n.t("form.formScheduleAssignment.errorMessage.errorIn") + days[i] + ", fila " + (j + 1)
-                                + I18n.t("form.formScheduleAssignment.errorMessage.invalidTime"));
-                        return;
-                    }
+            for (int row = 0; row < m.getRowCount(); row++) {
+                String start = Objects.toString(m.getValueAt(row,0),"").trim();
+                String end   = Objects.toString(m.getValueAt(row,1),"").trim();
+                if (start.isEmpty() && end.isEmpty()) continue;
+
+                if (!TIME_PATTERN.matcher(start).matches() ||
+                    !TIME_PATTERN.matcher(end).matches()) {
+                    JOptionPane.showMessageDialog(this,
+                            I18n.t("form.formScheduleAssignment.errorMessage.errorIn")
+                            + " " + dow + ", fila " + (row+1)
+                            + I18n.t("form.formScheduleAssignment.errorMessage.invalidTime"));
+                    return;
                 }
+
+                LocalTime s = LocalTime.parse(start);
+                LocalTime t = LocalTime.parse(end);
+                toSave.add(new Schedule(d, r, dow, s, t));
             }
         }
 
-        if (true) {
-            JOptionPane.showMessageDialog(this, I18n.t("form.formScheduleAssignment.success.shiftsSaved"));
-        } else {
-            JOptionPane.showMessageDialog(this, I18n.t("form.formScheduleAssignment.error.shiftsNotSaved"));
-        }
+        new SwingWorker<Void,Void>() {
+            @Override
+            protected Void doInBackground() {
+                adminDashboardController
+                        .saveWeeklySchedules(d, r, toSave)
+                        .join();
+                return null;
+            }
+            @Override
+            protected void done() {
+                JOptionPane.showMessageDialog(FormScheduleAssignment.this,
+                        I18n.t("form.formScheduleAssignment.success.shiftsSaved"));
+            }
+        }.execute();
     }
 
     @Override
     public void onLanguageChanged(ResourceBundle bundle) {
-
+        // aquí recargas todos los textos de labels y títulos usando bundle.getString(...)
     }
 }

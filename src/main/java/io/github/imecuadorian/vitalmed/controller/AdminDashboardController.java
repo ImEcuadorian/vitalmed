@@ -7,7 +7,7 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
 
-public record AdminDashboardController(AdminService adminService) implements Serializable {
+public record AdminDashboardController(AdminService adminService, UserService userService) implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -37,6 +37,10 @@ public record AdminDashboardController(AdminService adminService) implements Ser
 
     public CompletableFuture<List<Room>> getRooms() {
         return adminService.listAllRooms();
+    }
+
+    public CompletableFuture<Void> resetPassword(String userId, String newPlainPassword) {
+        return userService.resetPassword(userId, newPlainPassword);
     }
 }
 

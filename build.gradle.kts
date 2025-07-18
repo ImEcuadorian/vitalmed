@@ -44,7 +44,7 @@ val logStashLogbackEncoderVersion = "8.1"
 
 
 dependencies {
-
+    implementation(files("libs/generic-library-2.0.0.jar"))
     implementation("io.github.dj-raven:modal-dialog:$modalDialogVersion")
     implementation("com.miglayout:miglayout-swing:$migLayoutVersion")
     implementation("com.formdev:flatlaf:$flatLafVersion")

@@ -1,132 +1,140 @@
 package io.github.imecuadorian.vitalmed.view.forms.doctor;
 
-import com.formdev.flatlaf.*;
-import io.github.imecuadorian.vitalmed.controller.*;
-import io.github.imecuadorian.vitalmed.factory.*;
+import com.formdev.flatlaf.FlatClientProperties;
+import io.github.imecuadorian.vitalmed.controller.HistoryController;
+import io.github.imecuadorian.vitalmed.factory.ServiceFactory;
 import io.github.imecuadorian.vitalmed.i18n.*;
+import io.github.imecuadorian.vitalmed.model.MedicalHistory;
+import io.github.imecuadorian.vitalmed.model.Patient;
 import io.github.imecuadorian.vitalmed.util.*;
-import io.github.imecuadorian.vitalmed.view.system.*;
-import net.miginfocom.swing.*;
-
+import io.github.imecuadorian.vitalmed.view.system.Form;
+import net.miginfocom.swing.MigLayout;
 import javax.swing.*;
-import java.util.*;
+import java.util.ResourceBundle;
 
-@SystemForm(name = "Historia Medica", description = "Historia Medica del Doctor", tags = {"historia medica"})
+@SystemForm(
+        name = "Historia Médica",
+        description = "Historia Clínica del Paciente",
+        tags = {"historia","médica"}
+)
 public class FormMedicalHistory extends Form implements LanguageChangeListener {
-
     private JLabel lblTitle;
     private JTextPane text;
-
-    private JTextField txtCedula, txtEdad, txtSexo, txtAlergias, txtEnfermedades, txtMedicamentos, txtOperaciones;
-    private JTextField txtEspecialidad, txtTratamiento, txtMedicamentoAsignado;
+    private JTextField txtCedula, txtEdad, txtSexo, txtAlergias,
+            txtEnfermedades, txtMedicamentos, txtOperaciones,
+            txtEspecialidad, txtTratamiento, txtMedicamentoAsignado;
     private JButton btnBuscar, btnGuardar;
-    private JPanel contentPanel;
 
-    public FormMedicalHistory() {
-        I18n.addListener(this);
-    }
+    private final HistoryController controller =
+            new HistoryController(ServiceFactory.getHISTORY_SERVICE());
 
     @Override
     public void formInit() {
-        setLayout(new MigLayout("fill, insets 10 10 10 10", "[fill]", "[][grow]"));
+        setLayout(new MigLayout("fill, insets 10","[fill]","[][grow]"));
         add(createInfo(), "growx, wrap");
 
-        contentPanel = new JPanel(new MigLayout("wrap 2, fill, insets n 35 n 35, gapy 10", "[fill,150]", "[fill]"));
-        contentPanel.putClientProperty(FlatClientProperties.STYLE, "arc:20; background:$Table.background;");
+        JPanel content = new JPanel(new MigLayout("wrap 2, gap 10","[right][grow]"));
+        content.putClientProperty(
+                FlatClientProperties.STYLE,
+                "arc:20; background:$Table.background;"
+        );
 
-        // Fila 1: Buscar cédula
         txtCedula = new JTextField();
-        btnBuscar = new JButton("Buscar");
-        contentPanel.add(new JLabel("Cédula del Paciente:"));
-        contentPanel.add(txtCedula, "growx");
-        contentPanel.add(new JLabel(""));
-        contentPanel.add(btnBuscar, "wrap");
+        btnBuscar  = new JButton(I18n.t("form.medHistory.button.search"));
+        content.add(new JLabel(I18n.t("form.medHistory.label.cedula")));
+        content.add(txtCedula,"growx, split 2");
+        content.add(btnBuscar,"wrap");
 
-        // Datos básicos
-        txtEdad = new JTextField();
-        txtSexo = new JTextField();
-        txtAlergias = new JTextField();
-        txtEnfermedades = new JTextField();
-        txtMedicamentos = new JTextField();
-        txtOperaciones = new JTextField();
-        txtEspecialidad = new JTextField();
-        txtTratamiento = new JTextField();
+        txtEdad = new JTextField();   txtSexo = new JTextField();
+        txtAlergias = new JTextField(); txtEnfermedades = new JTextField();
+        txtMedicamentos = new JTextField(); txtOperaciones = new JTextField();
+        txtEspecialidad = new JTextField(); txtTratamiento = new JTextField();
         txtMedicamentoAsignado = new JTextField();
 
-        addField("Edad:", txtEdad);
-        addField("Sexo:", txtSexo);
-        addField("Alergias:", txtAlergias);
-        addField("Enfermedades preexistentes:", txtEnfermedades);
-        addField("Medicamentos ingeridos:", txtMedicamentos);
-        addField("Operaciones realizadas:", txtOperaciones);
-        addField("Especialidad:", txtEspecialidad);
-        addField("Tratamiento:", txtTratamiento);
-        addField("Medicamento asignado:", txtMedicamentoAsignado);
+        addField(content,"form.medHistory.label.age", txtEdad);
+        addField(content,"form.medHistory.label.sex", txtSexo);
+        addField(content,"form.medHistory.label.allergies", txtAlergias);
+        addField(content,"form.medHistory.label.preexisting", txtEnfermedades);
+        addField(content,"form.medHistory.label.meds", txtMedicamentos);
+        addField(content,"form.medHistory.label.ops", txtOperaciones);
+        addField(content,"form.medHistory.label.specialty", txtEspecialidad);
+        addField(content,"form.medHistory.label.treatment", txtTratamiento);
+        addField(content,"form.medHistory.label.assignedMed", txtMedicamentoAsignado);
 
-        btnGuardar = new JButton("Guardar");
-        contentPanel.add(btnGuardar, "span, center");
+        btnGuardar = new JButton(I18n.t("form.medHistory.button.save"));
+        content.add(btnGuardar, "span, center");
 
-        add(contentPanel, "grow, push");
+        add(content, "grow, push");
 
-        // Eventos
-        btnBuscar.addActionListener(e -> buscarPaciente());
-        btnGuardar.addActionListener(e -> guardarHistoriaClinica());
+        // Listeners
+        btnBuscar.addActionListener(e -> onSearch());
+        btnGuardar.addActionListener(e -> onSave());
     }
-
-    private void addField(String label, JTextField field) {
-        contentPanel.add(new JLabel(label));
-        contentPanel.add(field, "growx, wrap");
-    }
-
-    private void buscarPaciente() {
-        String cedula = txtCedula.getText().trim();
-        if (cedula.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Ingrese la cédula del paciente");
-            return;
-        }
-        // Simula carga de datos — Aquí conectas a DB o servicio
-        txtEdad.setText("32");
-        txtSexo.setText("Masculino");
-        txtAlergias.setText("Ninguna");
-        txtEnfermedades.setText("Asma");
-        txtMedicamentos.setText("Ibuprofeno");
-        txtOperaciones.setText("Apendicectomía");
-        // Puedes añadir lógica real aquí usando tu controlador
-    }
-
-    private void guardarHistoriaClinica() {
-        // Recoger valores
-        String cedula = txtCedula.getText();
-        String edad = txtEdad.getText();
-        String sexo = txtSexo.getText();
-        String alergias = txtAlergias.getText();
-        String enfermedades = txtEnfermedades.getText();
-        String medicamentos = txtMedicamentos.getText();
-        String operaciones = txtOperaciones.getText();
-        String especialidad = txtEspecialidad.getText();
-        String tratamiento = txtTratamiento.getText();
-        String medicamentoAsignado = txtMedicamentoAsignado.getText();
-
-        System.out.println("Guardando historia clínica de: " + cedula);
-        JOptionPane.showMessageDialog(this, "Historia clínica guardada correctamente");
-    }
-
 
     private JPanel createInfo() {
-        JPanel panel = new JPanel(new MigLayout("fillx, wrap", "[fill]"));
-        lblTitle = new JLabel();
-        text = new JTextPane();
-        text.setEditable(false);
-        text.setBorder(BorderFactory.createEmptyBorder());
-        lblTitle.putClientProperty(FlatClientProperties.STYLE, "font:bold +3");
-        panel.add(lblTitle);
-        panel.add(text);
-        return panel;
+        JPanel p = new JPanel(new MigLayout("fillx, wrap","[grow]"));
+        lblTitle = new JLabel(); text = new JTextPane();
+        lblTitle.putClientProperty(FlatClientProperties.STYLE,"font:bold +3");
+        text.setEditable(false); text.setOpaque(false); text.setBorder(null);
+        p.add(lblTitle);
+        p.add(text);
+        return p;
+    }
+
+    private void addField(JPanel p, String key, JTextField f) {
+        p.add(new JLabel(I18n.t(key)));
+        p.add(f,"growx, wrap");
+    }
+
+    private void onSearch() {
+        String ced = txtCedula.getText().trim();
+        if (ced.isEmpty()) {
+            JOptionPane.showMessageDialog(this, I18n.t("form.medHistory.error.noCedula"));
+            return;
+        }
+        controller.fetchByCedula(ced)
+                .thenAccept(hist -> SwingUtilities.invokeLater(() -> {
+                    Patient pat = hist.getPatient();
+                    txtEdad.setText(String.valueOf(pat.getAge()));
+                    txtSexo.setText(pat.getSex());
+                    txtAlergias.setText(hist.getAllergies());
+                    txtEnfermedades.setText(hist.getPreexisting());
+                    txtMedicamentos.setText(hist.getMedications());
+                    txtOperaciones.setText(hist.getOperations());
+                    txtEspecialidad.setText(hist.getSpecialty());
+                    txtTratamiento.setText(hist.getTreatment());
+                    txtMedicamentoAsignado.setText(hist.getAssignedMedication());
+                }))
+                .exceptionally(ex -> {
+                    JOptionPane.showMessageDialog(this, I18n.t("form.medHistory.error.load"));
+                    return null;
+                });
+    }
+
+    private void onSave() {
+        MedicalHistory mh = new MedicalHistory();
+        mh.setCedula(txtCedula.getText().trim());
+        mh.setAllergies(txtAlergias.getText());
+        mh.setPreexisting(txtEnfermedades.getText());
+        mh.setMedications(txtMedicamentos.getText());
+        mh.setOperations(txtOperaciones.getText());
+        mh.setSpecialty(txtEspecialidad.getText());
+        mh.setTreatment(txtTratamiento.getText());
+        mh.setAssignedMedication(txtMedicamentoAsignado.getText());
+
+        controller.save(mh)
+                .thenRun(() -> SwingUtilities.invokeLater(() ->
+                        JOptionPane.showMessageDialog(this, I18n.t("form.medHistory.success.save"))
+                ))
+                .exceptionally(ex -> {
+                    JOptionPane.showMessageDialog(this, I18n.t("form.medHistory.error.save"));
+                    return null;
+                });
     }
 
     @Override
     public void onLanguageChanged(ResourceBundle bundle) {
-        lblTitle.setText("Admnistrar Historia Medica");
-        text.setText("En esta sección puedes gestionar los doctores registrados en el sistema. Puedes ver su información, editarla o eliminarla si es necesario.");
+        lblTitle.setText(bundle.getString("form.medHistory.title"));
+        text.setText(bundle.getString("form.medHistory.description"));
     }
 }

@@ -33,7 +33,8 @@ public class FormPatientManagement extends Form {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FormPatientManagement.class);
     private static final AdminDashboardController adminDashboardController = new AdminDashboardController(
-            ServiceFactory.getADMIN_SERVICE()
+            ServiceFactory.getADMIN_SERVICE(),
+            ServiceFactory.getUSER_SERVICE()
     );
     private DefaultTableModel tableModel;
     private TableRowSorter<DefaultTableModel> sorter;
@@ -212,7 +213,14 @@ public class FormPatientManagement extends Form {
         ModalDialog.showModal(this, new SimpleMessageModal(SimpleMessageModal.Type.WARNING, message, I18n.t("form.formPatientManagement.resetPassword.typeWarning"), SimpleModalBorder.YES_NO_OPTION, (controller, action) -> {
             if (action == SimpleModalBorder.YES_OPTION) {
                 for (String id : selectedIds) {
-
+                    adminDashboardController.resetPassword(id, "Vitalmed@2025").whenComplete((result, ex) -> {
+                        if (ex != null) {
+                            LOGGER.error("Error resetting password for patient with ID: {}", id, ex);
+                            Toast.show(this, Toast.Type.ERROR, I18n.t("form.formPatientManagement.resetPassword.typeError"), ToastLocation.TOP_TRAILING, Constants.getOption());
+                        } else {
+                            LOGGER.info("Password reset successfully for patient with ID: {}", id);
+                        }
+                    });
                 }
                 Toast.show(this, Toast.Type.SUCCESS, I18n.t("form.formPatientManagement.resetPassword.typeSuccess"), ToastLocation.TOP_TRAILING, Constants.getOption());
                 for (int i = 0; i < tableModel.getRowCount(); i++) {

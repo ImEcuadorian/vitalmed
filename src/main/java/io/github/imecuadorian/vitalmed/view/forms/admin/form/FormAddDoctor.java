@@ -22,7 +22,8 @@ import java.util.List;
 public class FormAddDoctor extends JPanel implements LanguageChangeListener {
 
 
-    private static final AdminDashboardController ADMIN_DASHBOARD_CONTROLLER = new AdminDashboardController(ServiceFactory.getADMIN_SERVICE());
+    private static final AdminDashboardController ADMIN_DASHBOARD_CONTROLLER = new AdminDashboardController(ServiceFactory.getADMIN_SERVICE(),
+            ServiceFactory.getUSER_SERVICE());
     private final Runnable success;
 
     public FormAddDoctor(Runnable success) {

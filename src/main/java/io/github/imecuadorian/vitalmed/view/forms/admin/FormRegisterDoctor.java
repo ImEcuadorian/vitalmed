@@ -29,7 +29,8 @@ public class FormRegisterDoctor extends Form {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FormRegisterDoctor.class);
     private static final AdminDashboardController adminDashboardController = new AdminDashboardController(
-            ServiceFactory.getADMIN_SERVICE()
+            ServiceFactory.getADMIN_SERVICE(),
+            ServiceFactory.getUSER_SERVICE()
     );
     private DefaultTableModel tableModel;
     private TableRowSorter<DefaultTableModel> sorter;
