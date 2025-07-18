@@ -1,16 +1,15 @@
 package io.github.imecuadorian.vitalmed.view.forms.doctor;
 
-import com.formdev.flatlaf.FlatClientProperties;
-import io.github.imecuadorian.vitalmed.controller.HistoryController;
-import io.github.imecuadorian.vitalmed.factory.ServiceFactory;
+import com.formdev.flatlaf.*;
+import io.github.imecuadorian.vitalmed.controller.*;
+import io.github.imecuadorian.vitalmed.factory.*;
 import io.github.imecuadorian.vitalmed.i18n.*;
-import io.github.imecuadorian.vitalmed.model.MedicalHistory;
-import io.github.imecuadorian.vitalmed.model.Patient;
 import io.github.imecuadorian.vitalmed.util.*;
-import io.github.imecuadorian.vitalmed.view.system.Form;
-import net.miginfocom.swing.MigLayout;
+import io.github.imecuadorian.vitalmed.view.system.*;
+import net.miginfocom.swing.*;
+
 import javax.swing.*;
-import java.util.ResourceBundle;
+import java.util.*;
 
 @SystemForm(
         name = "Historia Médica",
@@ -26,7 +25,7 @@ public class FormMedicalHistory extends Form implements LanguageChangeListener {
     private JButton btnBuscar, btnGuardar;
 
     private final HistoryController controller =
-            new HistoryController(ServiceFactory.getHISTORY_SERVICE());
+            new HistoryController(ServiceFactory.getJDBC_HISTORY_SERVICE());
 
     @Override
     public void formInit() {
@@ -40,8 +39,8 @@ public class FormMedicalHistory extends Form implements LanguageChangeListener {
         );
 
         txtCedula = new JTextField();
-        btnBuscar  = new JButton(I18n.t("form.medHistory.button.search"));
-        content.add(new JLabel(I18n.t("form.medHistory.label.cedula")));
+        btnBuscar  = new JButton("Buscar");
+        content.add(new JLabel("Cedula:"));
         content.add(txtCedula,"growx, split 2");
         content.add(btnBuscar,"wrap");
 
@@ -51,17 +50,16 @@ public class FormMedicalHistory extends Form implements LanguageChangeListener {
         txtEspecialidad = new JTextField(); txtTratamiento = new JTextField();
         txtMedicamentoAsignado = new JTextField();
 
-        addField(content,"form.medHistory.label.age", txtEdad);
-        addField(content,"form.medHistory.label.sex", txtSexo);
-        addField(content,"form.medHistory.label.allergies", txtAlergias);
-        addField(content,"form.medHistory.label.preexisting", txtEnfermedades);
-        addField(content,"form.medHistory.label.meds", txtMedicamentos);
-        addField(content,"form.medHistory.label.ops", txtOperaciones);
-        addField(content,"form.medHistory.label.specialty", txtEspecialidad);
-        addField(content,"form.medHistory.label.treatment", txtTratamiento);
-        addField(content,"form.medHistory.label.assignedMed", txtMedicamentoAsignado);
+        addField(content,"Edad", txtEdad);
+        addField(content,"Sexo", txtSexo);
+        addField(content,"Alergias", txtAlergias);
+        addField(content,"Enfermedades", txtEnfermedades);
+        addField(content,"Medicamentos", txtMedicamentos);
+        addField(content,"Espcialidad", txtEspecialidad);
+        addField(content,"Tratamiento", txtTratamiento);
+        addField(content,"Medicamento", txtMedicamentoAsignado);
 
-        btnGuardar = new JButton(I18n.t("form.medHistory.button.save"));
+        btnGuardar = new JButton("Guardar");
         content.add(btnGuardar, "span, center");
 
         add(content, "grow, push");
@@ -82,17 +80,17 @@ public class FormMedicalHistory extends Form implements LanguageChangeListener {
     }
 
     private void addField(JPanel p, String key, JTextField f) {
-        p.add(new JLabel(I18n.t(key)));
+        p.add(new JLabel(key));
         p.add(f,"growx, wrap");
     }
 
     private void onSearch() {
         String ced = txtCedula.getText().trim();
         if (ced.isEmpty()) {
-            JOptionPane.showMessageDialog(this, I18n.t("form.medHistory.error.noCedula"));
+            JOptionPane.showMessageDialog(this, "No se ha ingresado una cédula válida.");
             return;
         }
-        controller.fetchByCedula(ced)
+        /*controller.fetchByCedula(ced)
                 .thenAccept(hist -> SwingUtilities.invokeLater(() -> {
                     Patient pat = hist.getPatient();
                     txtEdad.setText(String.valueOf(pat.getAge()));
@@ -108,11 +106,11 @@ public class FormMedicalHistory extends Form implements LanguageChangeListener {
                 .exceptionally(ex -> {
                     JOptionPane.showMessageDialog(this, I18n.t("form.medHistory.error.load"));
                     return null;
-                });
+                });*/
     }
 
     private void onSave() {
-        MedicalHistory mh = new MedicalHistory();
+       /* MedicalHistory mh = new MedicalHistory();
         mh.setCedula(txtCedula.getText().trim());
         mh.setAllergies(txtAlergias.getText());
         mh.setPreexisting(txtEnfermedades.getText());
@@ -129,12 +127,12 @@ public class FormMedicalHistory extends Form implements LanguageChangeListener {
                 .exceptionally(ex -> {
                     JOptionPane.showMessageDialog(this, I18n.t("form.medHistory.error.save"));
                     return null;
-                });
+                });*/
     }
 
     @Override
     public void onLanguageChanged(ResourceBundle bundle) {
-        lblTitle.setText(bundle.getString("form.medHistory.title"));
-        text.setText(bundle.getString("form.medHistory.description"));
+        lblTitle.setText("Medical History");
+        text.setText("Enter patient details to view or edit their medical history.");
     }
 }

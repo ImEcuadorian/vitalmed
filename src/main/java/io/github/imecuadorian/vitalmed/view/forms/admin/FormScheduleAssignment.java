@@ -57,7 +57,7 @@ public class FormScheduleAssignment extends Form implements LanguageChangeListen
         JLabel title = new JLabel(I18n.t("form.formScheduleAssignment.turnAssignment.title"));
         title.putClientProperty(FlatClientProperties.STYLE, "font:bold +3");
         JTextPane desc = new JTextPane();
-        desc.setText(I18n.t("form.formScheduleAssignment.description"));
+        desc.setText("Designe los turnos semanales para los doctores y las salas disponibles.");
         desc.setEditable(false);
         desc.setOpaque(false);
         desc.setBorder(null);
@@ -65,16 +65,14 @@ public class FormScheduleAssignment extends Form implements LanguageChangeListen
         p.add(title, "span 2, center");
         p.add(desc,  "span 2, growx, wrap");
 
-        p.add(new JLabel(I18n.t("form.formScheduleAssignment.doctor.label")));
+        p.add(new JLabel("Doctor:"));
         cmbDoctor = new JComboBox<>();
         p.add(cmbDoctor, "growx, split 2");
 
-        p.add(new JLabel(I18n.t("form.formScheduleAssignment.room.label")));
+        p.add(new JLabel("Salas:"));
         cmbRoom = new JComboBox<>();
         p.add(cmbRoom, "growx");
 
-        cmbDoctor.addActionListener(e -> loadExistingSchedules());
-        cmbRoom.addActionListener(e -> loadExistingSchedules());
 
         return p;
     }
@@ -95,7 +93,7 @@ public class FormScheduleAssignment extends Form implements LanguageChangeListen
 
             // Modelo con 4 filas y 2 columnas: Inicio / Fin
             DefaultTableModel model = new DefaultTableModel(
-                    new String[]{ I18n.t("form.formScheduleAssignment.start"), I18n.t("form.formScheduleAssignment.end") },
+                    new String[]{ "Iniciar", "Termina" },
                     4
             ) {
                 @Override public boolean isCellEditable(int r,int c){ return true; }
@@ -124,7 +122,7 @@ public class FormScheduleAssignment extends Form implements LanguageChangeListen
     }
 
     private JButton createSaveButton() {
-        JButton btn = new JButton(I18n.t("form.formScheduleAssignment.saveShifts.button"));
+        JButton btn = new JButton("Guardar Turnos");
         btn.addActionListener(e -> saveSchedules());
         return btn;
     }
@@ -139,7 +137,7 @@ public class FormScheduleAssignment extends Form implements LanguageChangeListen
                 .exceptionally(ex -> {
                     LOGGER.error("Error cargando doctores", ex);
                     JOptionPane.showMessageDialog(this,
-                            I18n.t("form.formScheduleAssignment.error.loadDoctors"));
+                            "Carga de doctores fallida: " + ex.getMessage());
                     return null;
                 });
 
@@ -152,12 +150,12 @@ public class FormScheduleAssignment extends Form implements LanguageChangeListen
                 .exceptionally(ex -> {
                     LOGGER.error("Error cargando salas", ex);
                     JOptionPane.showMessageDialog(this,
-                            I18n.t("form.formScheduleAssignment.error.loadRooms"));
+                            "Carga de salas fallida: " + ex.getMessage());
                     return null;
                 });
     }
 
-    private void loadExistingSchedules() {
+    /*private void loadExistingSchedules() {
         Doctor d = (Doctor)cmbDoctor.getSelectedItem();
         Room r   = (Room)cmbRoom.getSelectedItem();
         if (d == null || r == null) return;
@@ -165,7 +163,6 @@ public class FormScheduleAssignment extends Form implements LanguageChangeListen
         new SwingWorker<List<Schedule>,Void>() {
             @Override
             protected List<Schedule> doInBackground() {
-                // carga semanal de horarios (uso de threads)
                 return adminDashboardController
                         .getWeeklySchedules(d, r)
                         .join();
@@ -178,11 +175,9 @@ public class FormScheduleAssignment extends Form implements LanguageChangeListen
                     tableMap.forEach((dow, tbl) ->
                             ((DefaultTableModel)tbl.getModel()).setRowCount(4)
                     );
-                    // relleno de acuerdo al día
                     for (Schedule s : list) {
                         DefaultTableModel m = (DefaultTableModel)
                                 tableMap.get(s.getDayOfWeek()).getModel();
-                        // busco fila libre
                         for (int row = 0; row < m.getRowCount(); row++) {
                             if (m.getValueAt(row,0)==null) {
                                 m.setValueAt(s.getStart().toString(), row, 0);
@@ -198,14 +193,14 @@ public class FormScheduleAssignment extends Form implements LanguageChangeListen
                 }
             }
         }.execute();
-    }
+    }*/
 
     private void saveSchedules() {
         Doctor d = (Doctor)cmbDoctor.getSelectedItem();
         Room r   = (Room)cmbRoom.getSelectedItem();
         if (d == null || r == null) {
             JOptionPane.showMessageDialog(this,
-                    I18n.t("form.formScheduleAssignment.error.selectDoctorAndRoom"));
+                    "Debe seleccionar un doctor y una sala.");
             return;
         }
 
@@ -223,19 +218,19 @@ public class FormScheduleAssignment extends Form implements LanguageChangeListen
                 if (!TIME_PATTERN.matcher(start).matches() ||
                     !TIME_PATTERN.matcher(end).matches()) {
                     JOptionPane.showMessageDialog(this,
-                            I18n.t("form.formScheduleAssignment.errorMessage.errorIn")
+                            "Formato de hora inválido para "
                             + " " + dow + ", fila " + (row+1)
-                            + I18n.t("form.formScheduleAssignment.errorMessage.invalidTime"));
+                            + ". Debe ser HH:mm.");
                     return;
                 }
 
                 LocalTime s = LocalTime.parse(start);
                 LocalTime t = LocalTime.parse(end);
-                toSave.add(new Schedule(d, r, dow, s, t));
+                //toSave.add(new Schedule(d, r, dow, s, t));
             }
         }
 
-        new SwingWorker<Void,Void>() {
+        /*new SwingWorker<Void,Void>() {
             @Override
             protected Void doInBackground() {
                 adminDashboardController
@@ -248,7 +243,7 @@ public class FormScheduleAssignment extends Form implements LanguageChangeListen
                 JOptionPane.showMessageDialog(FormScheduleAssignment.this,
                         I18n.t("form.formScheduleAssignment.success.shiftsSaved"));
             }
-        }.execute();
+        }.execute();*/
     }
 
     @Override

@@ -1,4 +1,6 @@
 package io.github.imecuadorian.vitalmed.controller;
 
-public class HistoryController {
+import io.github.imecuadorian.vitalmed.service.*;
+
+public record HistoryController(ClinicalHistoryService clinicalHistoryService) {
 }

@@ -30,7 +30,6 @@ public class FormAppointmentManagement extends Form implements LanguageChangeLis
     private DefaultTableModel model;
     private JButton btnMarkAttended, btnRefresh;
 
-    // Controlador de cita
     private final AppointmentController controller =
             new AppointmentController(ServiceFactory.getAPPOINTMENT_SERVICE());
 
@@ -42,25 +41,25 @@ public class FormAppointmentManagement extends Form implements LanguageChangeLis
         add(createInfo(), "growx, wrap");
 
         JPanel top = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 4));
-        top.add(new JLabel(I18n.t("form.appMgmt.filter.label")));
+        top.add(new JLabel("Filtro:"));
         cmbFilter = new JComboBox<>(new String[]{
-                I18n.t("form.appMgmt.filter.weekly"),
-                I18n.t("form.appMgmt.filter.attended")
+                "Semana Actual",
+                "Todas las Citas",
         });
         top.add(cmbFilter);
-        btnRefresh = new JButton(I18n.t("form.appMgmt.button.refresh"));
+        btnRefresh = new JButton("Actualizar");
         top.add(btnRefresh);
         add(top, "growx, wrap");
 
         // Tabla
         model = new DefaultTableModel(
                 new String[]{
-                        I18n.t("form.appMgmt.col.date"),
-                        I18n.t("form.appMgmt.col.time"),
-                        I18n.t("form.appMgmt.col.patient"),
-                        I18n.t("form.appMgmt.col.specialty"),
-                        I18n.t("form.appMgmt.col.room"),
-                        I18n.t("form.appMgmt.col.status")
+                        "Fecha",
+                        "Hora",
+                        "Paciente",
+                        "Especialidad",
+                        "Sala",
+                        "Estado"
                 }, 0
         ) {
             @Override public boolean isCellEditable(int r,int c){return false;}
@@ -69,7 +68,7 @@ public class FormAppointmentManagement extends Form implements LanguageChangeLis
         add(new JScrollPane(tblAppointments), "grow, push, wrap");
 
         JPanel bot = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        btnMarkAttended = new JButton(I18n.t("form.appMgmt.button.markAttended"));
+        btnMarkAttended = new JButton("Marcar como Asistido");
         bot.add(btnMarkAttended);
         add(bot, "growx");
 
@@ -95,7 +94,7 @@ public class FormAppointmentManagement extends Form implements LanguageChangeLis
     private void loadAppointments() {
         model.setRowCount(0);
         boolean onlyThisWeek = cmbFilter.getSelectedIndex()==0;
-        controller.getByDoctor(currentDoctor.getId(), onlyThisWeek)
+       /* controller.getByDoctor(currentDoctor.getId(), onlyThisWeek)
                 .thenAccept(list -> SwingUtilities.invokeLater(() -> {
                     for (Appointment a : list) {
                         model.addRow(new Object[]{
@@ -107,17 +106,17 @@ public class FormAppointmentManagement extends Form implements LanguageChangeLis
                 .exceptionally(ex -> {
                     JOptionPane.showMessageDialog(this, I18n.t("form.appMgmt.error.load"));
                     return null;
-                });
+                });*/
     }
 
     private void markSelectedAttended() {
         int sel = tblAppointments.getSelectedRow();
         if (sel<0) {
-            JOptionPane.showMessageDialog(this, I18n.t("form.appMgmt.error.selectRow"));
+            JOptionPane.showMessageDialog(this, "Por favor, selecciona una cita para marcar como asistida.");
             return;
         }
         LocalDate date = (LocalDate) model.getValueAt(sel,0);
-        controller.markAttended(currentDoctor.getId(), date)
+        /*controller.markAttended(currentDoctor.getId(), date)
                 .thenRun(() -> SwingUtilities.invokeLater(() -> {
                     JOptionPane.showMessageDialog(this, I18n.t("form.appMgmt.success.marked"));
                     loadAppointments();
@@ -125,12 +124,12 @@ public class FormAppointmentManagement extends Form implements LanguageChangeLis
                 .exceptionally(ex -> {
                     JOptionPane.showMessageDialog(this, I18n.t("form.appMgmt.error.mark"));
                     return null;
-                });
+                });*/
     }
 
     @Override
     public void onLanguageChanged(ResourceBundle bundle) {
-        lblTitle.setText(bundle.getString("form.appMgmt.title"));
-        text.setText(bundle.getString("form.appMgmt.description"));
+        lblTitle.setText("Gestión de Citas");
+        text.setText("Esta sección te permite gestionar las citas médicas de tus pacientes. Puedes filtrar por la semana actual o ver todas las citas programadas.");
     }
 }

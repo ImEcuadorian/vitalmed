@@ -27,6 +27,8 @@ public class ServiceFactory {
     @Getter
     private static final AppointmentService APPOINTMENT_SERVICE = new AppointmentServiceImpl(JDBC_APPOINTMENT_REPOSITORY);
 
+    @Getter
+    private static final ClinicalHistoryService JDBC_HISTORY_SERVICE = new ClinicalHistoryServiceImpl(JDBC_HISTORY_REPOSITORY);
     private ServiceFactory() {
         throw new UnsupportedOperationException("ServiceFactory is a utility class and cannot be instantiated.");
     }
